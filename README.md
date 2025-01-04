@@ -1,44 +1,39 @@
-<!DOCTYPE html>
-<html lang="az">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İmtahan Ballarını Hesablama</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>İmtahan Ballarını Hesablama</h1>
-        <p class="description">Doğru, yanlış, açıq və qapalı suallar haqqında məlumat daxil edərək ballarınızı hesablaya bilərsiniz.</p>
-        
-        <div id="groupButtons"></div>
-        
-        <div id="examForm" style="display: none;">
-            <h2 id="activeGroupTitle"></h2>
-            <form id="scoreForm">
-                <!-- Form will be dynamically generated here -->
-            </form>
-            <button id="calculateButton">Hesabla</button>
-        </div>
-        
-        <div id="results" style="display: none;">
-            <h2>Nəticələr</h2>
-            <table id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>Fənn</th>
-                        <th>Bal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Results will be dynamically inserted here -->
-                </tbody>
-            </table>
-            <button id="recalculateButton">Yenidən hesabla</button>
-            <button id="downloadButton">Nəticələri yüklə</button>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+# Exam Score Calculator
 
+## Overview
+A simple web-based exam score calculator built using HTML, CSS, and JavaScript. It calculates the total score, average, and grade based on user input.
+
+## Features
+- Input exam scores for multiple subjects.
+- Calculates total, average, and grade.
+- Responsive design for mobile and desktop.
+  
+## Technologies
+- **HTML**: Structure of the page.
+- **CSS**: Styling for visual appeal.
+- **JavaScript**: Logic for calculating scores and grades.
+
+## How to Use
+1. Open `index.html` in a browser.
+2. Enter scores in the input fields.
+3. Click "Calculate" to get total, average, and grade.
+
+
+## Project Structure
+`index.html` - Main HTML file. `style.css` - CSS for styling. `script.js` - JavaScript for score calculations.
+
+
+## Installation
+1. Clone or download the repository.
+2. Open `index.html` in your browser to use the tool.
+
+## Contributing
+1. Fork the repository.
+2. Create a branch for your changes.
+3. Submit a pull request.
+
+## License
+MIT License. See [LICENSE](LICENSE) for details.
+
+## Contact
+For feedback, contact me at: [nicat@abusov.com]
