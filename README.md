@@ -3,6 +3,11 @@
 ## Overview
 A simple web-based exam score calculator built using HTML, CSS, and JavaScript. It calculates the total score, average, and grade based on user input.
 
+<p align="center">
+  <img src="![Uploading image.png…]()
+" width="300"/>
+</p>
+
 ## Features
 - Input exam scores for multiple subjects.
 - Calculates total, average, and grade.
