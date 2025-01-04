@@ -4,8 +4,7 @@
 A simple web-based exam score calculator built using HTML, CSS, and JavaScript. It calculates the total score, average, and grade based on user input.
 
 <p align="center">
-  <img src="![Uploading image.png…]()
-" width="300"/>
+  <img src="https://github.com/abusoww/calculator/blob/main/screenshot.png?raw=true" width="900"/>
 </p>
 
 ## Features
