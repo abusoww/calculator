@@ -1,7 +1,6 @@
 # Allow all search engines to crawl the entire site
 User-agent: *
 
-
 # Allow specific crawlers like Googlebot to access all pages
 User-agent: Googlebot
 Allow: /
