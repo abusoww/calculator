@@ -348,7 +348,7 @@ const resultMessages = {
         az: {
             '1-ci Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://giphy.com/embed/3o7TKqnN349PBUtGFO'
+                gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2pvaXp3dGwwM2owaGJ2ODRkdW1xc3FncWEydjZvcTNhbm1uM3F4dSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/aQQ0V6tr9DsCA/giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
