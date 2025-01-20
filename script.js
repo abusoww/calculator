@@ -209,45 +209,45 @@ const resultMessages = {
     excellent: {
         az: {
             '1-ci Qrup': {
-                text: 'Təbrik edirik! Siz texniki sahələrdə əla nəticə göstərdiniz! 🎉',
+                text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://giphy.com/embed/l0HlQXlQ3nHyLMvte'
             },
             '2-ci Qrup': {
-                text: 'Möhtəşəm! İqtisadiyyat sahəsində parlaq gələcək sizi gözləyir! 🌟',
+                text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://giphy.com/embed/xT8qB4KH2hCnlE1T2w'
             },
             '3-cü Qrup': {
-                text: 'Əla! Humanitar elmlər sahəsində yüksək nəticə! ⭐',
+                text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://giphy.com/embed/3o7TKS6AWINqbg3FV6'
             },
             '4-cü Qrup': {
-                text: 'Fantastik! Tibb sahəsində böyük potensial göstərdiniz! 🏥',
+                text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://giphy.com/embed/26u4cqiYI30juCOGY'
             },
             'Buraxılış İmtahanı': {
-                text: 'Əla nəticə! Siz buraxılış imtahanını uğurla keçdiniz! 🎓',
+                text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://giphy.com/embed/l0MYt5jPR6QX5pnqM'
             }
         },
         ru: {
             '1-ci Qrup': {
-                text: 'Поздравляем! Отличный результат в технической сфере! 🎉',
+                text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://giphy.com/embed/l0HlQXlQ3nHyLMvte'
             },
             '2-ci Qrup': {
-                text: 'Превосходно! Блестящее будущее в экономике ждет вас! 🌟',
+                text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://giphy.com/embed/xT8qB4KH2hCnlE1T2w'
             },
             '3-cü Qrup': {
-                text: 'Отлично! Высокий результат в гуманитарных науках! ⭐',
+                text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://giphy.com/embed/3o7TKS6AWINqbg3FV6'
             },
             '4-cü Qrup': {
-                text: 'Фантастика! Вы показали большой потенциал в медицине! 🏥',
+                text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://giphy.com/embed/26u4cqiYI30juCOGY'
             },
             'Buraxılış İmtahanı': {
-                text: 'Отличный результат! Вы успешно сдали выпускной экзамен! 🎓',
+                text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://giphy.com/embed/l0MYt5jPR6QX5pnqM'
             }
         }
@@ -255,45 +255,45 @@ const resultMessages = {
     good: {
         az: {
             '1-ci Qrup': {
-                text: 'Yaxşı nəticədir! Texniki biliklərinizi daha da inkişaf etdirə bilərsiniz! 👍',
+                text: 'Potensialınız var! 📈',
                 gif: 'https://giphy.com/embed/3oEjHV0z8S7WM4MwnK'
             },
             '2-ci Qrup': {
-                text: 'Yaxşı iş! İqtisadiyyat sahəsində yaxşı təməliniz var! 📈',
+                text: 'Potensialınız var! 📈',
                 gif: 'https://giphy.com/embed/xT5LMHxhOfscxPfIfm'
             },
             '3-cü Qrup': {
-                text: 'Yaxşı nəticə! Humanitar elmlərdə potensialınız var! 📚',
+                text: 'Potensialınız var! 📈',
                 gif: 'https://giphy.com/embed/26DMYwkCwa8G8uGcg'
             },
             '4-cü Qrup': {
-                text: 'Yaxşı göstərici! Tibb sahəsində inkişaf üçün yaxşı təməliniz var! ⚕️',
+                text: 'Potensialınız var! 📈',
                 gif: 'https://giphy.com/embed/3o7TKDEhaXOzP13RYs'
             },
             'Buraxılış İmtahanı': {
-                text: 'Yaxşı nəticə! Növbəti mərhələyə hazırsınız! 🎯',
+                text: 'Potensialınız var! 📈',
                 gif: 'https://giphy.com/embed/l0MYxef0mpdcnQnvi'
             }
         },
         ru: {
             '1-ci Qrup': {
-                text: 'Хороший результат! Вы можете развить свои технические навыки еще больше! 👍',
+                text: 'У вас есть потенциал! 📈',
                 gif: 'https://giphy.com/embed/3oEjHV0z8S7WM4MwnK'
             },
             '2-ci Qrup': {
-                text: 'Хорошая работа! У вас хорошая база в экономике! 📈',
+                text: 'У вас есть потенциал! 📈',
                 gif: 'https://giphy.com/embed/xT5LMHxhOfscxPfIfm'
             },
             '3-cü Qrup': {
-                text: 'Хороший результат! У вас есть потенциал в гуманитарных науках! 📚',
+                text: 'У вас есть потенциал! 📈',
                 gif: 'https://giphy.com/embed/26DMYwkCwa8G8uGcg'
             },
             '4-cü Qrup': {
-                text: 'Хороший показатель! У вас хорошая база для развития в медицине! ⚕️',
+                text: 'У вас есть потенциал! 📈',
                 gif: 'https://giphy.com/embed/3o7TKDEhaXOzP13RYs'
             },
             'Buraxılış İmtahanı': {
-                text: 'Хороший результат! Вы готовы к следующему этапу! 🎯',
+                text: 'У вас есть потенциал! 📈',
                 gif: 'https://giphy.com/embed/l0MYxef0mpdcnQnvi'
             }
         }
@@ -301,45 +301,45 @@ const resultMessages = {
     average: {
         az: {
             '1-ci Qrup': {
-                text: 'Orta nəticədir. Daha çox texniki tapşırıqlar üzərində işləyin! 💪',
+                text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/3oEjI6SIIHBdRxXI40'
             },
             '2-ci Qrup': {
-                text: 'Normal nəticədir. İqtisadi anlayışları daha çox öyrənin! 📊',
+                text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/l46CyJmS9KUbokzsI'
             },
             '3-cü Qrup': {
-                text: 'Orta bal. Humanitar fənləri daha çox oxuyun! 📖',
+                text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/3o7TKF5DnsSLv4zVBu'
             },
             '4-cü Qrup': {
-                text: 'Orta göstərici. Tibbi biliklərə daha çox diqqət yetirin! 🔬',
+                text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/3o7TKMeCOV3oXSb5bq'
             },
             'Buraxılış İmtahanı': {
-                text: 'Orta nəticə. Biraz daha səy göstərin! 🎯',
+                text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/3o7TKT089pgqvzqFWw'
             }
         },
         ru: {
             '1-ci Qrup': {
-                text: 'Средний результат. Работайте больше над техническими заданиям! 💪',
+                text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://giphy.com/embed/3oEjI6SIIHBdRxXI40'
             },
             '2-ci Qrup': {
-                text: 'Нормальный результат. Изучайте больше экономических концепций! 📊',
+                text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://giphy.com/embed/l46CyJmS9KUbokzsI'
             },
             '3-cü Qrup': {
-                text: 'Средний балл. Читайте больше гуманитарных предметов! 📖',
+                text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://giphy.com/embed/3o7TKF5DnsSLv4zVBu'
             },
             '4-cü Qrup': {
-                text: 'Средний показатель. Уделите больше внимания медицинским знаниям! 🔬',
+                text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://giphy.com/embed/3o7TKMeCOV3oXSb5bq'
             },
             'Buraxılış İmtahanı': {
-                text: 'Средний результат. Приложите немного больше усилий! 🎯',
+                text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://giphy.com/embed/3o7TKT089pgqvzqFWw'
             }
         }
@@ -347,45 +347,45 @@ const resultMessages = {
     low: {
         az: {
             '1-ci Qrup': {
-                text: 'Daha çox çalışmalısınız! Texniki fənlərə daha çox vaxt ayırın!     ',
+                text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://giphy.com/embed/3o7TKqnN349PBUtGFO'
             },
             '2-ci Qrup': {
-                text: 'Əlavə hazırlıq lazımdır! İqtisadi məsələləri daha çox həll edin! 📈',
+                text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://giphy.com/embed/3o7TKPdUkkbCAVqWk0'
             },
             '3-cü Qrup': {
-                text: 'Daha çox oxumalısınız! Humanitar fənlərə fokuslanın! 📖',
+                text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://giphy.com/embed/3o7TKqm1mNujcBPSpy'
             },
             '4-cü Qrup': {
-                text: 'Əlavə hazırlıq vacibdir! Tibbi terminləri daha çox öyrənin! 🔬',
+                text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://giphy.com/embed/3o7TKz3l0BMtZ4ZxrG'
             },
             'Buraxılış İmtahanı': {
-                text: 'Daha çox hazırlaşmalısınız! Əsas fənlərə diqqət yetirin! 📚',
+                text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://giphy.com/embed/3o7TKL9BEXxlUbAAN2'
             }
         },
         ru: {
             '1-ci Qrup': {
-                text: 'Нужно больше работать! Удели больше времени техническим предметам! 📚',
+                text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://giphy.com/embed/3o7TKqnN349PBUtGFO'
             },
             '2-ci Qrup': {
-                text: 'Требуется дополнительная подготовка! Решайте бол��ше экономических задач! 📈',
+                text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://giphy.com/embed/3o7TKPdUkkbCAVqWk0'
             },
             '3-cü Qrup': {
-                text: 'Нужно больше читать! Сфокусируйтесь на гуманитарных предметах! 📖',
+                text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://giphy.com/embed/3o7TKqm1mNujcBPSpy'
             },
             '4-cü Qrup': {
-                text: 'Необходима дополнительная подготовка! Учите больше медицинских терминов! 🔬',
+                text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://giphy.com/embed/3o7TKz3l0BMtZ4ZxrG'
             },
             'Buraxılış İmtahanı': {
-                text: 'Нужно больше готовться! Обратите внимание на основные предметы! 📚',
+                text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://giphy.com/embed/3o7TKL9BEXxlUbAAN2'
             }
         }
