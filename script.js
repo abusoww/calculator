@@ -210,45 +210,45 @@ const resultMessages = {
         az: {
             '1-ci Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
-                gif: 'https://giphy.com/embed/l0HlQXlQ3nHyLMvte'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
-                gif: 'https://giphy.com/embed/xT8qB4KH2hCnlE1T2w'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '3-cü Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
-                gif: 'https://giphy.com/embed/3o7TKS6AWINqbg3FV6'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
-                gif: 'https://giphy.com/embed/26u4cqiYI30juCOGY'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Siz bunu bacardınız! 🎉',
-                gif: 'https://giphy.com/embed/l0MYt5jPR6QX5pnqM'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             }
         },
         ru: {
             '1-ci Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
-                gif: 'https://giphy.com/embed/l0HlQXlQ3nHyLMvte'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
-                gif: 'https://giphy.com/embed/xT8qB4KH2hCnlE1T2w'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '3-cü Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
-                gif: 'https://giphy.com/embed/3o7TKS6AWINqbg3FV6'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
-                gif: 'https://giphy.com/embed/26u4cqiYI30juCOGY'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Поздравляем! Отличная работа! 🎉',
-                gif: 'https://giphy.com/embed/l0MYt5jPR6QX5pnqM'
+                gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             }
         }
     },
@@ -256,45 +256,45 @@ const resultMessages = {
         az: {
             '1-ci Qrup': {
                 text: 'Potensialınız var! 📈',
-                gif: 'https://giphy.com/embed/3oEjHV0z8S7WM4MwnK'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Potensialınız var! 📈',
-                gif: 'https://giphy.com/embed/xT5LMHxhOfscxPfIfm'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '3-cü Qrup': {
                 text: 'Potensialınız var! 📈',
-                gif: 'https://giphy.com/embed/26DMYwkCwa8G8uGcg'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'Potensialınız var! 📈',
-                gif: 'https://giphy.com/embed/3o7TKDEhaXOzP13RYs'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Potensialınız var! 📈',
-                gif: 'https://giphy.com/embed/l0MYxef0mpdcnQnvi'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             }
         },
         ru: {
             '1-ci Qrup': {
                 text: 'У вас есть потенциал! 📈',
-                gif: 'https://giphy.com/embed/3oEjHV0z8S7WM4MwnK'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'У вас есть потенциал! 📈',
-                gif: 'https://giphy.com/embed/xT5LMHxhOfscxPfIfm'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '3-cü Qrup': {
                 text: 'У вас есть потенциал! 📈',
-                gif: 'https://giphy.com/embed/26DMYwkCwa8G8uGcg'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'У вас есть потенциал! 📈',
-                gif: 'https://giphy.com/embed/3o7TKDEhaXOzP13RYs'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'У вас есть потенциал! 📈',
-                gif: 'https://giphy.com/embed/l0MYxef0mpdcnQnvi'
+                gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             }
         }
     },
@@ -302,7 +302,7 @@ const resultMessages = {
         az: {
             '1-ci Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
-                gif: 'https://giphy.com/embed/3oEjI6SIIHBdRxXI40'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
@@ -310,37 +310,37 @@ const resultMessages = {
             },
             '3-cü Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
-                gif: 'https://giphy.com/embed/3o7TKF5DnsSLv4zVBu'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
-                gif: 'https://giphy.com/embed/3o7TKMeCOV3oXSb5bq'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
-                gif: 'https://giphy.com/embed/3o7TKT089pgqvzqFWw'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             }
         },
         ru: {
             '1-ci Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
-                gif: 'https://giphy.com/embed/3oEjI6SIIHBdRxXI40'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             '2-ci Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
-                gif: 'https://giphy.com/embed/l46CyJmS9KUbokzsI'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             '3-cü Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
-                gif: 'https://giphy.com/embed/3o7TKF5DnsSLv4zVBu'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             '4-cü Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
-                gif: 'https://giphy.com/embed/3o7TKMeCOV3oXSb5bq'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Вы можете показать лучший результат! 💪',
-                gif: 'https://giphy.com/embed/3o7TKT089pgqvzqFWw'
+                gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             }
         }
     },
