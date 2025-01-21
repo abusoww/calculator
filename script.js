@@ -352,41 +352,41 @@ const resultMessages = {
             },
             '2-ci Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://giphy.com/embed/3o7TKPdUkkbCAVqWk0'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '3-cü Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://giphy.com/embed/3o7TKqm1mNujcBPSpy'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '4-cü Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://giphy.com/embed/3o7TKz3l0BMtZ4ZxrG'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://giphy.com/embed/3o7TKL9BEXxlUbAAN2'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             }
         },
         ru: {
             '1-ci Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
-                gif: 'https://giphy.com/embed/3o7TKqnN349PBUtGFO'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '2-ci Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
-                gif: 'https://giphy.com/embed/3o7TKPdUkkbCAVqWk0'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '3-cü Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
-                gif: 'https://giphy.com/embed/3o7TKqm1mNujcBPSpy'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '4-cü Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
-                gif: 'https://giphy.com/embed/3o7TKz3l0BMtZ4ZxrG'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             'Buraxılış İmtahanı': {
                 text: 'Требуется дополнительная подготовка! 📈',
-                gif: 'https://giphy.com/embed/3o7TKL9BEXxlUbAAN2'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             }
         }
     }
