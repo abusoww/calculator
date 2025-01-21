@@ -348,7 +348,7 @@ const resultMessages = {
         az: {
             '1-ci Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
-                gif: 'https://media.tenor.com/tnE0Wn7VO3kAAAAj/happi.gif'
+                gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
             '2-ci Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
