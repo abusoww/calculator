@@ -168,8 +168,8 @@ body.light-mode {
 }
 
 .btn {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    color: #ffffff;
+    background: linear-gradient(45deg, #0e7490, #22d3ee);
+    color: #d9d9d9;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
@@ -191,12 +191,12 @@ body.light-mode {
 }
 
 .btn.active {
-    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    background: linear-gradient(45deg, #475569, #64748b);
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
 }
 
 body.light-mode .btn {
-    background: linear-gradient(45deg, #ef4444, #f87171);
+    background: linear-gradient(45deg, #ff9a8b, #ff6a88);
     color: white;
     box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
 }
@@ -206,8 +206,9 @@ body.light-mode .btn:hover {
 }
 
 body.light-mode .btn.active {
-    background: linear-gradient(45deg, #f87171, #ef4444);
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+    background: linear-gradient(45deg, #e3f2fd
+, #bbdefb);
+    box-shadow: #bbdefb
 }
 
 body.light-mode .btn-secondary {
