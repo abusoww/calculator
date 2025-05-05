@@ -108,6 +108,7 @@ body.light-mode {
     transition: all 0.3s ease;
     min-width: 60px;
     text-align: center;
+    font-family: "Cascadia Code", sans-serif;
 }
 
 .countdown-labels {
