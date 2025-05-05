@@ -68,6 +68,7 @@ body.light-mode {
     margin-bottom: 1rem;
     color: var(--text-color);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    font-family: 'Cal Sans', sans-serif;
 }
 
 .description {
