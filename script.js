@@ -1001,7 +1001,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     const checkbox = document.getElementById('checkbox');
-    checkbox.checked = false; // checkbox в неактивном состоянии = тёмная тема
+    checkbox.checked = false;                   // checkbox в неактивном состоянии = тёмная тема
+    checkbox.addEventListener('change', toggleTheme);  // восстанавливаем реакцию на переключатель
+    updateStarColors();                         // сразу подгоняем цвета звёзд под тёмную тему
 
 });
 
