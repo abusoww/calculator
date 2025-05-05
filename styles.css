@@ -274,7 +274,7 @@ body.light-mode th {
     color: var(--text-color);
     font-family: 'Cal Sans', sans-serif;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .input-group {
