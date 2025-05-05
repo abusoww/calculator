@@ -707,7 +707,7 @@ button:hover ~ .cursor-trail {
     }
 
     .result-message iframe {
-        width: 350px;
+        width: 100%;
         height: 100%;
     }
 
