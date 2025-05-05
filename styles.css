@@ -102,8 +102,8 @@ body.light-mode {
 .countdown-numbers span {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    color: var(--text-color);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     font-family: 'Inter', monospace;
     transition: all 0.3s ease;
     min-width: 60px;
