@@ -2,22 +2,22 @@ const examDate = new Date('2025-06-01T10:00:00').getTime();
 
 const groups = [
     { 
-        name: '1-ci Qrup', 
+        name: 'I Qrup', 
         subjects: ['Riyaziyyat', 'Fizika', 'Kimya'],
         maxScores: [150, 150, 100]
     },
     { 
-        name: '2-ci Qrup', 
+        name: 'II Qrup', 
         subjects: ['Riyaziyyat', 'Coğrafiya', 'Tarix'],
         maxScores: [150, 100, 150]
     },
     { 
-        name: '3-cü Qrup', 
+        name: 'III Qrup', 
         subjects: ['Azərbaycan dili', 'Ədəbiyyat', 'Tarix'],
         maxScores: [150, 100, 150]
     },
     { 
-        name: '4-cü Qrup', 
+        name: 'IV Qrup', 
         subjects: ['Biologiya', 'Kimya', 'Fizika'],
         maxScores: [100, 150, 100]
     },
@@ -91,10 +91,10 @@ const translations = {
         minutesLeft: 'Dəqiqə qaldı',
         secondsLeft: 'Saniyə qaldı',
         groups: {
-            '1-ci Qrup': '1-ci Qrup',
-            '2-ci Qrup': '2-ci Qrup',
-            '3-cü Qrup': '3-cü Qrup',
-            '4-cü Qrup': '4-cü Qrup',
+            'I Qrup': 'I Qrup',
+            'II Qrup': 'II Qrup',
+            'III Qrup': 'III Qrup',
+            'IV Qrup': 'IV Qrup',
             'Buraxılış İmtahanı': 'Buraxılış İmtahanı'
         },
         subjects: {
@@ -134,10 +134,10 @@ const translations = {
         minutesLeft: 'Минут осталось',
         secondsLeft: 'Секунд осталось',
         groups: {
-            '1-ci Qrup': '1-я Группа',
-            '2-ci Qrup': '2-я Группа',
-            '3-cü Qrup': '3-я Группа',
-            '4-cü Qrup': '4-я Группа',
+            'I Qrup': 'I Группа',
+            'II Qrup': 'II Группа',
+            'III Qrup': 'III Группа',
+            'IV Qrup': 'IV Группа',
             'Buraxılış İmtahanı': 'Выпускной экзамен'
         },
         subjects: {
@@ -157,7 +157,7 @@ const translations = {
 
 // Объект с интервалами баллов для каждой группы
 const scoreRanges = {
-    '1-ci Qrup': {
+    'I Qrup': {
         max: 400,
         ranges: [
             { min: 350, max: 400, level: 'excellent' },
@@ -166,7 +166,7 @@ const scoreRanges = {
             { min: 0, max: 149, level: 'low' }
         ]
     },
-    '2-ci Qrup': {
+    'II Qrup': {
         max: 400,
         ranges: [
             { min: 350, max: 400, level: 'excellent' },
@@ -175,7 +175,7 @@ const scoreRanges = {
             { min: 0, max: 149, level: 'low' }
         ]
     },
-    '3-cü Qrup': {
+    'III Qrup': {
         max: 400,
         ranges: [
             { min: 350, max: 400, level: 'excellent' },
@@ -184,7 +184,7 @@ const scoreRanges = {
             { min: 0, max: 149, level: 'low' }
         ]
     },
-    '4-cü Qrup': {
+    'IV Qrup': {
         max: 350,
         ranges: [
             { min: 300, max: 350, level: 'excellent' },
@@ -208,19 +208,19 @@ const scoreRanges = {
 const resultMessages = {
     excellent: {
         az: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Siz bunu bacardınız! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
@@ -230,19 +230,19 @@ const resultMessages = {
             }
         },
         ru: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Поздравляем! Отличная работа! 🎉',
                 gif: 'https://i.ibb.co/MGtjf0b/4giphy.gif'
             },
@@ -254,19 +254,19 @@ const resultMessages = {
     },
     good: {
         az: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Potensialınız var! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Potensialınız var! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Potensialınız var! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Potensialınız var! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
@@ -276,19 +276,19 @@ const resultMessages = {
             }
         },
         ru: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'У вас есть потенциал! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'У вас есть потенциал! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'У вас есть потенциал! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'У вас есть потенциал! 📈',
                 gif: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif'
             },
@@ -300,19 +300,19 @@ const resultMessages = {
     },
     average: {
         az: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://giphy.com/embed/l46CyJmS9KUbokzsI'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Daha yaxşı nəticə göstərə bilərsiniz! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
@@ -322,19 +322,19 @@ const resultMessages = {
             }
         },
         ru: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Вы можете показать лучший результат! 💪',
                 gif: 'https://i.ibb.co/SdJMfcj/2giphy.gif'
             },
@@ -346,19 +346,19 @@ const resultMessages = {
     },
     low: {
         az: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Əlavə hazırlıq lazımdır! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
@@ -368,19 +368,19 @@ const resultMessages = {
             }
         },
         ru: {
-            '1-ci Qrup': {
+            'I Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '2-ci Qrup': {
+            'II Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '3-cü Qrup': {
+            'III Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
-            '4-cü Qrup': {
+            'IV Qrup': {
                 text: 'Требуется дополнительная подготовка! 📈',
                 gif: 'https://i.ibb.co/p0JJNY7/low.gif'
             },
@@ -395,9 +395,9 @@ const resultMessages = {
 class ScoreCalculator {
     static calculateGroupScores(group, answers) {
         switch(group.name) {
-            case '1-ci Qrup':
+            case 'I Qrup':
                 return this.calculateFirstGroupScores(answers);
-            case '2-ci Qrup':
+            case 'II Qrup':
                 return this.calculateSecondGroupScores(answers);
             // ... other groups
         }
@@ -646,7 +646,7 @@ function calculateScores() {
     results = {};
     let totalScore = 0;
 
-    if (activeGroup.name === '1-ci Qrup') {
+    if (activeGroup.name === 'I Qrup') {
         const riyaziyyat = getSubjectScores('Riyaziyyat');
         const fizika = getSubjectScores('Fizika');
         const kimya = getSubjectScores('Kimya');
@@ -654,7 +654,7 @@ function calculateScores() {
         results['Riyaziyyat'] = 1.5 * 100/33 * ((riyaziyyat.correct - riyaziyyat.incorrect/4) + (2*riyaziyyat.open + riyaziyyat.coding));
         results['Fizika'] = 1.5 * 100/33 * ((fizika.correct - fizika.incorrect/4) + (2*fizika.open + fizika.coding));
         results['Kimya'] = 100/33 * ((kimya.correct - kimya.incorrect/4) + (2*kimya.open + kimya.coding));
-    } else if (activeGroup.name === '2-ci Qrup') {
+    } else if (activeGroup.name === 'II Qrup') {
         const riyaziyyat = getSubjectScores('Riyaziyyat');
         const cografiya = getSubjectScores('Coğrafiya');
         const tarix = getSubjectScores('Tarix');
@@ -662,7 +662,7 @@ function calculateScores() {
         results['Riyaziyyat'] = 1.5 * 100/33 * ((riyaziyyat.correct - riyaziyyat.incorrect/4) + (2*riyaziyyat.open + riyaziyyat.coding));
         results['Coğrafiya'] = 100/33 * ((cografiya.correct - cografiya.incorrect/4) + (2*cografiya.open + cografiya.coding));
         results['Tarix'] = 1.5 * 100/33 * ((tarix.correct - tarix.incorrect/4) + (2*tarix.open + tarix.coding));
-    } else if (activeGroup.name === '3-cü Qrup') {
+    } else if (activeGroup.name === 'III Qrup') {
         const azDili = getSubjectScores('Azərbaycan dili');
         const edebiyyat = getSubjectScores('Ədəbiyyat');
         const tarix = getSubjectScores('Tarix');
@@ -670,7 +670,7 @@ function calculateScores() {
         results['Azərbaycan dili'] = 1.5 * 100/33 * ((azDili.correct - azDili.incorrect/4) + (2*azDili.open + azDili.coding));
         results['Ədəbiyyat'] = 100/33 * ((edebiyyat.correct - edebiyyat.incorrect/4) + (2*edebiyyat.open + edebiyyat.coding));
         results['Tarix'] = 1.5 * 100/33 * ((tarix.correct - tarix.incorrect/4) + (2*tarix.open + tarix.coding));
-    } else if (activeGroup.name === '4-cü Qrup') {
+    } else if (activeGroup.name === 'IV Qrup') {
         const biologiya = getSubjectScores('Biologiya');
         const kimya = getSubjectScores('Kimya');
         const fizika = getSubjectScores('Fizika');
