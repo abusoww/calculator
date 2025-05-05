@@ -679,7 +679,7 @@ button:hover ~ .cursor-trail {
 .result-message iframe {
     max-width: 400px;
     width: 100%;
-    height: auto;
+    height: 100%;
     box-shadow: none;
     border-radius: 0;
 }
@@ -708,7 +708,7 @@ button:hover ~ .cursor-trail {
 
     .result-message iframe {
         width: 350px;
-        height: 350px;
+        height: 100%;
     }
 
     .result-message p {
@@ -734,7 +734,7 @@ button:hover ~ .cursor-trail {
 
     .result-message iframe {
         width: 300px;
-        height: auto;
+        height: 100%;
     }
 
     .result-message p {
