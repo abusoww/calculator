@@ -997,13 +997,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Устанавливаем светлую тему по умолчанию
-    if (!document.body.classList.contains('light-mode')) {
-        document.body.classList.add('light-mode');
-    }
+    document.body.classList.remove('light-mode');
+
     
     const checkbox = document.getElementById('checkbox');
-    checkbox.checked = true; // Устанавливаем checkbox в активное состояние
-    checkbox.addEventListener('change', toggleTheme);
+    checkbox.checked = false; // checkbox в неактивном состоянии = тёмная тема
+
 });
 
 document.addEventListener('contextmenu', event => event.preventDefault());
