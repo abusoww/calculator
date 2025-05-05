@@ -272,6 +272,9 @@ body.light-mode th {
 .subject h3 {
     margin-top: 0;
     color: var(--text-color);
+    font-family: 'Cal Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
 }
 
 .input-group {
