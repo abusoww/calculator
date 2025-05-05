@@ -72,6 +72,9 @@ body.light-mode {
 }
 
 .description {
+    font-family: "Cascadia Code", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
     text-align: center;
     color: var(--text-color);
     margin-bottom: 2rem;
