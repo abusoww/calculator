@@ -288,7 +288,7 @@ body.light-mode th {
     display: flex;
     flex-direction: column;
     font-family: "Poppins", sans-serif;
-    font-weight: 100;
+    font-weight: 500;
     font-style: normal;
 }
 
