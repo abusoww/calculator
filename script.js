@@ -541,12 +541,95 @@ function moveStars(e) {
     });
 }
 
-// ========== handleGroupClick ==========
+function handleGroupClick(groupName) {
+    activeGroup = groups.find(g => g.name === groupName);
 
-    updateLanguage();
+    // Track: Group Selected
+    umami.track('Group Selected', { group: groupName });
+    
+    document.querySelectorAll('#groupButtons .btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === translations[language].groups[groupName]);
+    });
+    
+    document.getElementById('examForm').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('examForm').scrollIntoView({ behavior: 'smooth' });
+    
+    generateForm();
 }
 
-// ========== validateInput ==========
+function generateForm() {
+    const form = document.getElementById('scoreForm');
+    form.innerHTML = '';
+    document.getElementById('activeGroupTitle').textContent = translations[language].groups[activeGroup.name];
+
+    activeGroup.subjects.forEach((subject, index) => {
+        const subjectDiv = document.createElement('div');
+        subjectDiv.className = 'subject';
+        let inputFields = '';
+        if (activeGroup.name === 'Buraxılış İmtahanı') {
+            const maxClosed = subject === 'İngilis dili' ? 23 : (subject === 'Azərbaycan dili' ? 20 : 13);
+            const maxOpen = subject === 'İngilis dili' ? 7 : (subject === 'Azərbaycan dili' ? 10 : 7);
+            inputFields = `
+                <div class="input-group">
+                    <label>
+                        ${translations[language].closed}:
+                        <input type="number" name="${subject}-closed" min="0" max="${maxClosed}" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                    <label>
+                        ${translations[language].open}:
+                        <input type="number" name="${subject}-open" min="0" max="${maxOpen}" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+            `;
+            if (subject === 'Riyaziyyat') {
+                inputFields += `
+                    <label>
+                        ${translations[language].coding}:
+                        <input type="number" name="${subject}-coding" min="0" max="5" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                `;
+            }
+        } else {
+            inputFields = `
+                <div class="input-group">
+                    <label>
+                        ${translations[language].correct}:
+                        <input type="number" name="${subject}-correct" min="0" max="22" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                    <label>
+                        ${translations[language].incorrect}:
+                        <input type="number" name="${subject}-incorrect" min="0" max="22" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                    <label>
+                        ${translations[language].coding}:
+                        <input type="number" name="${subject}-coding" min="0" max="5" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                    <label>
+                        ${translations[language].open}:
+                        <input type="number" name="${subject}-open" min="0" max="3" class="input-field">
+                        <span class="error-message"></span>
+                    </label>
+                </div>
+            `;
+        }
+        subjectDiv.innerHTML = `
+            <h3>${translations[language].subjects[subject]} (${activeGroup.maxScores[index]} ${translations[language].score})</h3>
+            ${inputFields}
+        `;
+        form.appendChild(subjectDiv);
+    });
+
+    document.querySelectorAll('.input-field').forEach(input => {
+        input.addEventListener('input', validateInput);
+    });
+}
+
 function validateInput(event) {
     const input = event.target;
     const min = parseInt(input.min);
@@ -566,10 +649,204 @@ function validateInput(event) {
             min: min,
             max: max
         });
+        
     } else {
         errorMessage.textContent = '';
     }
 }
+
+function calculateScores() {
+    results = {};
+    let totalScore = 0;
+
+    if (activeGroup.name === 'I Qrup') {
+        const riyaziyyat = getSubjectScores('Riyaziyyat');
+        const fizika = getSubjectScores('Fizika');
+        const kimya = getSubjectScores('Kimya');
+
+        results['Riyaziyyat'] = 1.5 * 100/33 * ((riyaziyyat.correct - riyaziyyat.incorrect/4) + (2*riyaziyyat.open + riyaziyyat.coding));
+        results['Fizika'] = 1.5 * 100/33 * ((fizika.correct - fizika.incorrect/4) + (2*fizika.open + fizika.coding));
+        results['Kimya'] = 100/33 * ((kimya.correct - kimya.incorrect/4) + (2*kimya.open + kimya.coding));
+    } else if (activeGroup.name === 'II Qrup') {
+        const riyaziyyat = getSubjectScores('Riyaziyyat');
+        const cografiya = getSubjectScores('Coğrafiya');
+        const tarix = getSubjectScores('Tarix');
+
+        results['Riyaziyyat'] = 1.5 * 100/33 * ((riyaziyyat.correct - riyaziyyat.incorrect/4) + (2*riyaziyyat.open + riyaziyyat.coding));
+        results['Coğrafiya'] = 100/33 * ((cografiya.correct - cografiya.incorrect/4) + (2*cografiya.open + cografiya.coding));
+        results['Tarix'] = 1.5 * 100/33 * ((tarix.correct - tarix.incorrect/4) + (2*tarix.open + tarix.coding));
+    } else if (activeGroup.name === 'III Qrup') {
+        const azDili = getSubjectScores('Azərbaycan dili');
+        const edebiyyat = getSubjectScores('Ədəbiyyat');
+        const tarix = getSubjectScores('Tarix');
+
+        results['Azərbaycan dili'] = 1.5 * 100/33 * ((azDili.correct - azDili.incorrect/4) + (2*azDili.open + azDili.coding));
+        results['Ədəbiyyat'] = 100/33 * ((edebiyyat.correct - edebiyyat.incorrect/4) + (2*edebiyyat.open + edebiyyat.coding));
+        results['Tarix'] = 1.5 * 100/33 * ((tarix.correct - tarix.incorrect/4) + (2*tarix.open + tarix.coding));
+    } else if (activeGroup.name === 'IV Qrup') {
+        const biologiya = getSubjectScores('Biologiya');
+        const kimya = getSubjectScores('Kimya');
+        const fizika = getSubjectScores('Fizika');
+
+        results['Biologiya'] = 100/33 * ((biologiya.correct - biologiya.incorrect/4) + (2*biologiya.open + biologiya.coding));
+        results['Kimya'] = 1.5 * 100/33 * ((kimya.correct - kimya.incorrect/4) + (2*kimya.open + kimya.coding));
+        results['Fizika'] = 100/33 * ((fizika.correct - fizika.incorrect/4) + (2*fizika.open + fizika.coding));
+    } else if (activeGroup.name === 'Buraxılış İmtahanı') {
+        const riyaziyyat = getSubjectScores('Riyaziyyat');
+        const azDili = getSubjectScores('Azərbaycan dili');
+        const ingilisDili = getSubjectScores('İngilis dili');
+
+        results['Riyaziyyat'] = 25 / 8 * (2 * riyaziyyat.open + riyaziyyat.closed + riyaziyyat.coding);
+        results['Azərbaycan dili'] = 2.5 * (2 * azDili.open + azDili.closed);
+        results['İngilis dili'] = 100 / 37 * (2 * ingilisDili.open + ingilisDili.closed);
+    }
+
+    for (const score of Object.values(results)) {
+        totalScore += score;
+    }
+    results['Ümumi bal'] = totalScore;
+
+    // Track: Custom Calculation Performed
+    umami.track('Custom Calculation Performed', {
+        group: activeGroup.name,
+        total_score: totalScore
+    });    
+
+    displayResults();
+}
+
+function getSubjectScores(subject) {
+    return {
+        correct: parseInt(document.querySelector(`[name="${subject}-correct"]`)?.value) || 0,
+        incorrect: parseInt(document.querySelector(`[name="${subject}-incorrect"]`)?.value) || 0,
+        open: parseInt(document.querySelector(`[name="${subject}-open"]`)?.value) || 0,
+        closed: parseInt(document.querySelector(`[name="${subject}-closed"]`)?.value) || 0,
+        coding: parseInt(document.querySelector(`[name="${subject}-coding"]`)?.value) || 0
+    };
+}
+
+function getResultLevel(score, groupName) {
+    const groupRanges = scoreRanges[groupName].ranges;
+    for (const range of groupRanges) {
+        if (score >= range.min && score <= range.max) {
+            return range.level;
+        }
+    }
+    return 'low'; // По умолчанию
+}
+
+function displayResultMessage(totalScore) {
+    const messageContainer = document.getElementById('resultMessage');
+    const level = getResultLevel(totalScore, activeGroup.name);
+    const message = resultMessages[level][language][activeGroup.name];
+
+    if (message) {
+        messageContainer.innerHTML = `
+            <iframe src="${message.gif}" width="200" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+            <p>${message.text}</p>
+        `;
+        messageContainer.classList.add('show');
+    } else {
+        messageContainer.classList.remove('show');
+    }
+}
+
+function displayResults(preventScroll = false) {
+    const tableBody = document.querySelector('#resultsTable tbody');
+    tableBody.innerHTML = '';
+
+    for (const [subject, score] of Object.entries(results)) {
+        const row = tableBody.insertRow();
+        row.insertCell(0).textContent = translations[language].subjects[subject];
+        row.insertCell(1).textContent = score.toFixed(1);
+        if (subject === 'Ümumi bal') {
+            row.classList.add('total');
+            displayResultMessage(score);
+        }
+    }
+
+
+    // Track: Results Viewed
+    umami.track('Results Viewed', {
+        total_score: score
+    });
+
+    document.getElementById('results').style.display = 'block';
+    
+    if (!preventScroll) {
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const rows = tableBody.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        row.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+        row.style.opacity = '0';
+    });
+}
+
+function resetForm() {
+    document.getElementById('examForm').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('examForm').scrollIntoView({ behavior: 'smooth' });
+
+    // Track: Form Reset
+    umami.track('Form Reset');
+    
+}
+
+function downloadResults() {
+    if (results) {
+        const resultsText = Object.entries(results)
+            .map(([subject, score]) => `${subject}: ${score.toFixed(1)}`)
+            .join('\n');
+        const blob = new Blob([resultsText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'imtahan_neticeleri.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        // Track: Results Downloaded
+        umami.track('Results Downloaded');
+        
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    updateStarColors();
+
+    // Track: Theme Changed
+    umami.track('Theme Changed', {
+        theme: wasLight ? 'dark' : 'light'
+    });
+}
+
+function updateStarColors() {
+    const stars = document.querySelectorAll('.star');
+    const starColor = getComputedStyle(document.body).getPropertyValue('--star-color').trim();
+    stars.forEach(star => {
+        star.style.backgroundColor = starColor;
+    });
+}
+
+function toggleLanguage() {
+    language = language === 'az' ? 'ru' : 'az';
+    const languageToggle = document.getElementById('languageToggle');
+    languageToggle.innerHTML = `
+        <i class="fas fa-globe"></i>
+        <span>${language === 'az' ? 'RU' : 'AZ'}</span>
+    `;
+
+    // Track: Language Changed
+    umami.track('Language Changed', {
+        language: language
+    });
+    
+    updateLanguage();
+}
+
 
 // ========== Before unload tracking ==========
 window.addEventListener('beforeunload', () => {
@@ -579,21 +856,219 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-// ========== DOMContentLoaded ==========
+function updateLanguage() {
+    document.querySelector('.title').textContent = translations[language].title;
+    document.querySelector('.description').textContent = translations[language].description;
+    document.getElementById('calculateButton').textContent = translations[language].calculate;
+    document.querySelector('.results-title').textContent = translations[language].results;
+    document.querySelector('#resultsTable th:first-child').textContent = translations[language].subject;
+    document.querySelector('#resultsTable th:last-child').textContent = translations[language].score;
+    document.getElementById('downloadButton').textContent = translations[language].saveResults;
+    document.getElementById('recalculateButton').textContent = translations[language].recalculate;
+
+    if (activeGroup) {
+        generateForm();
+    }
+
+    document.querySelectorAll('.countdown-label').forEach((label, index) => {
+        const labels = ['days', 'hours', 'minutes', 'seconds'];
+        label.textContent = translations[language][labels[index]];
+    });
+
+    // Обновляем назван групп в копках
+    document.querySelectorAll('#groupButtons .btn').forEach(button => {
+        const groupName = button.textContent;
+        const groupKey = Object.keys(translations.az.groups).find(
+            key => translations[language === 'az' ? 'ru' : 'az'].groups[key] === groupName
+        );
+        if (groupKey) {
+            button.textContent = translations[language].groups[groupKey];
+        }
+    });
+
+    // Если есть активная группа, обновляем её заголовок
+    if (activeGroup) {
+        document.getElementById('activeGroupTitle').textContent = 
+            translations[language].groups[activeGroup.name];
+    }
+
+    // Если есть результаты, обновляем их отображение б прокрутки
+    if (results) {
+        displayResults(true);
+    }
+}
+
+function startCountdown() {
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = examDate - now;
+        
+        if (timeLeft < 0) {
+            document.querySelector('.countdown-container').innerHTML = 
+                `<h2 style="text-align: center; font-size: 2rem; color: var(--primary-color);">
+                    ${translations[language].examStarted}
+                </h2>`;
+            return;
+        }
+
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+        const secondsElement = document.getElementById('seconds');
+        secondsElement.style.transform = 'scale(1.1)';
+        secondsElement.style.color = 'var(--secondary-color)';
+        
+        setTimeout(() => {
+            secondsElement.style.transform = 'scale(1)';
+            secondsElement.style.color = 'var(--primary-color)';
+        }, 500);
+
+        if (days <= 10) {
+            document.querySelector('.countdown-container').style.animation = 'pulse 2s infinite';
+        }
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
+
+function initCursor() {
+    if (window.innerWidth <= 800) return;
+
+    const cursor = document.querySelector('.cursor-dot');
+    const numTrails = 5;
+    const trails = Array.from({ length: numTrails }, () => {
+        const trail = document.createElement('div');
+        trail.className = 'cursor-trail';
+        document.body.appendChild(trail);
+        return trail;
+    });
+
+    // Создаем эле��ент для эффекта клика
+    const clickEffect = document.createElement('div');
+    clickEffect.className = 'cursor-click';
+    document.body.appendChild(clickEffect);
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    const trailPositions = trails.map(() => ({ x: 0, y: 0 }));
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    // Обработчики кликов
+    document.addEventListener('mousedown', (e) => {
+        if (e.button === 0) { // Левый клик
+            cursor.classList.add('clicking');
+            showClickEffect(mouseX, mouseY, 'var(--primary-color)');
+        } else if (e.button === 2) { // Правый клик
+            cursor.classList.add('right-clicking');
+            showClickEffect(mouseX, mouseY, 'var(--secondary-color)');
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        cursor.classList.remove('clicking', 'right-clicking');
+    });
+
+    function showClickEffect(x, y, color) {
+        clickEffect.style.left = `${x}px`;
+        clickEffect.style.top = `${y}px`;
+        clickEffect.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+        clickEffect.style.transform = 'translate(-50%, -50%) scale(1)';
+        clickEffect.style.opacity = '1';
+
+        setTimeout(() => {
+            clickEffect.style.transform = 'translate(-50%, -50%) scale(0)';
+            clickEffect.style.opacity = '0';
+        }, 300);
+    }
+
+    function animate() {
+        const ease = 0.5;
+        cursorX += (mouseX - cursorX) * ease;
+        cursorY += (mouseY - cursorY) * ease;
+
+        cursor.style.left = `${cursorX}px`;
+        cursor.style.top = `${cursorY}px`;
+
+        trails.forEach((trail, index) => {
+            const prevIndex = Math.max(0, index - 1);
+            const speed = 0.7;
+
+            if (index === 0) {
+                trailPositions[0].x += (cursorX - trailPositions[0].x) * speed;
+                trailPositions[0].y += (cursorY - trailPositions[0].y) * speed;
+            } else {
+                trailPositions[index].x += (trailPositions[prevIndex].x - trailPositions[index].x) * speed;
+                trailPositions[index].y += (trailPositions[prevIndex].y - trailPositions[index].y) * speed;
+            }
+
+            const scale = 1 - (index * 0.15);
+            trail.style.left = `${trailPositions[index].x}px`;
+            trail.style.top = `${trailPositions[index].y}px`;
+            trail.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            trail.style.opacity = 1 - (index * 0.2);
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    document.addEventListener('mouseleave', () => {
+        cursor.style.opacity = '0';
+        trails.forEach(trail => trail.style.opacity = '0');
+    });
+
+    document.addEventListener('mouseenter', () => {
+        cursor.style.opacity = '1';
+        trails.forEach(trail => trail.style.opacity = '1');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const isMobile = window.innerWidth <= 800;
+    
     init();
     startCountdown();
+    
     if (!isMobile) {
         initCursor();
         document.addEventListener('mousemove', moveStars);
     }
+    
+    // Устанавливаем светлую тему по умолчанию
     document.body.classList.remove('light-mode');
-    const checkbox = document.getElementById('checkbox');
-    checkbox.checked = false;
-    checkbox.addEventListener('change', toggleTheme);
-    updateStarColors();
 
-    // Track: Page Load
-    umami.track('Page Load');
+    
+    const checkbox = document.getElementById('checkbox');
+    checkbox.checked = false;                   // checkbox в неактивном состоянии = тёмная тема
+    checkbox.addEventListener('change', toggleTheme);  // восстанавливаем реакцию на переключатель
+    updateStarColors();                         // сразу подгоняем цвета звёзд под тёмную тему
+
+});
+
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+    }
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+    }
 });
