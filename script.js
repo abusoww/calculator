@@ -543,10 +543,6 @@ function moveStars(e) {
 
 function handleGroupClick(groupName) {
     activeGroup = groups.find(g => g.name === groupName);
-
-    // Track: Group Selected
-    umami.track('Group Selected', { group: groupName });
-    
     document.querySelectorAll('#groupButtons .btn').forEach(btn => {
         btn.classList.toggle('active', btn.textContent === translations[language].groups[groupName]);
     });
@@ -641,15 +637,6 @@ function validateInput(event) {
         errorMessage.textContent = '';
     } else if (value < min || value > max) {
         errorMessage.textContent = `Dəyər ${min} və ${max} arasında olmalıdır.`;
-
-        // Track: Invalid Input Entered
-        umami.track('Invalid Input Entered', {
-            field: input.name,
-            value: value,
-            min: min,
-            max: max
-        });
-        
     } else {
         errorMessage.textContent = '';
     }
@@ -706,12 +693,6 @@ function calculateScores() {
     }
     results['Ümumi bal'] = totalScore;
 
-    // Track: Custom Calculation Performed
-    umami.track('Custom Calculation Performed', {
-        group: activeGroup.name,
-        total_score: totalScore
-    });    
-
     displayResults();
 }
 
@@ -765,12 +746,6 @@ function displayResults(preventScroll = false) {
         }
     }
 
-
-    // Track: Results Viewed
-    umami.track('Results Viewed', {
-        total_score: score
-    });
-
     document.getElementById('results').style.display = 'block';
     
     if (!preventScroll) {
@@ -788,10 +763,6 @@ function resetForm() {
     document.getElementById('examForm').style.display = 'block';
     document.getElementById('results').style.display = 'none';
     document.getElementById('examForm').scrollIntoView({ behavior: 'smooth' });
-
-    // Track: Form Reset
-    umami.track('Form Reset');
-    
 }
 
 function downloadResults() {
@@ -806,21 +777,12 @@ function downloadResults() {
         a.download = 'imtahan_neticeleri.txt';
         a.click();
         URL.revokeObjectURL(url);
-
-        // Track: Results Downloaded
-        umami.track('Results Downloaded');
-        
     }
 }
 
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
     updateStarColors();
-
-    // Track: Theme Changed
-    umami.track('Theme Changed', {
-        theme: wasLight ? 'dark' : 'light'
-    });
 }
 
 function updateStarColors() {
@@ -838,23 +800,8 @@ function toggleLanguage() {
         <i class="fas fa-globe"></i>
         <span>${language === 'az' ? 'RU' : 'AZ'}</span>
     `;
-
-    // Track: Language Changed
-    umami.track('Language Changed', {
-        language: language
-    });
-    
     updateLanguage();
 }
-
-
-// ========== Before unload tracking ==========
-window.addEventListener('beforeunload', () => {
-    if (!results) {
-        // Track: User Abandoned Form
-        umami.track('User Abandoned Form');
-    }
-});
 
 function updateLanguage() {
     document.querySelector('.title').textContent = translations[language].title;
@@ -1079,108 +1026,97 @@ document.addEventListener('keydown', function(e) {
 
 
 
-  // Then add this part at the END of the file, after everything else:
+
+
+
+
+
+
+  // === Add Umami Tracking After Everything Else Loads ===
   document.addEventListener('DOMContentLoaded', function () {
-    // Track initial page load
-    if (typeof umami !== 'undefined') {
-      umami.track('Page Load');
+    // Ensure Umami is defined
+    function trackEvent(event, data = {}) {
+      if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
+        umami.track(event, data);
+      }
     }
 
+    // Track page load
+    trackEvent('Page Load');
+
     // Group buttons
-    const groupButtons = document.querySelectorAll('#groupButtons .btn');
-    groupButtons.forEach(btn => {
+    document.querySelectorAll('#groupButtons .btn').forEach(btn => {
       btn.addEventListener('click', function () {
-        const selectedGroup = this.textContent.trim();
-        if (typeof umami !== 'undefined') {
-          umami.track('Group Selected', { group: selectedGroup });
-        }
+        const groupName = this.textContent.trim();
+        trackEvent('Group Selected', { group: groupName });
       });
     });
 
-    // Calculate button
-    const calculateBtn = document.getElementById('calculateButton');
-    if (calculateBtn) {
-      calculateBtn.addEventListener('click', function () {
-        if (typeof umami !== 'undefined') {
-          umami.track('Calculate Button Clicked');
-        }
+    // Calculate Button
+    const calcBtn = document.getElementById('calculateButton');
+    if (calcBtn) {
+      calcBtn.addEventListener('click', function () {
+        trackEvent('Calculate Button Clicked');
       });
     }
 
-    // Language toggle
-    const langToggle = document.getElementById('languageToggle');
-    if (langToggle) {
-      langToggle.addEventListener('click', function () {
-        const currentLang = document.querySelector('.title').textContent.includes('Hesablama') ? 'az' : 'ru';
-        if (typeof umami !== 'undefined') {
-          umami.track('Language Changed', { language: currentLang });
-        }
-      });
-    }
-
-    // Theme toggle
-    const themeToggle = document.querySelector('.theme-switch input[type="checkbox"]');
-    if (themeToggle) {
-      themeToggle.addEventListener('change', function () {
-        const theme = this.checked ? 'light' : 'dark';
-        if (typeof umami !== 'undefined') {
-          umami.track('Theme Changed', { theme: theme });
-        }
-      });
-    }
-
-    // Recalculate button
-    const recalculateBtn = document.getElementById('recalculateButton');
-    if (recalculateBtn) {
-      recalculateBtn.addEventListener('click', function () {
-        if (typeof umami !== 'undefined') {
-          umami.track('Form Reset');
-        }
-      });
-    }
-
-    // Download results
+    // Results Download
     const downloadBtn = document.getElementById('downloadButton');
     if (downloadBtn) {
       downloadBtn.addEventListener('click', function () {
-        if (typeof umami !== 'undefined') {
-          umami.track('Results Downloaded');
-        }
+        trackEvent('Results Downloaded');
       });
     }
 
-    // Invalid inputs
+    // Form Reset / Recalculate
+    const recalculateBtn = document.getElementById('recalculateButton');
+    if (recalculateBtn) {
+      recalculateBtn.addEventListener('click', function () {
+        trackEvent('Form Reset');
+      });
+    }
+
+    // Language Toggle
+    const langToggle = document.getElementById('languageToggle');
+    if (langToggle) {
+      langToggle.addEventListener('click', function () {
+        const currentLang = document.documentElement.getAttribute('lang') || 'az';
+        trackEvent('Language Changed', { language: currentLang });
+      });
+    }
+
+    // Theme Toggle
+    const themeCheckbox = document.getElementById('checkbox');
+    if (themeCheckbox) {
+      themeCheckbox.addEventListener('change', function () {
+        const theme = this.checked ? 'light' : 'dark';
+        trackEvent('Theme Changed', { theme: theme });
+      });
+    }
+
+    // Invalid Input Detection
     document.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('input', function () {
         const min = parseInt(this.min);
         const max = parseInt(this.max);
         const value = parseInt(this.value);
-        const errorMessage = this.nextElementSibling;
         if (!isNaN(value) && (value < min || value > max)) {
-          if (typeof umami !== 'undefined') {
-            umami.track('Invalid Input Entered', {
-              field: this.name,
-              value: value,
-              min: min,
-              max: max
-            });
-          }
-          if (errorMessage) {
-            errorMessage.textContent = `Dəyər ${min} və ${max} arasında olmalıdır.`;
-          }
-        } else if (errorMessage) {
-          errorMessage.textContent = '';
+          trackEvent('Invalid Input Entered', {
+            field: this.name,
+            value: value,
+            min: min,
+            max: max
+          });
         }
       });
     });
 
-    // User abandonment detection
+    // User Abandonment Detection
     window.addEventListener('beforeunload', function () {
-      const results = document.getElementById('results');
-      if (!results || results.style.display !== 'block') {
-        if (typeof umami !== 'undefined') {
-          umami.track('User Abandoned Form');
-        }
+      const resultSection = document.getElementById('results');
+      const isVisible = resultSection && resultSection.style.display === 'block';
+      if (!isVisible) {
+        trackEvent('User Abandoned Form');
       }
     });
   });
