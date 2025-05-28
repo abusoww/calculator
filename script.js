@@ -1072,3 +1072,115 @@ document.addEventListener('keydown', function(e) {
         e.preventDefault();
     }
 });
+
+
+
+
+
+
+
+  // Then add this part at the END of the file, after everything else:
+  document.addEventListener('DOMContentLoaded', function () {
+    // Track initial page load
+    if (typeof umami !== 'undefined') {
+      umami.track('Page Load');
+    }
+
+    // Group buttons
+    const groupButtons = document.querySelectorAll('#groupButtons .btn');
+    groupButtons.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const selectedGroup = this.textContent.trim();
+        if (typeof umami !== 'undefined') {
+          umami.track('Group Selected', { group: selectedGroup });
+        }
+      });
+    });
+
+    // Calculate button
+    const calculateBtn = document.getElementById('calculateButton');
+    if (calculateBtn) {
+      calculateBtn.addEventListener('click', function () {
+        if (typeof umami !== 'undefined') {
+          umami.track('Calculate Button Clicked');
+        }
+      });
+    }
+
+    // Language toggle
+    const langToggle = document.getElementById('languageToggle');
+    if (langToggle) {
+      langToggle.addEventListener('click', function () {
+        const currentLang = document.querySelector('.title').textContent.includes('Hesablama') ? 'az' : 'ru';
+        if (typeof umami !== 'undefined') {
+          umami.track('Language Changed', { language: currentLang });
+        }
+      });
+    }
+
+    // Theme toggle
+    const themeToggle = document.querySelector('.theme-switch input[type="checkbox"]');
+    if (themeToggle) {
+      themeToggle.addEventListener('change', function () {
+        const theme = this.checked ? 'light' : 'dark';
+        if (typeof umami !== 'undefined') {
+          umami.track('Theme Changed', { theme: theme });
+        }
+      });
+    }
+
+    // Recalculate button
+    const recalculateBtn = document.getElementById('recalculateButton');
+    if (recalculateBtn) {
+      recalculateBtn.addEventListener('click', function () {
+        if (typeof umami !== 'undefined') {
+          umami.track('Form Reset');
+        }
+      });
+    }
+
+    // Download results
+    const downloadBtn = document.getElementById('downloadButton');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', function () {
+        if (typeof umami !== 'undefined') {
+          umami.track('Results Downloaded');
+        }
+      });
+    }
+
+    // Invalid inputs
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', function () {
+        const min = parseInt(this.min);
+        const max = parseInt(this.max);
+        const value = parseInt(this.value);
+        const errorMessage = this.nextElementSibling;
+        if (!isNaN(value) && (value < min || value > max)) {
+          if (typeof umami !== 'undefined') {
+            umami.track('Invalid Input Entered', {
+              field: this.name,
+              value: value,
+              min: min,
+              max: max
+            });
+          }
+          if (errorMessage) {
+            errorMessage.textContent = `Dəyər ${min} və ${max} arasında olmalıdır.`;
+          }
+        } else if (errorMessage) {
+          errorMessage.textContent = '';
+        }
+      });
+    });
+
+    // User abandonment detection
+    window.addEventListener('beforeunload', function () {
+      const results = document.getElementById('results');
+      if (!results || results.style.display !== 'block') {
+        if (typeof umami !== 'undefined') {
+          umami.track('User Abandoned Form');
+        }
+      }
+    });
+  });
