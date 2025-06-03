@@ -1,4 +1,4 @@
-const examDate = new Date('2025-06-01T10:00:00').getTime();
+const examDate = new Date('2025-07-13T10:00:00').getTime();
 
 const groups = [
     { 
