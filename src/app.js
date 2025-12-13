@@ -1491,8 +1491,9 @@
         });
 
         document.addEventListener('click', (e) => {
-            // Group Selected
-            const groupBtn = e.target.closest('#groupButtons .btn');
+            // Group Selected - check if clicked button is inside #groupButtons
+            const clickedBtn = e.target.closest('.btn');
+            const groupBtn = clickedBtn && clickedBtn.closest('#groupButtons') ? clickedBtn : null;
             if (groupBtn) {
                 const groupName = groupBtn.dataset.group || groupBtn.textContent.trim();
                 trackEvent('Group Selected', { group: groupName });
