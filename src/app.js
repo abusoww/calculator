@@ -1040,6 +1040,25 @@
                     }
                     const results = Calculator.calculateScore(store.state.activeGroup, answers);
                     store.state.results = results;
+
+                    // Track score with Umami properties
+                    const totalScore = Math.round(results['Ümumi bal']);
+                    const isBuraxilish = store.state.activeGroup === 'Buraxılış İmtahanı';
+                    const maxScore = isBuraxilish ? 300 : 400;
+
+                    // Create score range bracket (e.g., "150-200", "200-250")
+                    const bracketSize = 50;
+                    const lowerBound = Math.floor(totalScore / bracketSize) * bracketSize;
+                    const upperBound = Math.min(lowerBound + bracketSize, maxScore);
+                    const scoreRange = `${lowerBound}-${upperBound}`;
+
+                    if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
+                        umami.track('Score Calculated', {
+                            group: store.state.activeGroup,
+                            score: totalScore,
+                            range: scoreRange
+                        });
+                    }
                     setTimeout(() => {
                         const resDiv = document.getElementById('resultsContainer');
                         if (resDiv) resDiv.scrollIntoView({ behavior: 'smooth' });
@@ -1498,10 +1517,7 @@
                 trackEvent('Group Selected', { group: groupName });
             }
 
-            // Calculate
-            if (e.target.closest('#calculateButton')) {
-                trackEvent('Calculate Button Clicked');
-            }
+            // Note: Score tracking is now done inside ExamForm with properties
 
             // Results Downloaded
             if (e.target.closest('#downloadButton')) {
