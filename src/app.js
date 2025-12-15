@@ -821,8 +821,7 @@
                     data-group="${group.name}"
                     class="btn ${currentGroup === group.name ? 'active' : ''}"
                     type="button"
-                    data-umami-event="Group Selected"
-                    data-umami-event-group="${group.name}"
+                    data-umami-event="${group.name} Selected"
                 >
                     ${t.groups[group.name]}
                 </button>
