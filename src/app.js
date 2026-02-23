@@ -32,62 +32,7 @@
 
     const APP_CONFIG = {
         examDate: '2026-03-01T10:00:00',
-        docsBaseUrl: 'https://raw.githubusercontent.com/abusoww/calculator/main/legacy/'
-    };
-
-    const SCORE_RANGES = {
-        'I Qrup': {
-            max: 400,
-            ranges: [
-                { min: 350, max: 400, level: 'excellent' },
-                { min: 250, max: 349, level: 'good' },
-                { min: 150, max: 249, level: 'average' },
-                { min: 0, max: 149, level: 'low' }
-            ]
-        },
-        'II Qrup': {
-            max: 400,
-            ranges: [
-                { min: 350, max: 400, level: 'excellent' },
-                { min: 250, max: 349, level: 'good' },
-                { min: 150, max: 249, level: 'average' },
-                { min: 0, max: 149, level: 'low' }
-            ]
-        },
-        'III Qrup': {
-            max: 400,
-            ranges: [
-                { min: 350, max: 400, level: 'excellent' },
-                { min: 250, max: 349, level: 'good' },
-                { min: 150, max: 249, level: 'average' },
-                { min: 0, max: 149, level: 'low' }
-            ]
-        },
-        'IV Qrup': {
-            max: 400,
-            ranges: [
-                { min: 350, max: 400, level: 'excellent' },
-                { min: 250, max: 349, level: 'good' },
-                { min: 150, max: 249, level: 'average' },
-                { min: 0, max: 149, level: 'low' }
-            ]
-        },
-        'Buraxılış İmtahanı': {
-            max: 300,
-            ranges: [
-                { min: 250, max: 300, level: 'excellent' },
-                { min: 200, max: 249, level: 'good' },
-                { min: 150, max: 199, level: 'average' },
-                { min: 0, max: 149, level: 'low' }
-            ]
-        }
-    };
-
-    const RESULT_GIFS = {
-        excellent: 'https://i.ibb.co/MGtjf0b/4giphy.gif',
-        good: 'https://i.ibb.co/PZ6L2ZV/3giphy.gif',
-        average: 'https://i.ibb.co/SdJMfcj/2giphy.gif',
-        low: '/legacy/media/low.gif'
+        docsBaseUrl: '/src/assets/'
     };
 
     // --- DATA: Locales ---
@@ -137,15 +82,25 @@
             },
             messages: {
                 excellent: 'Halal olsun! partlayışsan! Səninlə fəxr edirəm! 😎🔥',
-                good: 'Pis deyil! Amma bir az da sıxsan, nəticən bomba kimi olacaq! �',
-                average: 'Normaldır, amma mən bilirəm ki, sən bundan daha artığını bacararsan. Qaz ver! �',
-                low: 'Həvəsdən düşmək yoxdur! Bu sadəcə rəqəmlərdir. Əsas odur ki, təslim olmayasan! �'
+                good: 'Pis deyil! Amma bir az da sıxsan, nəticən bomba kimi olacaq! ',
+                average: 'Normaldır, amma mən bilirəm ki, sən bundan daha artığını bacararsan. Qaz ver! ',
+                low: 'Həvəsdən düşmək yoxdur! Bu sadəcə rəqəmlərdir. Əsas odur ki, təslim olmayasan! '
             },
             errors: {
                 range: 'Dəyər {min} və {max} arasında olmalıdır.'
             },
             howCalculated: 'Ballar necə hesablanır?',
-            docsTitle: 'Sənədlər'
+            docsTitle: 'Sənədlər',
+            addToHome: 'Ana ekrana əlavə et',
+            addToHomeIOS: 'Safari alt menyusunda <i class="fa-solid fa-arrow-up-from-bracket" style="margin: 0 4px;"></i> "Paylaş" ikonuna toxunun, sonra aşağı düşüb "Ana Ekrana Əlavə Et" seçin.',
+            addToHomeIOS_Step1: '1. Safari menyusunda "Paylaş" ikonuna toxunun',
+            addToHomeIOS_Step2: '2. Aşağı sürüşdürüb "Ana Ekrana Əlavə Et" seçin',
+            addToHomeAndroid: 'Chrome üst menyusunda (⋮) toxunun, sonra "Ana Ekrana Əlavə Et" seçin.',
+            addToHomeAndroid_Step1: '1. Brauzer menyusunu açın (⋮)',
+            addToHomeAndroid_Step2: '2. "Ana Ekrana Əlavə Et" seçin',
+            addToHomeModalTitle: 'Tətbiqi Yüklə',
+            addToHomeModalDesc: 'Daha sürətli hesablamaq üçün tətbiqi yükləyin:',
+            addToHomeBtnTitle: 'Ana Ekrana Əlavə Et'
         },
         ru: {
             title: 'Калькулятор подсчета баллов',
@@ -191,16 +146,26 @@
                 'Ümumi bal': 'Общий балл'
             },
             messages: {
-                excellent: 'Красава! Просто уничтожил систему! Горжусь тобой! 😎🔥',
-                good: 'Очень даже неплохо! Чуть-чуть подтянуть — и будет вообще пушка! 🚀',
-                average: 'Нормально, но я-то знаю, что это не твой предел. Давай, поднажми! 🔥',
-                low: 'Не вешать нос! Это всего лишь цифры. Главное — сделать выводы и топить дальше! 🖤'
+                excellent: 'Браво! Отличный результат! Я горжусь тобой! 😎🔥',
+                good: 'Неплохо! Но если ты немного постараешься, результат будет как бомба! ',
+                average: 'Нормально, но я знаю, что ты можешь добиться большего. Жми на газ! ',
+                low: 'Не сдавайся! Это всего лишь цифры. Главное – не опускать руки! '
             },
             errors: {
                 range: 'Значение должно быть между {min} и {max}.'
             },
-            howCalculated: 'Как рассчитываются баллы?',
-            docsTitle: 'Документация'
+            howCalculated: 'Как подсчитываются баллы?',
+            docsTitle: 'Документы',
+            addToHome: 'Добавить на главный экран',
+            addToHomeIOS: 'Нажмите <i class="fa-solid fa-arrow-up-from-bracket" style="margin: 0 4px;"></i> «Поделиться» в Safari, затем прокрутите вниз и выберите «На Экран «Домой»».',
+            addToHomeIOS_Step1: '1. Нажмите «Поделиться» в нижнем меню Safari',
+            addToHomeIOS_Step2: '2. Прокрутите вниз и выберите «На Экран «Домой»»',
+            addToHomeAndroid: 'Нажмите (⋮) в Chrome, затем «Добавить на гл. экран».',
+            addToHomeAndroid_Step1: '1. Нажмите (⋮) в верхнем меню',
+            addToHomeAndroid_Step2: '2. Выберите «Добавить на гл. экран»',
+            addToHomeModalTitle: 'Установить приложение',
+            addToHomeModalDesc: 'Скачайте приложение для более прямого доступа:',
+            addToHomeBtnTitle: 'Добавить на главный экран'
         }
     };
 
@@ -233,9 +198,10 @@
     };
 
     const store = new Store({
-        language: getInitialLanguage(),
-        theme: localStorage.getItem('theme') || 'dark',
+        language: localStorage.getItem('language') || 'az',
+        theme: localStorage.getItem('theme') || 'light',
         activeGroup: null,
+        activeSubjectIndex: 0,
         results: null
     });
 
@@ -339,7 +305,7 @@
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(800, t); // Cut off high frequencies for softness
 
-            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.setValueAtTime(0.08, t);
             gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
 
             osc.connect(filter);
@@ -363,7 +329,7 @@
             osc.frequency.setValueAtTime(600, t);
             osc.frequency.linearRampToValueAtTime(800, t + 0.05); // Slight pitch up
 
-            gain.gain.setValueAtTime(0.2, t);
+            gain.gain.setValueAtTime(0.04, t); // Reduced noticeably
             gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
 
             osc.connect(gain);
@@ -386,7 +352,7 @@
             osc.frequency.setValueAtTime(400, t);
             osc.frequency.exponentialRampToValueAtTime(800, t + 0.1);
 
-            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.setValueAtTime(0.06, t); // Drastic reduction
             gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
 
             osc.connect(gain);
@@ -409,7 +375,7 @@
             osc.frequency.setValueAtTime(600, t);
 
             gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(0.2, t + 0.02); // Quick fade in
+            gain.gain.linearRampToValueAtTime(0.03, t + 0.02); // Just barely audible edge
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15); // Longer tail than tap
 
             osc.connect(gain);
@@ -431,7 +397,7 @@
             osc.type = 'sine';
             osc.frequency.setValueAtTime(800, t);
 
-            gain.gain.setValueAtTime(0.1, t); // Very quiet
+            gain.gain.setValueAtTime(0.015, t); // Near silent whisper
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
 
             osc.connect(gain);
@@ -461,7 +427,7 @@
                 const start = t + (i * 0.05);
 
                 gain.gain.setValueAtTime(0, start);
-                gain.gain.linearRampToValueAtTime(0.2, start + 0.05);
+                gain.gain.linearRampToValueAtTime(0.04, start + 0.05); // Majestic but quiet chime
                 gain.gain.exponentialRampToValueAtTime(0.01, start + 0.8);
 
                 osc.connect(gain);
@@ -500,7 +466,7 @@
         }
 
         // 3. Language Toggle (Pop)
-        if (target.closest('#languageToggle, .lang-button')) {
+        if (target.closest('#languageToggle, .navbar-btn')) {
             soundManager.playPop();
             return;
         }
@@ -597,110 +563,10 @@
         }
     }
 
-    // --- COMPONENT: StarBackground (Cinematic Parallax) ---
-    class StarBackground {
-        constructor(containerId) {
-            this.container = document.getElementById(containerId);
-            this.canvas = document.createElement('canvas');
-            this.ctx = this.canvas.getContext('2d');
-            this.stars = [];
-            this.mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-            this.targetMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-            this.animationFrame = null;
-            this.init();
-        }
 
-        init() {
-            if (!this.container) return;
 
-            // Setup Canvas
-            this.container.innerHTML = '';
-            this.container.appendChild(this.canvas);
-            this.resize();
-
-            // Create Stars
-            this.createStars();
-
-            // Event Listeners
-            window.addEventListener('resize', () => this.resize());
-            if (window.innerWidth > 800) {
-                document.addEventListener('mousemove', (e) => {
-                    this.targetMouse.x = e.clientX;
-                    this.targetMouse.y = e.clientY;
-                });
-            }
-
-            // Start Loop
-            this.animate();
-        }
-
-        resize() {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-            this.createStars();
-        }
-
-        createStars() {
-            this.stars = [];
-            const starCount = (this.canvas.width * this.canvas.height) / 4000; // Minimal density
-            for (let i = 0; i < starCount; i++) {
-                this.stars.push({
-                    x: Math.random() * this.canvas.width,
-                    y: Math.random() * this.canvas.height,
-                    size: Math.random() * 1.5 + 0.5, // Small, sharp dots
-                    depth: Math.random() * 2 + 0.5, // Depth factor for parallax
-                    twinkleSpeed: Math.random() * 0.05 + 0.01,
-                    twinklePhase: Math.random() * Math.PI * 2,
-                    baseAlpha: Math.random() * 0.5 + 0.3
-                });
-            }
-        }
-
-        animate() {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-            // Theme Colors
-            const isLight = document.body.classList.contains('light-mode');
-            const starColor = isLight ? '30, 41, 59' : '255, 255, 255'; // Dark Slate vs White
-
-            // Smooth Mouse Ease
-            this.mouse.x += (this.targetMouse.x - this.mouse.x) * 0.05;
-            this.mouse.y += (this.targetMouse.y - this.mouse.y) * 0.05;
-
-            // Parallax Center
-            const centerX = this.canvas.width / 2;
-            const centerY = this.canvas.height / 2;
-
-            this.stars.forEach((star) => {
-                // Twinkle
-                star.twinklePhase += star.twinkleSpeed;
-                const twinkle = Math.sin(star.twinklePhase) * 0.3; // +/- opacity
-                const alpha = Math.max(0.1, Math.min(1, star.baseAlpha + twinkle));
-
-                // Parallax Offset
-                // Stars with higher depth move LESS (further away), wait no, typical parallax:
-                // Closer objects (higher depth value in this logic maybe?) move MORE.
-                // Let's say depth 1 is baseline. Depth 2 is closer. Depth 0.5 is far.
-                // Move opposite to mouse to simulate camera movement.
-                const offsetX = (this.mouse.x - centerX) * (star.depth * 0.05);
-                const offsetY = (this.mouse.y - centerY) * (star.depth * 0.05);
-
-                const renderX = star.x - offsetX;
-                const renderY = star.y - offsetY;
-
-                // Draw
-                this.ctx.fillStyle = `rgba(${starColor}, ${alpha})`;
-                this.ctx.beginPath();
-                this.ctx.arc(renderX, renderY, star.size, 0, Math.PI * 2);
-                this.ctx.fill();
-            });
-
-            this.animationFrame = requestAnimationFrame(() => this.animate());
-        }
-    }
-
-    // --- COMPONENT: Header ---
-    class Header extends Component {
+    // --- COMPONENT: HomeHeader ---
+    class HomeHeader extends Component {
         constructor(host) {
             super(host);
             store.subscribe((state, prop) => {
@@ -710,37 +576,128 @@
         template() {
             const lang = store.state.language;
             const isLight = store.state.theme === 'light';
-            const t = TRANSLATIONS[lang];
+
             return `
                 <div class="header-controls-left">
-                    <div class="theme-switch-wrapper">
-                        <label class="theme-switch" for="checkbox">
-                            <input type="checkbox" id="checkbox" ${isLight ? 'checked' : ''} />
-                            <div class="slider round">
-                                <i class="fas fa-sun"></i>
-                                <i class="fas fa-moon"></i>
-                            </div>
-                        </label>
-                        <span>Tema</span>
-                    </div>
+                    <!-- Placeholder to keep spacing -->
                 </div>
-                <div class="header-controls-right">
-                    <button id="languageToggle" class="lang-button">
-                        <i class="fas fa-globe"></i>
-                        <span>${lang === 'az' ? 'AZ' : 'RU'}</span>
+                <div class="header-controls-right" style="display:flex; gap:12px;">
+                    <button id="themeToggle" class="navbar-btn" data-umami-event="Theme Toggled" style="background:rgba(118, 118, 128, 0.12); color:var(--text-color); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;">
+                        ${isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
+                    </button>
+                    <button id="languageToggle" class="navbar-btn" data-umami-event="Language Toggled" style="background:rgba(118, 118, 128, 0.12); color:var(--text-color); border-radius:18px; padding:0 12px; height:36px; font-weight:600; font-size:0.9rem; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;">
+                        ${lang === 'az' ? 'AZ' : 'RU'}
                     </button>
                 </div>
             `;
         }
         afterRender() {
-            this.host.querySelector('.theme-switch input').addEventListener('change', (e) => {
-                vibrate(10);
-                store.state.theme = e.target.checked ? 'light' : 'dark';
+            const themeBtn = this.host.querySelector('#themeToggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    store.state.theme = store.state.theme === 'light' ? 'dark' : 'light';
+                });
+            }
+
+            const langBtn = this.host.querySelector('#languageToggle');
+            if (langBtn) {
+                langBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    store.state.language = store.state.language === 'az' ? 'ru' : 'az';
+                });
+            }
+        }
+    }
+
+    // --- COMPONENT: FormHeader ---
+    class FormHeader extends Component {
+        constructor(host) {
+            super(host);
+            store.subscribe((state, prop) => {
+                if (prop === 'activeGroup' || prop === 'language') this.render();
             });
-            this.host.querySelector('#languageToggle').addEventListener('click', () => {
-                vibrate(10);
-                store.state.language = store.state.language === 'az' ? 'ru' : 'az';
-            });
+        }
+        template() {
+            const lang = store.state.language;
+            const t = TRANSLATIONS[lang];
+            const groupName = store.state.activeGroup ? t.groups[store.state.activeGroup] : '';
+
+            return `
+                <div class="header-controls-left" style="flex:1;">
+                    <button id="backButton" class="nav-back-btn">
+                        <i class="fas fa-chevron-left" style="margin-right:6px; font-size:0.95rem;"></i> Qruplar
+                    </button>
+                </div>
+                <div class="header-controls-center" style="flex:2; text-align:center; font-weight:600; font-size:1rem; color:var(--text-color);">
+                    ${groupName}
+                </div>
+                <div class="header-controls-right" style="flex:1;"></div>
+            `;
+        }
+        afterRender() {
+            const backBtn = this.host.querySelector('#backButton');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    vibrate(10);
+
+                    const formPage = document.getElementById('formPage');
+                    const homePage = document.getElementById('homePage');
+
+                    // Trigger smooth exit animation horizontally to the right
+                    formPage.classList.remove('active');
+                    formPage.classList.add('sliding-out');
+                    homePage.classList.remove('slid-out');
+
+                    // Complete the state removal after the transition completes
+                    setTimeout(() => {
+                        formPage.classList.remove('sliding-out');
+                        store.state.activePage = 'home';
+                        store.state.activeGroup = null;
+                        store.state.results = null;
+                    }, 280); // 0.28s matches CSS transition
+                });
+            }
+
+            // Implement edge swipe to go back
+            const formPage = document.getElementById('formPage');
+            if (formPage && !formPage.dataset.touchAdded) {
+                formPage.dataset.touchAdded = 'true';
+                let startX = 0;
+                let startY = 0;
+                let isSwiping = false;
+
+                formPage.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isSwiping = true;
+                }, { passive: true });
+
+                formPage.addEventListener('touchmove', (e) => {
+                    if (!isSwiping) return;
+                    const currentX = e.touches[0].clientX;
+                    const currentY = e.touches[0].clientY;
+                    const deltaX = currentX - startX;
+                    const deltaY = Math.abs(currentY - startY);
+
+                    // Cancel swipe if scrolling vertically more than horizontally, but ignore initial finger jitters
+                    if (deltaY > 15 && deltaY > deltaX) {
+                        isSwiping = false;
+                        return;
+                    }
+
+                    // Trigger back immediately on deep swipe rather than waiting for touchend
+                    if (deltaX > 80 && formPage.classList.contains('active')) {
+                        isSwiping = false; // Prevent multiple triggers
+                        const backBtn = document.getElementById('backButton');
+                        if (backBtn) backBtn.click();
+                    }
+                }, { passive: true });
+
+                formPage.addEventListener('touchend', () => {
+                    isSwiping = false;
+                });
+            }
         }
     }
 
@@ -804,50 +761,78 @@
         }
     }
 
-    // --- COMPONENT: GroupSelector ---
+    // --- COMPONENT: GroupSelector (List Style) ---
     class GroupSelector extends Component {
         constructor(host) {
             super(host);
             store.subscribe((state, prop) => {
-                if (prop === 'activeGroup' || prop === 'language') this.render();
+                if (prop === 'language') this.render();
             });
         }
         template() {
             const lang = store.state.language;
-            const currentGroup = store.state.activeGroup;
             const t = TRANSLATIONS[lang];
-            return GROUPS.map(group => `
-                <button 
-                    data-group="${group.name}"
-                    class="btn ${currentGroup === group.name ? 'active' : ''}"
-                    type="button"
-                    data-umami-event="${group.name} Selected"
-                >
-                    ${t.groups[group.name]}
-                </button>
-            `).join('');
+
+            return `
+                <div class="list-container">
+                    ${GROUPS.map(group => `
+                        <button 
+                            data-group="${group.name}"
+                            class="list-item-btn"
+                            type="button"
+                            data-umami-event="${group.name} Selected"
+                        >
+                            <span>${t.groups[group.name]}</span>
+                            <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                        </button>
+                    `).join('')}
+                </div>
+                
+                <div class="list-container" style="margin-top:2rem;">
+                    <button type="button" id="docsBtn" class="list-item-btn" data-umami-event="Docs Opened" style="color:var(--text-color);">
+                        <span><i class="fas fa-info-circle" style="color:var(--primary-color); margin-right:8px;"></i> ${t.howCalculated}</span>
+                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                    </button>
+                    <button type="button" id="addToHomeBtn" class="list-item-btn" data-umami-event="Add to Home Screen Opened" style="color:var(--text-color);">
+                        <span><i class="fas fa-plus-square" style="color:var(--primary-color); margin-right:8px;"></i> ${t.addToHomeBtnTitle}</span>
+                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                    </button>
+                </div>
+            `;
         }
         afterRender() {
-            this.host.querySelectorAll('button').forEach(btn => {
+            this.host.querySelectorAll('.list-item-btn[data-group]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     vibrate(10);
                     const newGroup = btn.dataset.group;
-                    const currentGroup = store.state.activeGroup;
 
-                    if (currentGroup === newGroup) {
-                        store.state.activeGroup = null; // Toggle off
-                        store.state.results = null;
-                        // No scroll needed when closing
-                    } else {
-                        store.state.activeGroup = newGroup;
-                        store.state.results = null;
-                        setTimeout(() => {
-                            const form = document.getElementById('examFormContainer');
-                            if (form) form.scrollIntoView({ behavior: 'smooth' });
-                        }, 300); // Increased delay slightly for animation start
-                    }
+                    store.state.activeGroup = newGroup;
+                    store.state.results = null;
+                    store.state.activePage = 'form';
+
+                    // Slide UI
+                    document.getElementById('homePage').classList.add('slid-out');
+                    document.getElementById('formPage').classList.add('active');
                 });
             });
+
+            const docsBtn = this.host.querySelector('#docsBtn');
+            if (docsBtn) {
+                docsBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    const docsModal = document.getElementById('docsModal');
+                    if (docsModal) docsModal.classList.add('active');
+                });
+            }
+
+            const addToHomeBtn = this.host.querySelector('#addToHomeBtn');
+            if (addToHomeBtn) {
+                addToHomeBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    const addToHomeModal = document.getElementById('addToHomeModal');
+                    if (addToHomeModal) addToHomeModal.classList.add('active');
+                });
+            }
         }
     }
 
@@ -856,24 +841,20 @@
         constructor(host) {
             super(host);
             store.subscribe((state, prop) => {
-                if (prop === 'activeGroup' || prop === 'language') this.render();
+                if (prop === 'activeGroup' || prop === 'language' || prop === 'activeSubjectIndex') {
+                    this.render();
+                }
             });
         }
         render() {
-            // Override default render to handle animation state
             const groupName = store.state.activeGroup;
             const container = this.host;
 
             if (!groupName) {
-                // Collapse
                 if (container) container.classList.remove('visible');
-                // Do NOT clear innerHTML immediately to allow animation
                 return;
             }
 
-            // Expand
-            // Only update innerHTML if logic requires it (re-render)
-            // But here we re-render always on update to ensure form is fresh
             if (container) {
                 container.innerHTML = this.template();
                 container.classList.add('visible');
@@ -886,36 +867,51 @@
             const t = TRANSLATIONS[lang];
             const groupName = store.state.activeGroup;
 
-            // If we are strictly calling template(), we need a group (or default to something if we want persistence, 
-            // but normally render() protects us. 
-            // However, render() calls template() only when groupName exists now.
-
             if (!groupName) return '';
 
             const group = GROUPS.find(g => g.name === groupName);
+
+            // Render all subjects one after another
+            const subjectsHtml = group.subjects.map((subject, index) => {
+                return this.renderSubject(subject, index, group, t);
+            }).join('');
+
             return `
                 <div class="exam-form-wrapper">
-                    <div class="form-container">
-                        <h2 class="group-title">${t.groups[groupName]}</h2>
-                        <form id="scoreForm">
-                            ${group.subjects.map((subject, index) => this.renderSubject(subject, index, group, t)).join('')}
-                        </form>
-                        <button id="calculateButton" class="btn">${t.calculate}</button>
-                    </div>
+                    <form id="scoreForm" class="scrollable-form">
+                        <div class="subjects-grid">
+                            ${subjectsHtml}
+                        </div>
+                        
+                        <div class="button-wrapper">
+                            <button id="calculateButton" type="button" class="action-btn" data-umami-event="Calculate Button Clicked">${t.calculate}</button>
+                        </div>
+                    </form>
                 </div>
             `;
         }
+
         renderSubject(subject, index, group, t) {
             const isBuraxilish = group.name === 'Buraxılış İmtahanı';
             let inputs = '';
 
+            // We use 'store.state.answers' to pre-fill if navigating back and forth, 
+            // but for simplicity we rely on local form state managed in afterRender during transitions.
+            // Let's implement a global answer cache in store if it doesn't exist.
+            if (!store.state.answers) store.state.answers = {};
+
+            const getValue = (name) => {
+                const [subj, type] = name.split('-');
+                return store.state.answers[subj]?.[type] || '';
+            };
+
             const createInput = (label, name, max) => `
                 <label>
-                    ${label}:
+                    ${label}
                     <div class="stepper-wrapper">
-                        <button type="button" class="stepper-btn minus" tabindex="-1">−</button>
-                        <input type="number" name="${name}" min="0" max="${max}" class="input-field" placeholder="0">
-                        <button type="button" class="stepper-btn plus" tabindex="-1">+</button>
+                        <button type="button" class="stepper-btn minus" tabindex="-1"><i class="fas fa-minus" style="font-size: 0.85rem;"></i></button>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="${name}" min="0" max="${max}" class="input-field" placeholder="0" value="${getValue(name)}">
+                        <button type="button" class="stepper-btn plus" tabindex="-1"><i class="fas fa-plus" style="font-size: 0.85rem;"></i></button>
                     </div>
                     <span class="error-message"></span>
                 </label>
@@ -943,14 +939,61 @@
                 </div>`;
             }
             return `
-                <div class="subject">
+                <div class="subject wizard-subject-card">
                     <h3>${t.subjects[subject]} (${group.maxScores[index]} ${t.score})</h3>
                     ${inputs}
                 </div>
             `;
         }
+
+        saveCurrentState() {
+            if (!store.state.answers) store.state.answers = {};
+            const formData = new FormData(this.host.querySelector('form'));
+            for (const [key, value] of formData.entries()) {
+                const [subject, type] = key.split('-');
+                if (!store.state.answers[subject]) store.state.answers[subject] = {};
+                store.state.answers[subject][type] = value;
+            }
+        }
+
         afterRender() {
             if (!store.state.activeGroup) return;
+
+            // Calculation Logic
+            const calcBtn = this.host.querySelector('#calculateButton');
+            if (calcBtn) {
+                calcBtn.type = 'button';
+                calcBtn.addEventListener('click', () => {
+                    vibrate(15);
+                    this.saveCurrentState(); // Save before calc
+
+                    const answers = store.state.answers;
+                    const results = Calculator.calculateScore(store.state.activeGroup, answers);
+                    store.state.results = results;
+
+                    // Track score with Umami properties
+                    const totalScore = Math.round(results['Ümumi bal']);
+                    const isBuraxilish = store.state.activeGroup === 'Buraxılış İmtahanı';
+                    const maxScore = isBuraxilish ? 300 : 400;
+
+                    const bracketSize = 50;
+                    const lowerBound = Math.floor(totalScore / bracketSize) * bracketSize;
+                    const upperBound = Math.min(lowerBound + bracketSize, maxScore);
+                    const scoreRange = `${lowerBound}-${upperBound}`;
+
+                    if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
+                        umami.track('Score Calculated', {
+                            group: store.state.activeGroup,
+                            score: totalScore,
+                            range: scoreRange
+                        });
+                    }
+                    setTimeout(() => {
+                        const resDiv = document.getElementById('resultsContainer');
+                        if (resDiv) resDiv.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                });
+            }
 
             // Validation
             this.host.querySelectorAll('.input-field').forEach(input => {
@@ -961,7 +1004,7 @@
             this.host.querySelectorAll('.stepper-btn').forEach(btn => {
                 let holdInterval = null;
                 let holdTimeout = null;
-                let incrementSpeed = 150; // Initial speed in ms
+                let incrementSpeed = 150;
 
                 const updateValue = () => {
                     const input = btn.parentElement.querySelector('input');
@@ -987,20 +1030,19 @@
                 };
 
                 const startHold = () => {
-                    updateValue(); // Immediate first increment
+                    updateValue();
                     incrementSpeed = 150;
 
                     holdTimeout = setTimeout(() => {
                         holdInterval = setInterval(() => {
                             updateValue();
-                            // Accelerate over time
                             if (incrementSpeed > 50) {
                                 incrementSpeed -= 10;
                                 clearInterval(holdInterval);
                                 holdInterval = setInterval(updateValue, incrementSpeed);
                             }
                         }, incrementSpeed);
-                    }, 300); // Delay before continuous increment starts
+                    }, 300);
                 };
 
                 const stopHold = () => {
@@ -1011,7 +1053,6 @@
                     incrementSpeed = 150;
                 };
 
-                // Mouse/Touch events
                 btn.addEventListener('pointerdown', (e) => {
                     e.preventDefault();
                     startHold();
@@ -1024,53 +1065,12 @@
 
             const form = this.host.querySelector('form');
             if (form) form.addEventListener('submit', e => e.preventDefault());
-
-            const btn = this.host.querySelector('#calculateButton');
-            if (btn) {
-                // Ensure type is button to prevent accidental submits if moved inside form
-                btn.type = 'button';
-                btn.addEventListener('click', () => {
-                    vibrate(15); // Haptic feedback
-                    const formData = new FormData(this.host.querySelector('form'));
-                    const answers = {};
-                    for (const [key, value] of formData.entries()) {
-                        const [subject, type] = key.split('-');
-                        if (!answers[subject]) answers[subject] = {};
-                        answers[subject][type] = value;
-                    }
-                    const results = Calculator.calculateScore(store.state.activeGroup, answers);
-                    store.state.results = results;
-
-                    // Track score with Umami properties
-                    const totalScore = Math.round(results['Ümumi bal']);
-                    const isBuraxilish = store.state.activeGroup === 'Buraxılış İmtahanı';
-                    const maxScore = isBuraxilish ? 300 : 400;
-
-                    // Create score range bracket (e.g., "150-200", "200-250")
-                    const bracketSize = 50;
-                    const lowerBound = Math.floor(totalScore / bracketSize) * bracketSize;
-                    const upperBound = Math.min(lowerBound + bracketSize, maxScore);
-                    const scoreRange = `${lowerBound}-${upperBound}`;
-
-                    if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
-                        umami.track('Score Calculated', {
-                            group: store.state.activeGroup,
-                            score: totalScore,
-                            range: scoreRange
-                        });
-                    }
-                    setTimeout(() => {
-                        const resDiv = document.getElementById('resultsContainer');
-                        if (resDiv) resDiv.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                });
-            }
         }
+
         validate(input) {
             const min = parseInt(input.min);
             const max = parseInt(input.max);
             const value = parseInt(input.value);
-            // Fix: Error message is now outside the stepper-wrapper, inside the label
             const errorSpan = input.closest('label').querySelector('.error-message');
             const t = TRANSLATIONS[store.state.language];
 
@@ -1097,60 +1097,40 @@
             const t = TRANSLATIONS[store.state.language];
             const results = store.state.results;
 
+            const totalScore = results['Ümumi bal'].toFixed(1);
+
             let rows = '';
             for (const [subject, score] of Object.entries(results)) {
                 if (subject === 'Ümumi bal') continue;
                 rows += `
-                    <tr>
-                        <td>${t.subjects[subject] || subject}</td>
-                        <td>${score.toFixed(1)}</td>
-                    </tr>
+                    <div class="results-list-item">
+                        <span class="results-subject-name">${t.subjects[subject] || subject}</span>
+                        <span class="results-subject-score">${score.toFixed(1)}</span>
+                    </div>
                 `;
             }
-            // Total Row
-            rows += `
-                <tr class="total">
-                    <td>${t.score}</td>
-                    <td>${results['Ümumi bal'].toFixed(1)}</td>
-                </tr>
-            `;
 
             return `
                 <div class="results-container">
-                    <h2 class="results-title">${t.results}</h2>
-                    <div class="result-message show">
-                        ${this.getMessage(results['Ümumi bal'])}
+                    <div class="results-total-card">
+                        <div class="results-total-label">${t.score}</div>
+                        <div class="results-total-value">${totalScore}</div>
                     </div>
-                    <table id="resultsTable">
-                        <thead>
-                            <tr>
-                                <th>${t.subject}</th>
-                                <th>${t.score}</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                    <div class="button-group">
-                        <button id="downloadButton" class="btn btn-secondary"><i class="fas fa-download"></i> ${t.saveResults}</button>
-                        <button id="recalculateButton" class="btn"><i class="fas fa-redo"></i> ${t.recalculate}</button>
+                    
+                    <div class="results-breakdown-list">
+                        ${rows}
+                    </div>
+                    
+                    <div class="button-wrapper" style="margin-top:2rem;">
+                        <button id="downloadButton" type="button" class="action-btn" data-umami-event="Download Results Clicked" style="margin-bottom: 12px;">
+                            <i class="fas fa-download" style="margin-right:8px;"></i> ${t.saveResults}
+                        </button>
+                        <button id="recalculateButton" type="button" class="action-btn secondary" data-umami-event="Recalculate Button Clicked">
+                            <i class="fas fa-redo" style="margin-right:8px;"></i> ${t.recalculate}
+                        </button>
                     </div>
                 </div>
             `;
-        }
-        getMessage(totalScore) {
-            const lang = store.state.language;
-            const groupKey = store.state.activeGroup;
-            const ranges = SCORE_RANGES[groupKey]?.ranges || [];
-            let level = 'low';
-            for (const range of ranges) {
-                if (totalScore >= range.min && totalScore <= range.max) {
-                    level = range.level;
-                    break;
-                }
-            }
-            const msg = TRANSLATIONS[lang].messages[level];
-            const gif = RESULT_GIFS[level];
-            return `<img src="${gif}" class="result-gif" alt="${level}" /><p>${msg}</p>`;
         }
         afterRender() {
             if (!store.state.results) return;
@@ -1217,136 +1197,15 @@
     // --- COMPONENT: Footer ---
     class Footer extends Component {
         template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
             return `
-                <div class="footer-content">
-                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener">abusoww</a> with 🤍</span>
-                    <span class="footer-separator">|</span>
-                    <button type="button" id="changelogBtn" class="footer-link-btn">changelog</button>
-                    <span class="footer-separator">|</span>
-                    <button type="button" id="docsBtn" class="footer-link-btn">${t.howCalculated}</button>
+                <div class="footer-content" style="padding-bottom:1rem;">
+                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener" data-umami-event="Developer Link Clicked">abusoww</a> with <i class="fa-solid fa-heart theme-heart" style="margin-left:2px; font-size:0.9rem;"></i></span>
                 </div>
             `;
         }
-        afterRender() {
-            // Event handled globally for robustness
-            // Re-render on language change to update button text
-            const btn = this.host.querySelector('#docsBtn');
-            if (btn) {
-                const lang = store.state.language;
-                btn.textContent = TRANSLATIONS[lang].howCalculated;
-            }
-        }
+        afterRender() { }
     }
 
-    // --- COMPONENT: ChangelogModal ---
-    class ChangelogModal extends Component {
-        get changelog() {
-            return [
-                {
-                    version: 'v2.0.0',
-                    date: '2025-12-10',
-                    changes: [
-                        'Made some major UI tweaks',
-                        'Language auto-detection from browser',
-                        'Haptic feedback for mobile interactions',
-                        'Implemented stepper buttons',
-                        'Implemented changelog timeline'
-                    ]
-                },
-                {
-                    version: 'v1.0.0',
-                    date: '2025-01-06',
-                    changes: [
-                        'Initial modern calculator release',
-                        'Support for all exam groups',
-                        'Dark/Light theme toggle',
-                        'Azerbaijani and Russian languages',
-                        'Countdown timer to exam date'
-                    ]
-                }
-            ];
-        }
-
-        template() {
-            // Helper to add icons based on content
-            const getIcon = (text) => {
-                if (text.toLowerCase().includes('fix')) return '🔧';
-                if (text.toLowerCase().includes('add') || text.toLowerCase().includes('new')) return '✨';
-                if (text.toLowerCase().includes('improv') || text.toLowerCase().includes('optimiz')) return '🚀';
-                if (text.toLowerCase().includes('remov')) return '🗑️';
-                return '🔹';
-            };
-
-            const changelogItems = this.changelog.map((entry, index) => `
-                <div class="timeline-item" style="animation-delay: ${index * 0.1}s">
-                    <div class="timeline-content">
-                        <div class="version-tag">${entry.version}</div>
-                        <div class="version-date">${entry.date}</div>
-                        <ul class="changelog-list">
-                            ${entry.changes.map(change => `
-                                <li>
-                                    <span class="change-icon">${getIcon(change)}</span>
-                                    <span class="change-text">${change}</span>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                </div>
-            `).join('');
-
-            return `
-                <div class="modal-overlay">
-                    <div class="modal-content premium-modal">
-                        <div class="modal-hero">
-                            <div class="hero-blobs">
-                                <div class="blob blob-1"></div>
-                                <div class="blob blob-2"></div>
-                            </div>
-                            <div class="hero-text">
-                                <h2>What's New</h2>
-                                <p>Latest features & improvements</p>
-                            </div>
-                            <button type="button" class="modal-close" aria-label="Close">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="timeline-feed">
-                                ${changelogItems}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        afterRender() {
-            const overlay = this.host.querySelector('.modal-overlay');
-            const closeBtn = this.host.querySelector('.modal-close');
-
-            const closeModal = () => {
-                vibrate(10);
-                this.host.classList.remove('active');
-            };
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeModal);
-            }
-
-
-            if (overlay) {
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) closeModal();
-                });
-            }
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.host.classList.contains('active')) {
-                    closeModal();
-                }
-            });
-        }
-    }
 
     // --- COMPONENT: DocumentationModal ---
     class DocumentationModal extends Component {
@@ -1366,34 +1225,122 @@
             const t = TRANSLATIONS[lang];
 
             const docItems = this.documents.map((doc, index) => `
-                <div class="timeline-item" style="animation-delay: ${index * 0.1}s">
-                     <div class="timeline-content">
-                        <div class="doc-item">
-                            <i class="fas fa-file-pdf doc-icon"></i>
-                            <a href="${APP_CONFIG.docsBaseUrl}${doc.file}" target="_blank" class="doc-link">${doc.name}</a>
-                        </div>
+                <div style="padding: 12px 16px; background: rgba(118, 118, 128, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-file-pdf" style="color: #FF3B30; font-size: 1.25rem;"></i>
+                        <span style="font-size: 0.95rem; font-weight: 500; color: var(--text-color);">${doc.name}</span>
                     </div>
+                    <a href="${APP_CONFIG.docsBaseUrl}${doc.file}" target="_blank" data-umami-event="Document PDF Clicked" style="background: rgba(118, 118, 128, 0.12); color: var(--primary-color); padding: 6px 14px; border-radius: 14px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Oxu</a>
                 </div>
             `).join('');
 
             return `
                 <div class="modal-overlay">
-                    <div class="modal-content premium-modal">
-                        <div class="modal-hero">
-                             <div class="hero-blobs">
-                                <div class="blob blob-1"></div>
-                                <div class="blob blob-3"></div>
+                    <div class="modal-content modal-scale-content" style="max-width: 600px; width: 90%; border-radius: 20px; overflow: hidden; background: var(--card-background); border: 1px solid var(--input-border); padding:0;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--input-border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card-background); z-index: 10;">
+                            <div style="flex:1;"></div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600; text-align:center; flex:2;">${t.docsTitle}</h3>
+                            <div style="flex:1; text-align:right;">
+                                <button type="button" class="modal-close" data-umami-event="Close Docs Modal Clicked" style="background: rgba(118, 118, 128, 0.12); border: none; width: 28px; height: 28px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; cursor: pointer;">&times;</button>
                             </div>
-                            <div class="hero-text">
-                                <h2>${t.docsTitle}</h2>
-                                <p>${t.howCalculated}</p>
-                            </div>
-                            <button type="button" class="modal-close" aria-label="Close">&times;</button>
                         </div>
-                        <div class="modal-body">
-                             <div class="timeline-feed">
+                        <div class="modal-body" style="padding: 1rem 1.5rem 1.5rem; max-height: 70vh; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                             <div class="timeline-feed" style="margin:0;">
                                 ${docItems}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        afterRender() {
+            const overlay = this.host.querySelector('.modal-overlay');
+            const closeBtn = this.host.querySelector('.modal-close');
+
+            const closeModal = () => {
+                vibrate(10);
+                this.host.classList.remove('active');
+            };
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.host.classList.contains('active')) closeModal();
+            });
+        }
+    }
+
+    // --- COMPONENT: AddToHomeModal ---
+    class AddToHomeModal extends Component {
+        template() {
+            const lang = store.state.language;
+            const t = TRANSLATIONS[lang];
+            const isIOS = [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform) ||
+                (navigator.userAgent.includes("Mac") && "ontouchend" in document && !navigator.userAgent.includes("Android") && !navigator.userAgent.includes("Windows")) ||
+                (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
+
+            let visualSteps = '';
+
+            if (isIOS) {
+                // iOS Safari Mockups - Using actual user screenshots
+                visualSteps = `
+                    <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+                        <div style="text-align: center;">
+                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeIOS_Step1}</span>
+                            <img src="src/assets/ios-share-1.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="iOS Share Step 1" />
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 10px;">
+                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeIOS_Step2}</span>
+                            <img src="src/assets/ios-share-2.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="iOS Share Step 2" />
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Android Chrome Mockups - Styled exactly like iOS
+                visualSteps = `
+                    <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+                        <div style="text-align: center;">
+                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeAndroid_Step1}</span>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 10px;">
+                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeAndroid_Step2}</span>
+                            <img src="src/assets/android-install.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="Android Chrome Install Steps" />
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="modal-overlay">
+                    <div class="modal-content modal-scale-content" style="max-width: 500px; width: 90%; border-radius: 20px; overflow: hidden; background: var(--card-background); border: 1px solid var(--input-border); padding:0; box-shadow: var(--shadow-lg);">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--input-border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card-background); z-index: 10;">
+                            <div style="flex:1;"></div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600; text-align:center; flex:3;">${t.addToHomeModalTitle}</h3>
+                            <div style="flex:1; text-align:right;">
+                                <button type="button" class="modal-close" data-umami-event="Close AddToHome Modal Clicked" style="background: rgba(118, 118, 128, 0.12); border: none; width: 28px; height: 28px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; cursor: pointer;">&times;</button>
+                            </div>
+                        </div>
+                        <div class="modal-body" style="padding: 1.5rem; max-height: 75vh; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                             
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <div style="width: 60px; height: 60px; background: var(--primary-color); border-radius: 16px; display: inline-flex; justify-content: center; align-items: center; color: white; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 0.75rem; box-shadow: 0 4px 12px rgba(52, 120, 246, 0.3);">
+                                    <i class="fas fa-calculator" style="font-size: 1.75rem;"></i>
+                                </div>
+                                <p style="margin: 0; font-size: 0.95rem; font-weight: 500; color: var(--text-color); line-height: 1.4;">${t.addToHomeModalDesc}</p>
+                            </div>
+
+                            ${visualSteps}
+                            
                         </div>
                     </div>
                 </div>
@@ -1422,15 +1369,23 @@
         const theme = store.state.theme;
         if (theme === 'light') document.body.classList.add('light-mode');
 
-        new StarBackground('stars');
-        new Header(document.querySelector('.header-controls'));
+        // Execute initial render
+        const initialPage = store.state.activePage || 'home';
+        document.getElementById('homePage').classList.toggle('active', initialPage === 'home');
+        document.getElementById('homePage').classList.toggle('slid-out', initialPage !== 'home');
+
+        document.getElementById('formPage').classList.toggle('active', initialPage === 'form');
+
+        // Initialize Components
+        new HomeHeader(document.getElementById('homeHeader'));
+        new FormHeader(document.getElementById('formHeader'));
         new Countdown(document.querySelector('.countdown-container'));
         new GroupSelector(document.getElementById('groupButtons'));
         new ExamForm(document.getElementById('examFormContainer'));
         new Results(document.getElementById('resultsContainer'));
         new Footer(document.getElementById('footerContainer'));
-        new ChangelogModal(document.getElementById('changelogModal'));
         new DocumentationModal(document.getElementById('docsModal'));
+        new AddToHomeModal(document.getElementById('addToHomeModal'));
 
         // Entry Animations
         const elementsToAnimate = [
@@ -1529,10 +1484,6 @@
                 trackEvent('Form Reset');
             }
 
-            // Changelog Opened
-            if (e.target.closest('#changelogBtn')) {
-                trackEvent('Changelog Opened');
-            }
 
             // Docs Opened
             if (e.target.closest('#docsBtn')) {
@@ -1549,7 +1500,7 @@
                     trackEvent('Author Link Clicked');
                 }
                 // Documentation PDFs
-                else if (href.includes('/legacy/')) {
+                else if (href.includes('.pdf')) {
                     const fileName = href.split('/').pop();
                     trackEvent('Document Clicked', { file: fileName });
                 }

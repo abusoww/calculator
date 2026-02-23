@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="az" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>DIM Bal Hesablama Kalkulyatoru</title>
     <meta name="description"
         content="DIM bal hesablama kalkulyatoru ilə 1-ci, 2-ci, 3-cü və 4-cü qrupların ballarını hesablayın. Buraxılış imtahanı üçün 9-cu, 10-cu, 11-ci sinif imtahanlarının keçid balları və nəticələri haqqında məlumat əldə edin. Bloklar üzrə bal hesablanması ilə imtahan nəticələrinizi asanlıqla təhlil edin." />
@@ -12,7 +15,9 @@
 
     <meta name="author" content="Nicat Abuşov" />
     <link rel="canonical" href="https://calculator.abusov.com/" />
-    <link rel="icon" href="/legacy/calculator.ico" type="image/x-icon">
+    <link rel="icon" href="/src/assets/calculator.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="src/assets/icon-192.png">
+    <link rel="manifest" href="manifest.json">
 
     <!-- Open Graph -->
     <meta property="og:title" content="DIM İmtahan Ballarını Hesablama | Rəsmi Kalkulyator" />
@@ -26,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cal+Sans&family=Cascadia+Code:wght@400;700&family=Space+Grotesk:wght@300;500&family=Poppins:wght@300;500&family=Montserrat:wght@400;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=SF+Pro+Display:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Icons -->
@@ -46,9 +51,11 @@
         gtag('config', 'G-3S462EV9SR');
     </script>
     <script defer src="https://cloud.umami.is/script.js"
-        data-website-id="99064832-b906-409f-abfd-d1586d96b366"></script>
+        data-website-id="a17c9f30-33f9-4723-86c9-e34bb1e0e0cd"></script>
 
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2b7064c1163a4cfda501a732c0d0afd1"}'></script><!-- End Cloudflare Web Analytics -->
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "2b7064c1163a4cfda501a732c0d0afd1"}'></script><!-- End Cloudflare Web Analytics -->
 
     <script type="application/ld+json">
         {
@@ -63,39 +70,49 @@
 
 <body>
 
-    <div id="stars"></div>
+    <div id="appPages">
+        <!-- PAGE 1: Home List -->
+        <div id="homePage" class="page active">
+            <div id="homeHeader" class="header-controls">
+                <!-- Injected by HomeHeader component -->
+            </div>
+            <div class="container main-content-container">
+                <h1 class="title">İmtahan Ballarını Hesabla</h1>
+                <p class="description">Yeni nəsil kalkulyator: Daha sürətli, daha dəqiq.</p>
 
-    <div class="header-controls">
-        <!-- Injected by Header component -->
+                <div class="countdown-container">
+                    <!-- Injected by Countdown component -->
+                </div>
+
+                <div id="groupButtons" class="button-group list-group">
+                    <!-- Injected by GroupSelector (now a List) -->
+                </div>
+            </div>
+
+            <!-- Footer now sits at the bottom of the scrollable Home page -->
+            <div id="footerContainer"></div>
+        </div>
+
+        <!-- PAGE 2: Form Detail -->
+        <div id="formPage" class="page">
+            <div id="formHeader" class="header-controls">
+                <!-- Injected by FormHeader component -->
+            </div>
+            <div class="container form-content-container">
+                <div id="examFormContainer">
+                    <!-- Injected by ExamForm -->
+                </div>
+
+                <div id="resultsContainer">
+                    <!-- Injected by Results -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        <h1 class="title">İmtahan Ballarını Hesabla</h1>
-        <p class="description">Yeni nəsil kalkulyator: Daha sürətli, daha dəqiq.</p>
-
-        <div class="countdown-container">
-            <!-- Injected by Countdown component -->
-        </div>
-
-        <div id="groupButtons" class="button-group">
-            <!-- Injected by GroupSelector -->
-        </div>
-
-        <div id="examFormContainer">
-            <!-- Injected by ExamForm -->
-        </div>
-
-        <div id="resultsContainer">
-            <!-- Injected by Results -->
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="footerContainer"></div>
-
-    <!-- Changelog Modal -->
-    <div id="changelogModal"></div>
+    <!-- Modals -->
     <div id="docsModal"></div>
+    <div id="addToHomeModal"></div>
 
     <!-- Application Script -->
     <script src="src/app.js"></script>

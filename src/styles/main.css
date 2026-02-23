@@ -1,116 +1,120 @@
-#stars {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
+:root {
+    /* Dark Mode (Default) - Apple iOS Dark */
+    --primary-color: #0A84FF;
+    /* iOS System Blue (Dark) */
+    --secondary-color: #5E5CE6;
+    /* iOS System Indigo (Dark) */
+    --accent-color: #32D74B;
+    /* iOS System Green (Dark) */
+    --background-color: #000000;
+    /* Pure Black for OLED */
+    --card-background: rgba(28, 28, 30, 0.85);
+    /* iOS Elevated Content Dark with blur */
+    --text-color: #FFFFFF;
+    --text-muted: rgba(235, 235, 245, 0.6);
+    /* Secondary text */
+    --input-background: rgba(255, 255, 255, 0.1);
+    --input-border: rgba(255, 255, 255, 0.15);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --primary-rgb: 10, 132, 255;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
-:root {
-    /* Dark Mode (Default) - Premium Deep Space */
-    --primary-color: #60a5fa;
-    /* Soft Blue */
-    --secondary-color: #a78bfa;
-    /* Soft Purple */
-    --accent-color: #38bdf8;
-    /* Cyan accent */
-    --background-color: #0f172a;
-    /* Slate 900 - richer than pure black */
-    --text-color: #f8fafc;
-    /* Slate 50 */
-    --input-background: rgba(30, 41, 59, 0.5);
-    /* Semi-transparent Slate 800 */
-    --input-border: rgba(255, 255, 255, 0.1);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --star-color: #ffffff;
-    --primary-rgb: 96, 165, 250;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+body.light-mode {
+    /* Light Mode - Apple iOS Light */
+    --primary-color: #007AFF;
+    /* iOS System Blue (Light) */
+    --secondary-color: #5856D6;
+    /* iOS System Indigo (Light) */
+    --accent-color: #34C759;
+    /* iOS System Green (Light) */
+    --background-color: #F2F2F7;
+    /* iOS Base Background Light */
+    --card-background: rgba(255, 255, 255, 0.85);
+    /* Elevates above base */
+    --text-color: #000000;
+    --text-muted: rgba(60, 60, 67, 0.6);
+    /* Secondary text */
+    --input-background: rgba(118, 118, 128, 0.12);
+    /* iOS standard fill for text fields in light mode */
+    --input-border: rgba(0, 0, 0, 0.1);
+    --glass-border: 1px solid rgba(0, 0, 0, 0.05);
+    --primary-rgb: 0, 122, 255;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 * {
     box-sizing: border-box;
-}
-
-body.light-mode {
-    /* Light Mode - Creamy & Soft */
-    --background-color: #fdfbf7;
-    /* Warm Cream - gentle on eyes */
-    --text-color: #57534e;
-    /* Stone 600 - Warm gray, softer than black */
-    --input-background: #ffffff;
-    /* Pure white */
-    --input-border: #e7e5e4;
-    /* Stone 200 - Warm soft border */
-    --glass-border: 1px solid #e7e5e4;
-    --primary-color: #7c3aed;
-    /* Violet 600 - Rich warm purple */
-    --secondary-color: #a78bfa;
-    /* Violet 400 */
-    --accent-color: #f472b6;
-    /* Pink 400 */
-    --star-color: #a8a29e;
-    /* Stone 400 */
-    --primary-rgb: 124, 58, 237;
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    /* Modern, clean, approachable */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     margin: 0;
     padding: 0;
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.5s ease, color 0.3s ease;
+    transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s ease;
     display: flex;
     flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-:lang(ru) body {
-    font-family: 'Montserrat', sans-serif;
-}
-
+:lang(ru) body,
 :lang(ru) .title {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 1rem 1rem;
+    padding: 1.5rem;
+    width: 100%;
 }
 
 .title {
     font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     text-align: center;
-    margin-bottom: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
     color: var(--text-color);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    font-family: 'Cal Sans', sans-serif;
 }
 
 .description {
-    font-family: "Cascadia Code", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
     text-align: center;
-    color: var(--text-color);
-    margin-bottom: 2rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
 }
 
-@media (max-width: 800px) {
-    body {
-        cursor: auto;
+@media (max-width: 720px) {
+    .container {
+        padding: 1rem;
     }
 
-    .container {
-        padding: 1rem 0.75rem;
+    .title {
+        font-size: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .description {
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
 }
 
@@ -125,4 +129,58 @@ body {
     clip: rect(0 0 0 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* --- Page Navigation Stack --- */
+#appPages {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transition: transform 0.28s cubic-bezier(0.36, 0.66, 0.04, 1), opacity 0.28s cubic-bezier(0.36, 0.66, 0.04, 1);
+    background: var(--background-color);
+}
+
+#homePage {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+#homePage.slid-out {
+    transform: translateX(-30%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#formPage {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#formPage.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#formPage.sliding-out {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
 }
