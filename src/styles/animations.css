@@ -1,15 +1,15 @@
-/* --- iOS Premium Animations --- */
+/* --- Pinterest-Inspired Animations --- */
 
-/* Smooth Fade In with Spring Effect */
+/* Smooth Fade In with Gentle Effect */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(12px) scale(0.98);
+        transform: translateY(20px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 
@@ -17,7 +17,7 @@
 @keyframes fadeInStagger {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(12px);
     }
 
     to {
@@ -30,7 +30,7 @@
 @keyframes scaleIn {
     from {
         opacity: 0;
-        transform: scale(0.92);
+        transform: scale(0.95);
     }
 
     to {
@@ -39,7 +39,7 @@
     }
 }
 
-/* Pulse Effect */
+/* Gentle Pulse Effect */
 @keyframes pulse {
 
     0%,
@@ -48,7 +48,7 @@
     }
 
     50% {
-        transform: scale(1.02);
+        transform: scale(1.03);
     }
 }
 
@@ -56,7 +56,7 @@
 @keyframes slideInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
 
     to {
@@ -68,7 +68,7 @@
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(16px);
+        transform: translateY(24px);
     }
 
     to {
@@ -77,28 +77,26 @@
     }
 }
 
-/* Page Entry Animations - iOS Blur/Scale */
+/* Page Entry Animations - Faster & Smoother */
 @keyframes appearBlurScale {
     0% {
         opacity: 0;
-        transform: scale(0.96) translateY(5px);
-        filter: blur(4px);
+        transform: scale(0.98) translateY(8px);
     }
 
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
-        filter: blur(0);
     }
 }
 
 .animate-appear {
     opacity: 0;
-    animation: appearBlurScale 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    will-change: transform, opacity, filter;
+    animation: appearBlurScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
 }
 
-/* Stagger Delays (faster for iOS feel) */
+/* Stagger Delays (faster timing) */
 .delay-100 {
     animation-delay: 50ms;
 }
@@ -117,4 +115,45 @@
 
 .delay-500 {
     animation-delay: 250ms;
+}
+/* Additional Pinterest-style micro-animations */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+    }
+}
+
+/* Success celebration animation */
+@keyframes celebrate {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.1) rotate(-5deg);
+    }
+    50% {
+        transform: scale(1.15) rotate(5deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(-3deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.celebrate {
+    animation: celebrate 0.6s ease-out;
 }

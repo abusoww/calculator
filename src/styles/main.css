@@ -1,50 +1,63 @@
 :root {
-    /* Dark Mode (Default) - Apple iOS Dark */
-    --primary-color: #0A84FF;
-    /* iOS System Blue (Dark) */
-    --secondary-color: #5E5CE6;
-    /* iOS System Indigo (Dark) */
-    --accent-color: #32D74B;
-    /* iOS System Green (Dark) */
-    --background-color: #000000;
-    /* Pure Black for OLED */
-    --card-background: rgba(28, 28, 30, 0.85);
-    /* iOS Elevated Content Dark with blur */
-    --text-color: #FFFFFF;
-    --text-muted: rgba(235, 235, 245, 0.6);
-    /* Secondary text */
-    --input-background: rgba(255, 255, 255, 0.1);
-    --input-border: rgba(255, 255, 255, 0.15);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --primary-rgb: 10, 132, 255;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
+    /* Dark Mode - Refined Aesthetic */
+    --primary-color: #8B7EC8;
+    /* Muted lavender */
+    --secondary-color: #A091C7;
+    /* Soft purple accent */
+    --accent-color: #7EC8A3;
+    /* Sage green */
+    --background-color: #0F0F11;
+    /* Deep charcoal */
+    --card-background: #1A1A1F;
+    /* Elevated dark cards */
+    --text-color: #E8E8ED;
+    /* Soft off-white */
+    --text-muted: rgba(232, 232, 237, 0.6);
+    /* Muted text */
+    --input-background: rgba(255, 255, 255, 0.06);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --primary-rgb: 139, 126, 200;
+    --secondary-rgb: 160, 145, 199;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.25);
+    /* Motion tokens */
+    --motion-fast: 160ms;
+    --motion-normal: 220ms;
+    --motion-slow: 280ms;
+    --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-emphasized: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --focus-ring: 0 0 0 3px rgba(var(--primary-rgb), 0.14);
 }
 
 body.light-mode {
-    /* Light Mode - Apple iOS Light */
-    --primary-color: #007AFF;
-    /* iOS System Blue (Light) */
-    --secondary-color: #5856D6;
-    /* iOS System Indigo (Light) */
-    --accent-color: #34C759;
-    /* iOS System Green (Light) */
-    --background-color: #F2F2F7;
-    /* iOS Base Background Light */
-    --card-background: rgba(255, 255, 255, 0.85);
-    /* Elevates above base */
-    --text-color: #000000;
-    --text-muted: rgba(60, 60, 67, 0.6);
-    /* Secondary text */
-    --input-background: rgba(118, 118, 128, 0.12);
-    /* iOS standard fill for text fields in light mode */
-    --input-border: rgba(0, 0, 0, 0.1);
-    --glass-border: 1px solid rgba(0, 0, 0, 0.05);
-    --primary-rgb: 0, 122, 255;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+    /* Light Mode - Refined Aesthetic */
+    --primary-color: #6B5B95;
+    /* Dusty purple */
+    --secondary-color: #8E7CC3;
+    /* Soft lavender */
+    --accent-color: #5A9F7A;
+    /* Muted teal */
+    --background-color: #FAFAF9;
+    /* Warm off-white */
+    --card-background: #FFFFFF;
+    /* Pure white cards */
+    --text-color: #1A1A1F;
+    /* Rich dark gray */
+    --text-muted: rgba(26, 26, 31, 0.55);
+    /* Muted dark text */
+    --input-background: #F5F5F4;
+    /* Subtle gray fill */
+    --input-border: rgba(0, 0, 0, 0.06);
+    --border-color: rgba(0, 0, 0, 0.06);
+    --primary-rgb: 107, 91, 149;
+    --secondary-rgb: 142, 124, 195;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -53,72 +66,103 @@ body.light-mode {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     margin: 0;
     padding: 0;
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s ease;
+    transition: background-color var(--motion-slow) var(--ease-standard), color var(--motion-slow) var(--ease-standard);
     display: flex;
     flex-direction: column;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
 }
 
 :lang(ru) body,
 :lang(ru) .title {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .container {
     max-width: 720px;
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
     width: 100%;
 }
 
 .title {
-    font-size: 2.5rem;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 2.75rem;
     font-weight: 700;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.02em;
     text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1.65rem;
+    margin-bottom: 0.6rem;
     color: var(--text-color);
+    line-height: 1.2;
 }
 
 .description {
-    font-size: 1.1rem;
+    font-size: 1.125rem;
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     text-align: center;
     color: var(--text-muted);
-    margin-bottom: 3rem;
-    max-width: 500px;
+    margin-bottom: 2rem;
+    max-width: 540px;
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.4;
+    line-height: 1.65;
 }
 
 @media (max-width: 720px) {
     .container {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
     }
 
     .title {
-        font-size: 2rem;
-        margin-top: 1.5rem;
+        font-size: 2.25rem;
+        margin-top: 1.1rem;
     }
 
     .description {
-        font-size: 1rem;
-        margin-bottom: 2rem;
+        font-size: 1.05rem;
+        margin-bottom: 1.5rem;
     }
 }
 
-/* Utils */
+/* Add smooth scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--primary-rgb), 0.3);
+    border-radius: 10px;
+    transition: background var(--motion-fast) var(--ease-standard);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--primary-rgb), 0.5);
+}
+
+/* Selection color */
+::selection {
+    background: rgba(var(--primary-rgb), 0.3);
+    color: var(--text-color);
+}
+
+::-moz-selection {
+    background: rgba(var(--primary-rgb), 0.3);
+    color: var(--text-color);
+}
 .sr-only {
     position: absolute;
     width: 1px;
@@ -146,11 +190,17 @@ body {
     width: 100%;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    transition: transform 0.28s cubic-bezier(0.36, 0.66, 0.04, 1), opacity 0.28s cubic-bezier(0.36, 0.66, 0.04, 1);
+    transition: transform var(--motion-slow) var(--ease-emphasized), 
+                opacity var(--motion-slow) var(--ease-standard);
     background: var(--background-color);
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
+/* Home Page States */
 #homePage {
     transform: translateX(0);
     opacity: 1;
@@ -158,29 +208,83 @@ body {
     z-index: 1;
 }
 
+#homePage.hide-countdown .countdown-container {
+    display: none;
+}
+
+#homePage.hide-countdown .description {
+    margin-bottom: 1.5rem;
+}
+
+#homePage.hide-countdown #groupButtons {
+    margin-top: 0.25rem;
+}
+
 #homePage.slid-out {
-    transform: translateX(-30%);
+    transform: translateX(-12%);
     opacity: 0;
     pointer-events: none;
     z-index: 0;
 }
 
-#formPage {
-    transform: translateX(100%);
+/* Group Pages Default State */
+.group-page {
+    transform: translateX(104%);
     opacity: 0;
     pointer-events: none;
     z-index: 2;
 }
 
-#formPage.active {
+html.scroll-locked,
+body.scroll-locked {
+    overflow: hidden !important;
+    touch-action: none;
+}
+
+.group-page.active {
     transform: translateX(0);
     opacity: 1;
     pointer-events: auto;
 }
 
-#formPage.sliding-out {
+.group-page.sliding-out {
     transform: translateX(100%);
     opacity: 0;
     pointer-events: none;
-    z-index: 2;
+}
+
+.form-content-container {
+    padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+}
+
+.group-page.keyboard-open .form-content-container {
+    padding-bottom: max(12rem, env(safe-area-inset-bottom));
+}
+
+/* Add subtle page background pattern for visual interest */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    z-index: 0;
+    pointer-events: none;
+    background-image: 
+        radial-gradient(circle at 20% 30%, var(--primary-color) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, var(--secondary-color) 0%, transparent 50%);
+}
+
+body.light-mode::before {
+    opacity: 0.02;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

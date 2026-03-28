@@ -3,8 +3,16 @@ import socketserver
 import sys
 
 PORT = 8000
+SPA_ROUTES = {'/', '/1qrup', '/2qrup', '/3qrup', '/4qrup', '/buraxilis'}
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        path = self.path.split('?', 1)[0].split('#', 1)[0]
+        normalized = path[:-1] if path.endswith('/') and path != '/' else path
+        if normalized in SPA_ROUTES:
+            self.path = '/index.html'
+        return super().do_GET()
+
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
         self.send_header('Access-Control-Allow-Origin', '*')

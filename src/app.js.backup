@@ -35,36 +35,6 @@
         docsBaseUrl: '/src/assets/'
     };
 
-    const GROUP_ROUTE_PAIRS = [
-        ['I Qrup', '/1qrup'],
-        ['II Qrup', '/2qrup'],
-        ['III Qrup', '/3qrup'],
-        ['IV Qrup', '/4qrup'],
-        ['Buraxılış İmtahanı', '/buraxilis']
-    ];
-    const GROUP_TO_ROUTE = new Map(GROUP_ROUTE_PAIRS);
-    const ROUTE_TO_GROUP = new Map(GROUP_ROUTE_PAIRS.map(([group, route]) => [route, group]));
-
-    const normalizePath = (path) => {
-        if (!path) return '/';
-        const clean = path.split('?')[0].split('#')[0];
-        if (clean.length > 1 && clean.endsWith('/')) return clean.slice(0, -1);
-        return clean;
-    };
-
-    const getGroupFromPath = (path) => ROUTE_TO_GROUP.get(normalizePath(path)) || null;
-    const getRouteForGroup = (groupName) => GROUP_TO_ROUTE.get(groupName) || '/';
-    const getGroupIndex = (groupName) => GROUPS.findIndex((g) => g.name === groupName) + 1;
-    const getPageIdForGroup = (groupName) => {
-        const index = getGroupIndex(groupName);
-        return index > 0 ? `group${index}Page` : null;
-    };
-    let applyRouteState = () => { };
-    const setScrollLock = (isLocked) => {
-        document.body.classList.toggle('scroll-locked', isLocked);
-        document.documentElement.classList.toggle('scroll-locked', isLocked);
-    };
-
     // --- DATA: Locales ---
     const TRANSLATIONS = {
         az: {
@@ -611,11 +581,11 @@
                 <div class="header-controls-left">
                     <!-- Placeholder to keep spacing -->
                 </div>
-                <div class="header-controls-right" style="display:flex; gap:10px;">
-                    <button id="themeToggle" class="navbar-btn" data-umami-event="Theme Toggled">
+                <div class="header-controls-right" style="display:flex; gap:12px;">
+                    <button id="themeToggle" class="navbar-btn" data-umami-event="Theme Toggled" style="background:rgba(118, 118, 128, 0.12); color:var(--text-color); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;">
                         ${isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
                     </button>
-                    <button id="languageToggle" class="navbar-btn header-badge-btn" data-umami-event="Language Toggled">
+                    <button id="languageToggle" class="navbar-btn" data-umami-event="Language Toggled" style="background:rgba(118, 118, 128, 0.12); color:var(--text-color); border-radius:18px; padding:0 12px; height:36px; font-weight:600; font-size:0.9rem; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;">
                         ${lang === 'az' ? 'AZ' : 'RU'}
                     </button>
                 </div>
@@ -656,7 +626,7 @@
             return `
                 <div class="header-controls-left" style="flex:1;">
                     <button id="backButton" class="nav-back-btn">
-                        <i class="fas fa-chevron-left" style="font-size:0.82rem;"></i> Qruplar
+                        <i class="fas fa-chevron-left" style="margin-right:6px; font-size:0.95rem;"></i> Qruplar
                     </button>
                 </div>
                 <div class="header-controls-center" style="flex:2; text-align:center; font-weight:600; font-size:1rem; color:var(--text-color);">
@@ -671,26 +641,61 @@
                 backBtn.addEventListener('click', () => {
                     vibrate(10);
 
-                    const activePage = document.querySelector('.group-page.active');
+                    const formPage = document.getElementById('formPage');
                     const homePage = document.getElementById('homePage');
-                    if (!activePage || !homePage) return;
 
                     // Trigger smooth exit animation horizontally to the right
-                    activePage.classList.remove('active');
-                    activePage.classList.add('sliding-out');
+                    formPage.classList.remove('active');
+                    formPage.classList.add('sliding-out');
                     homePage.classList.remove('slid-out');
 
                     // Complete the state removal after the transition completes
                     setTimeout(() => {
-                        activePage.classList.remove('sliding-out');
+                        formPage.classList.remove('sliding-out');
                         store.state.activePage = 'home';
                         store.state.activeGroup = null;
                         store.state.results = null;
-                        window.scrollTo(0, 0);
-                        if (normalizePath(window.location.pathname) !== '/') {
-                            window.history.pushState({ page: 'home' }, '', '/');
-                        }
-                    }, 280);
+                    }, 280); // 0.28s matches CSS transition
+                });
+            }
+
+            // Implement edge swipe to go back
+            const formPage = document.getElementById('formPage');
+            if (formPage && !formPage.dataset.touchAdded) {
+                formPage.dataset.touchAdded = 'true';
+                let startX = 0;
+                let startY = 0;
+                let isSwiping = false;
+
+                formPage.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isSwiping = true;
+                }, { passive: true });
+
+                formPage.addEventListener('touchmove', (e) => {
+                    if (!isSwiping) return;
+                    const currentX = e.touches[0].clientX;
+                    const currentY = e.touches[0].clientY;
+                    const deltaX = currentX - startX;
+                    const deltaY = Math.abs(currentY - startY);
+
+                    // Cancel swipe if scrolling vertically more than horizontally, but ignore initial finger jitters
+                    if (deltaY > 15 && deltaY > deltaX) {
+                        isSwiping = false;
+                        return;
+                    }
+
+                    // Trigger back immediately on deep swipe rather than waiting for touchend
+                    if (deltaX > 80 && formPage.classList.contains('active')) {
+                        isSwiping = false; // Prevent multiple triggers
+                        const backBtn = document.getElementById('backButton');
+                        if (backBtn) backBtn.click();
+                    }
+                }, { passive: true });
+
+                formPage.addEventListener('touchend', () => {
+                    isSwiping = false;
                 });
             }
         }
@@ -755,6 +760,7 @@
             `;
         }
     }
+
     // --- COMPONENT: GroupSelector (List Style) ---
     class GroupSelector extends Component {
         constructor(host) {
@@ -795,145 +801,27 @@
             `;
         }
         afterRender() {
-            const openGroup = (newGroup) => {
-                vibrate(10);
-                const groupIndex = GROUPS.findIndex((g) => g.name === newGroup) + 1;
-                const targetPage = document.getElementById(`group${groupIndex}Page`);
-                if (!targetPage) return;
-
-                store.state.activeGroup = newGroup;
-                store.state.results = null;
-                store.state.activePage = `group${groupIndex}`;
-
-                document.getElementById('homePage').classList.add('slid-out');
-                document.querySelectorAll('.group-page').forEach((p) => p.classList.remove('active', 'sliding-out'));
-                targetPage.classList.add('active');
-
-                    const nextPath = getRouteForGroup(newGroup);
-                    if (normalizePath(window.location.pathname) !== nextPath) {
-                        window.history.pushState({ group: newGroup }, '', nextPath);
-                    }
-
-                setTimeout(() => {
-                    targetPage.scrollTop = 0;
-                    window.scrollTo(0, 0);
-                }, 0);
-            };
-
-            const groupButtons = Array.from(this.host.querySelectorAll('.list-item-btn[data-group]'));
-            let suppressClick = false;
-
-            groupButtons.forEach((btn) => {
+            this.host.querySelectorAll('.list-item-btn[data-group]').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    if (suppressClick) return;
-                    openGroup(btn.dataset.group);
+                    vibrate(10);
+                    const newGroup = btn.dataset.group;
+
+                    store.state.activeGroup = newGroup;
+                    store.state.results = null;
+                    store.state.activePage = 'form';
+
+                    // Slide UI
+                    document.getElementById('homePage').classList.add('slid-out');
+                    document.getElementById('formPage').classList.add('active');
                 });
             });
-
-            // Mobile: long-press then slide finger across items, release to choose.
-            const groupList = this.host.querySelector('.list-container');
-            if (groupList && window.matchMedia('(hover: none)').matches) {
-                let holdTimer = null;
-                let longPressActive = false;
-                let pointerTracking = false;
-                let startX = 0;
-                let startY = 0;
-                let activeBtn = null;
-                let blockClickUntil = 0;
-
-                const setActiveButton = (btn) => {
-                    groupButtons.forEach((item) => item.classList.remove('touch-hover'));
-                    activeBtn = btn;
-                    if (activeBtn) activeBtn.classList.add('touch-hover');
-                };
-
-                const resetPicker = () => {
-                    if (holdTimer) clearTimeout(holdTimer);
-                    holdTimer = null;
-                    longPressActive = false;
-                    pointerTracking = false;
-                    setActiveButton(null);
-                    groupList.classList.remove('touch-picker-active');
-                };
-
-                groupList.addEventListener('touchstart', (e) => {
-                    const targetBtn = e.target.closest('.list-item-btn[data-group]');
-                    if (!targetBtn) return;
-                    if (Date.now() < blockClickUntil) return;
-
-                    pointerTracking = true;
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                    setActiveButton(targetBtn);
-
-                    holdTimer = setTimeout(() => {
-                        if (!pointerTracking) return;
-                        longPressActive = true;
-                        groupList.classList.add('touch-picker-active');
-                        vibrate(6);
-                    }, 220);
-                }, { passive: true });
-
-                groupList.addEventListener('touchmove', (e) => {
-                    if (!pointerTracking || (!holdTimer && !longPressActive)) return;
-                    const touch = e.touches[0];
-                    const dx = Math.abs(touch.clientX - startX);
-                    const dy = Math.abs(touch.clientY - startY);
-
-                    // Preserve native vertical scroll before long-press engages.
-                    if (!longPressActive && dy > 10 && dy > dx) {
-                        clearTimeout(holdTimer);
-                        holdTimer = null;
-                        pointerTracking = false;
-                        setActiveButton(null);
-                        return;
-                    }
-
-                    // Finger moved too much before long press => treat as regular gesture.
-                    if (!longPressActive && (dx > 18 || dy > 18)) {
-                        clearTimeout(holdTimer);
-                        holdTimer = null;
-                        pointerTracking = false;
-                        setActiveButton(null);
-                        return;
-                    }
-
-                    if (longPressActive) {
-                        e.preventDefault();
-                        const hovered = document.elementFromPoint(touch.clientX, touch.clientY)
-                            ?.closest('.list-item-btn[data-group]');
-                        if (hovered && groupList.contains(hovered) && hovered !== activeBtn) {
-                            setActiveButton(hovered);
-                            vibrate(3);
-                        }
-                    }
-                }, { passive: false });
-
-                groupList.addEventListener('touchend', () => {
-                    if (!longPressActive || !activeBtn) {
-                        resetPicker();
-                        return;
-                    }
-                    const chosen = activeBtn.dataset.group;
-                    resetPicker();
-                    suppressClick = true;
-                    setTimeout(() => { suppressClick = false; }, 350);
-                    blockClickUntil = Date.now() + 350;
-                    openGroup(chosen);
-                }, { passive: true });
-
-                groupList.addEventListener('touchcancel', resetPicker, { passive: true });
-            }
 
             const docsBtn = this.host.querySelector('#docsBtn');
             if (docsBtn) {
                 docsBtn.addEventListener('click', () => {
                     vibrate(10);
                     const docsModal = document.getElementById('docsModal');
-                    if (docsModal) {
-                        docsModal.classList.add('active');
-                        setScrollLock(true);
-                    }
+                    if (docsModal) docsModal.classList.add('active');
                 });
             }
 
@@ -942,10 +830,7 @@
                 addToHomeBtn.addEventListener('click', () => {
                     vibrate(10);
                     const addToHomeModal = document.getElementById('addToHomeModal');
-                    if (addToHomeModal) {
-                        addToHomeModal.classList.add('active');
-                        setScrollLock(true);
-                    }
+                    if (addToHomeModal) addToHomeModal.classList.add('active');
                 });
             }
         }
@@ -1025,10 +910,9 @@
                     ${label}
                     <div class="stepper-wrapper">
                         <button type="button" class="stepper-btn minus" tabindex="-1"><i class="fas fa-minus" style="font-size: 0.85rem;"></i></button>
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="${name}" min="0" max="${max}" data-max="${max}" class="input-field" placeholder="0" value="${getValue(name)}">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="${name}" min="0" max="${max}" class="input-field" placeholder="0" value="${getValue(name)}">
                         <button type="button" class="stepper-btn plus" tabindex="-1"><i class="fas fa-plus" style="font-size: 0.85rem;"></i></button>
                     </div>
-                    <div class="validation-message" data-for="${name}"></div>
                 </label>
             `;
 
@@ -1104,7 +988,7 @@
                         });
                     }
                     setTimeout(() => {
-                        const resDiv = this.host.closest('.group-page')?.querySelector('.group-results');
+                        const resDiv = document.getElementById('resultsContainer');
                         if (resDiv) resDiv.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                 });
@@ -1113,13 +997,6 @@
             // Validation
             this.host.querySelectorAll('.input-field').forEach(input => {
                 input.addEventListener('input', (e) => this.validate(e.target));
-                input.addEventListener('focus', () => {
-                    this.host.querySelectorAll('.input-field').forEach((field) => field.classList.remove('is-focused'));
-                    input.classList.add('is-focused');
-                });
-                input.addEventListener('blur', () => {
-                    input.classList.remove('is-focused');
-                });
             });
 
             // Stepper Logic with Hold-to-Increment
@@ -1190,27 +1067,17 @@
         }
 
         validate(input) {
-            const min = parseInt(input.min) || 0;
-            const max = parseInt(input.getAttribute('data-max')) || parseInt(input.max);
+            const min = parseInt(input.min);
+            const max = parseInt(input.max);
             const value = parseInt(input.value);
-            const label = input.closest('label');
-            const validationMsg = label?.querySelector('.validation-message');
+            const errorSpan = input.closest('label').querySelector('.error-message');
             const t = TRANSLATIONS[store.state.language];
 
-            if (!label) return;
-
-            // Check if value is out of range
-            if (!isNaN(value) && (value < min || value > max)) {
-                input.classList.add('has-error');
-                if (validationMsg) {
-                    validationMsg.textContent = t.errors.range.replace('{min}', min).replace('{max}', max);
-                    validationMsg.classList.add('show');
-                }
-            } else {
-                input.classList.remove('has-error');
-                if (validationMsg) {
-                    validationMsg.classList.remove('show');
-                    validationMsg.textContent = '';
+            if (errorSpan) {
+                if (!isNaN(value) && (value < min || value > max)) {
+                    errorSpan.textContent = t.errors.range.replace('{min}', min).replace('{max}', max);
+                } else {
+                    errorSpan.textContent = '';
                 }
             }
         }
@@ -1270,8 +1137,7 @@
                 vibrate(10);
                 store.state.results = null;
                 store.state.answers = null;
-                const formEl = this.host.closest('.group-page')?.querySelector('.group-form');
-                if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('examFormContainer').scrollIntoView({ behavior: 'smooth' });
             });
             this.host.querySelector('#downloadButton').addEventListener('click', () => {
                 vibrate(15);
@@ -1391,7 +1257,6 @@
             const closeModal = () => {
                 vibrate(10);
                 this.host.classList.remove('active');
-                setScrollLock(false);
             };
 
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -1479,7 +1344,6 @@
             const closeModal = () => {
                 vibrate(10);
                 this.host.classList.remove('active');
-                setScrollLock(false);
             };
 
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -1494,87 +1358,24 @@
     document.addEventListener('DOMContentLoaded', () => {
         const theme = store.state.theme;
         if (theme === 'light') document.body.classList.add('light-mode');
-        const homePageEl = document.getElementById('homePage');
-        if (homePageEl) homePageEl.classList.add('hide-countdown');
-
-        applyRouteState = (pathname, clearResults = false) => {
-            const routeGroup = getGroupFromPath(pathname);
-            const homePage = document.getElementById('homePage');
-            const allGroupPages = document.querySelectorAll('.group-page');
-
-            allGroupPages.forEach((page) => page.classList.remove('active', 'sliding-out'));
-
-            if (!routeGroup) {
-                if (homePage) {
-                    homePage.classList.add('active');
-                    homePage.classList.remove('slid-out');
-                }
-                store.state.activePage = 'home';
-                store.state.activeGroup = null;
-                if (clearResults) store.state.results = null;
-                return;
-            }
-
-            const targetPageId = getPageIdForGroup(routeGroup);
-            const targetPage = targetPageId ? document.getElementById(targetPageId) : null;
-
-            if (homePage) {
-                homePage.classList.add('active');
-                homePage.classList.add('slid-out');
-            }
-            if (targetPage) targetPage.classList.add('active');
-
-            if (store.state.activeGroup && store.state.activeGroup !== routeGroup && clearResults) {
-                store.state.results = null;
-            }
-
-            store.state.activeGroup = routeGroup;
-            store.state.activePage = `group${getGroupIndex(routeGroup)}`;
-        };
-
-        const updateKeyboardState = () => {
-            const activePage = document.querySelector('.group-page.active');
-            if (!activePage) return;
-            const focused = document.activeElement;
-            const isInputFocused = focused && (
-                focused.matches('input, textarea, select') ||
-                focused.closest('.stepper-wrapper')
-            );
-            activePage.classList.toggle('keyboard-open', !!isInputFocused);
-        };
 
         // Execute initial render
-        applyRouteState(window.location.pathname);
+        const initialPage = store.state.activePage || 'home';
+        document.getElementById('homePage').classList.toggle('active', initialPage === 'home');
+        document.getElementById('homePage').classList.toggle('slid-out', initialPage !== 'home');
+
+        document.getElementById('formPage').classList.toggle('active', initialPage === 'form');
 
         // Initialize Components
         new HomeHeader(document.getElementById('homeHeader'));
+        new FormHeader(document.getElementById('formHeader'));
         new Countdown(document.querySelector('.countdown-container'));
         new GroupSelector(document.getElementById('groupButtons'));
+        new ExamForm(document.getElementById('examFormContainer'));
+        new Results(document.getElementById('resultsContainer'));
         new Footer(document.getElementById('footerContainer'));
         new DocumentationModal(document.getElementById('docsModal'));
         new AddToHomeModal(document.getElementById('addToHomeModal'));
-
-        // Initialize all 5 group pages
-        for (let i = 1; i <= GROUPS.length; i++) {
-            const page = document.getElementById(`group${i}Page`);
-            if (!page) continue;
-            const headerHost = page.querySelector('.page-header');
-            const formHost = page.querySelector('.group-form');
-            const resultsHost = page.querySelector('.group-results');
-            if (headerHost) new FormHeader(headerHost);
-            if (formHost) new ExamForm(formHost);
-            if (resultsHost) new Results(resultsHost);
-        }
-
-        window.addEventListener('popstate', () => {
-            applyRouteState(window.location.pathname, true);
-        });
-
-        document.addEventListener('focusin', updateKeyboardState);
-        document.addEventListener('focusout', () => setTimeout(updateKeyboardState, 0));
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', updateKeyboardState);
-        }
 
         // Entry Animations
         const elementsToAnimate = [
@@ -1589,7 +1390,7 @@
         elementsToAnimate.forEach((el, index) => {
             if (el) {
                 el.classList.add('animate-appear');
-                el.style.animationDelay = `${index * 75}ms`; // Faster animations
+                el.style.animationDelay = `${index * 100}ms`;
             }
         });
 
@@ -1603,10 +1404,7 @@
                 e.preventDefault(); e.stopPropagation();
                 try { if (typeof vibrate === 'function') vibrate(10); } catch (err) { }
                 const modal = document.getElementById('changelogModal');
-                if (modal) {
-                    modal.classList.add('active');
-                    setScrollLock(true);
-                }
+                if (modal) modal.classList.add('active');
             }
 
             // Docs
@@ -1615,10 +1413,7 @@
                 e.preventDefault(); e.stopPropagation();
                 try { if (typeof vibrate === 'function') vibrate(10); } catch (err) { }
                 const modal = document.getElementById('docsModal');
-                if (modal) {
-                    modal.classList.add('active');
-                    setScrollLock(true);
-                }
+                if (modal) modal.classList.add('active');
             }
         });
 
