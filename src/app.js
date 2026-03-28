@@ -64,6 +64,11 @@
         document.body.classList.toggle('scroll-locked', isLocked);
         document.documentElement.classList.toggle('scroll-locked', isLocked);
     };
+    const trackUmamiEvent = (event, data = {}) => {
+        if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
+            umami.track(event, data);
+        }
+    };
 
     // --- DATA: Locales ---
     const TRANSLATIONS = {
@@ -919,6 +924,7 @@
                     suppressClick = true;
                     setTimeout(() => { suppressClick = false; }, 350);
                     blockClickUntil = Date.now() + 350;
+                    trackUmamiEvent('Group Selected', { group: chosen });
                     openGroup(chosen);
                 }, { passive: true });
 
@@ -1623,19 +1629,13 @@
         });
 
         // --- ANALYTICS: Umami ---
-        const trackEvent = (event, data = {}) => {
-            if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
-                umami.track(event, data);
-            }
-        };
-
-        trackEvent('Page Load');
+        trackUmamiEvent('Page Load');
 
         // Track Theme Change
-        const themeSwitch = document.querySelector('.theme-switch input');
-        if (themeSwitch) {
-            themeSwitch.addEventListener('change', (e) => {
-                trackEvent('Theme Changed', { theme: e.target.checked ? 'light' : 'dark' });
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                trackUmamiEvent('Theme Changed', { theme: store.state.theme });
             });
         }
 
@@ -1647,42 +1647,42 @@
                 const newLang = store.state.language === 'az' ? 'ru' : 'az';
                 document.documentElement.lang = newLang; // Update DOM for CSS targeting
                 // Note: state updates after click, but we want to track the *action* of changing
-                trackEvent('Language Changed', { language: newLang });
+                trackUmamiEvent('Language Changed', { language: newLang });
             });
         }
 
         // Track Form Abandonment
         window.addEventListener('beforeunload', () => {
             if (store.state.activeGroup && !store.state.results) {
-                trackEvent('User Abandoned Form', { group: store.state.activeGroup });
+                trackUmamiEvent('User Abandoned Form', { group: store.state.activeGroup });
             }
         });
 
         document.addEventListener('click', (e) => {
             // Group Selected - check if clicked button is inside #groupButtons
-            const clickedBtn = e.target.closest('.btn');
+            const clickedBtn = e.target.closest('.list-item-btn[data-group]');
             const groupBtn = clickedBtn && clickedBtn.closest('#groupButtons') ? clickedBtn : null;
             if (groupBtn) {
                 const groupName = groupBtn.dataset.group || groupBtn.textContent.trim();
-                trackEvent('Group Selected', { group: groupName });
+                trackUmamiEvent('Group Selected', { group: groupName });
             }
 
             // Note: Score tracking is now done inside ExamForm with properties
 
             // Results Downloaded
             if (e.target.closest('#downloadButton')) {
-                trackEvent('Results Downloaded');
+                trackUmamiEvent('Results Downloaded');
             }
 
             // Form Reset (renamed from Recalculate)
             if (e.target.closest('#recalculateButton')) {
-                trackEvent('Form Reset');
+                trackUmamiEvent('Form Reset');
             }
 
 
             // Docs Opened
             if (e.target.closest('#docsBtn')) {
-                trackEvent('Docs Opened');
+                trackUmamiEvent('Docs Opened');
             }
 
             // Link Tracking
@@ -1692,16 +1692,16 @@
 
                 // Author Website
                 if (href.includes('abusov.com')) {
-                    trackEvent('Author Link Clicked');
+                    trackUmamiEvent('Author Link Clicked');
                 }
                 // Documentation PDFs
                 else if (href.includes('.pdf')) {
                     const fileName = href.split('/').pop();
-                    trackEvent('Document Clicked', { file: fileName });
+                    trackUmamiEvent('Document Clicked', { file: fileName });
                 }
                 // Other Links
                 else {
-                    trackEvent('Link Clicked', { url: href });
+                    trackUmamiEvent('Link Clicked', { url: href });
                 }
             }
         });
