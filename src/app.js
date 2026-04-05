@@ -779,7 +779,6 @@
                             data-group="${group.name}"
                             class="list-item-btn"
                             type="button"
-                            data-umami-event="${group.name} Selected"
                         >
                             <span>${t.groups[group.name]}</span>
                             <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
@@ -788,7 +787,7 @@
                 </div>
                 
                 <div class="list-container" style="margin-top:2rem;">
-                    <button type="button" id="docsBtn" class="list-item-btn" data-umami-event="Docs Opened" style="color:var(--text-color);">
+                    <button type="button" id="docsBtn" class="list-item-btn" style="color:var(--text-color);">
                         <span><i class="fas fa-info-circle" style="color:var(--primary-color); margin-right:8px;"></i> ${t.howCalculated}</span>
                         <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
                     </button>
@@ -1005,7 +1004,7 @@
                         </div>
                         
                         <div class="button-wrapper">
-                            <button id="calculateButton" type="button" class="action-btn" data-umami-event="Calculate Button Clicked">${t.calculate}</button>
+                            <button id="calculateButton" type="button" class="action-btn">${t.calculate}</button>
                         </div>
                     </form>
                 </div>
@@ -1260,10 +1259,10 @@
                     </div>
                     
                     <div class="button-wrapper" style="margin-top:2rem;">
-                        <button id="downloadButton" type="button" class="action-btn" data-umami-event="Download Results Clicked" style="margin-bottom: 12px;">
+                        <button id="downloadButton" type="button" class="action-btn" style="margin-bottom: 12px;">
                             <i class="fas fa-download" style="margin-right:8px;"></i> ${t.saveResults}
                         </button>
-                        <button id="recalculateButton" type="button" class="action-btn secondary" data-umami-event="Recalculate Button Clicked">
+                        <button id="recalculateButton" type="button" class="action-btn secondary">
                             <i class="fas fa-redo" style="margin-right:8px;"></i> ${t.recalculate}
                         </button>
                     </div>
@@ -1338,7 +1337,7 @@
         template() {
             return `
                 <div class="footer-content" style="padding-bottom:1rem;">
-                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener" data-umami-event="Developer Link Clicked">abusoww</a> with <i class="fa-solid fa-heart theme-heart" style="margin-left:2px; font-size:0.9rem;"></i></span>
+                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener">abusoww</a> with <i class="fa-solid fa-heart theme-heart" style="margin-left:2px; font-size:0.9rem;"></i></span>
                 </div>
             `;
         }
@@ -1369,7 +1368,7 @@
                         <i class="fas fa-file-pdf"></i>
                         <span>${doc.name}</span>
                     </div>
-                    <a href="${APP_CONFIG.docsBaseUrl}${doc.file}" target="_blank" data-umami-event="Document PDF Clicked" class="doc-link">Oxu</a>
+                    <a href="${APP_CONFIG.docsBaseUrl}${doc.file}" target="_blank" class="doc-link">Oxu</a>
                 </div>
             `).join('');
 
@@ -1629,7 +1628,7 @@
         });
 
         // --- ANALYTICS: Umami ---
-        trackUmamiEvent('Page Load');
+        // trackUmamiEvent('Page Load'); // Automatically tracked by Umami
 
         // Track Theme Change
         const themeToggle = document.getElementById('themeToggle');
