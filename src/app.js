@@ -69,6 +69,7 @@
             umami.track(event, data);
         }
     };
+    const SURVEY_FORM_URL = 'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=0SUxpIkPpE-Zq1R0yJ_dQl5nIapgYjhFnWkiMPAuvWxUNUlIUDJHN1JZVUkzNUZUTEZGMEFSWlJYNC4u';
 
     // --- DATA: Locales ---
     const TRANSLATIONS = {
@@ -135,7 +136,10 @@
             addToHomeAndroid_Step2: '2. "Ana Ekrana Əlavə Et" seçin',
             addToHomeModalTitle: 'Tətbiqi Yüklə',
             addToHomeModalDesc: 'Daha sürətli hesablamaq üçün tətbiqi yükləyin:',
-            addToHomeBtnTitle: 'Ana Ekrana Əlavə Et'
+            addToHomeBtnTitle: 'Ana Ekrana Əlavə Et',
+            surveyTitle: 'Abituriyent Sorğusu',
+            surveyText: 'Bu sorğu abituriyentlərin hazırlıq prosesində qarşılaşdıqları çətinlikləri və repetitor sisteminin səmərəliliyini öyrənmək üçün hazırlanmışdır. Cəmi 30 saniyə vaxtınızı alacaq.',
+            surveyButton: 'Sorğuya Keç'
         },
         ru: {
             title: 'Калькулятор подсчета баллов',
@@ -200,7 +204,10 @@
             addToHomeAndroid_Step2: '2. Выберите «Добавить на гл. экран»',
             addToHomeModalTitle: 'Установить приложение',
             addToHomeModalDesc: 'Скачайте приложение для более прямого доступа:',
-            addToHomeBtnTitle: 'Добавить на главный экран'
+            addToHomeBtnTitle: 'Добавить на главный экран',
+            surveyTitle: 'Опрос абитуриентов',
+            surveyText: 'Этот опрос создан, чтобы изучить трудности, с которыми абитуриенты сталкиваются в процессе подготовки, и эффективность системы репетиторов. Это займет всего 30 секунд.',
+            surveyButton: 'Перейти к опросу'
         }
     };
 
@@ -795,6 +802,10 @@
                         <span><i class="fas fa-plus-square" style="color:var(--primary-color); margin-right:8px;"></i> ${t.addToHomeBtnTitle}</span>
                         <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
                     </button>
+                    <button type="button" id="surveyListBtn" class="list-item-btn" style="color:var(--text-color);">
+                        <span><i class="fas fa-clipboard-list" style="color:var(--primary-color); margin-right:8px;"></i> ${t.surveyTitle}</span>
+                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                    </button>
                 </div>
             `;
         }
@@ -951,6 +962,14 @@
                         addToHomeModal.classList.add('active');
                         setScrollLock(true);
                     }
+                });
+            }
+
+            const surveyListBtn = this.host.querySelector('#surveyListBtn');
+            if (surveyListBtn) {
+                surveyListBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    showSurveyFloatingPopup();
                 });
             }
         }
@@ -1257,7 +1276,13 @@
                     <div class="results-breakdown-list">
                         ${rows}
                     </div>
-                    
+
+                    <div class="survey-inline-card">
+                        <h4 class="survey-inline-title">${t.surveyTitle}</h4>
+                        <p class="survey-inline-text">${t.surveyText}</p>
+                        <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" id="resultsSurveyButton" class="action-btn survey-link-btn">${t.surveyButton}</a>
+                    </div>
+
                     <div class="button-wrapper" style="margin-top:2rem;">
                         <button id="downloadButton" type="button" class="action-btn" style="margin-bottom: 12px;">
                             <i class="fas fa-download" style="margin-right:8px;"></i> ${t.saveResults}
@@ -1282,6 +1307,12 @@
                 vibrate(15);
                 this.download();
             });
+            const resultsSurveyBtn = this.host.querySelector('#resultsSurveyButton');
+            if (resultsSurveyBtn) {
+                resultsSurveyBtn.addEventListener('click', () => {
+                    trackUmamiEvent('Survey Opened', { group: store.state.activeGroup, language: store.state.language, source: 'after-calculate-inline' });
+                });
+            }
         }
         download() {
             const results = store.state.results;
@@ -1495,6 +1526,78 @@
         }
     }
 
+    // --- COMPONENT: SurveyFloatingPopup ---
+    class SurveyFloatingPopup extends Component {
+        template() {
+            const t = TRANSLATIONS[store.state.language];
+            return `
+                <div class="survey-floating-popup">
+                    <button type="button" class="survey-floating-close" aria-label="Close">&times;</button>
+                    <h4 class="survey-floating-title">${t.surveyTitle}</h4>
+                    <p class="survey-floating-text">${t.surveyText}</p>
+                    <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" class="action-btn survey-link-btn">${t.surveyButton}</a>
+                </div>
+            `;
+        }
+
+        afterRender() {
+            const popup = this.host.querySelector('.survey-floating-popup');
+            const closeBtn = this.host.querySelector('.survey-floating-close');
+            const surveyBtn = this.host.querySelector('.survey-link-btn');
+
+            if (!popup) return;
+
+            const closePopup = () => {
+                this.host.classList.remove('active');
+            };
+
+            if (closeBtn) closeBtn.addEventListener('click', closePopup);
+            if (surveyBtn) {
+                surveyBtn.addEventListener('click', () => {
+                    trackUmamiEvent('Survey Opened', { page: store.state.activePage || 'home', language: store.state.language, source: 'floating-popup' });
+                });
+            }
+        }
+    }
+
+    const showSurveyFloatingPopup = () => {
+        const popupHost = document.getElementById('surveyFloatingPopup');
+        if (!popupHost) return;
+        popupHost.classList.add('active');
+    };
+
+    const hideSurveyFloatingPopup = () => {
+        const popupHost = document.getElementById('surveyFloatingPopup');
+        if (!popupHost) return;
+        popupHost.classList.remove('active');
+    };
+
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.survey-floating-close')) {
+            hideSurveyFloatingPopup();
+            return;
+        }
+        if (e.target.closest('#surveyFloatingPopup .survey-link-btn')) {
+            hideSurveyFloatingPopup();
+            return;
+        }
+    });
+
+    class SurveyFloatingPopupBootstrap {
+        constructor(host) {
+            this.host = host;
+            this.component = null;
+        }
+
+        init() {
+            if (!this.host) return;
+            this.component = new SurveyFloatingPopup(this.host);
+            setTimeout(() => {
+                showSurveyFloatingPopup();
+            }, 700);
+        }
+    }
+
     // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
         const theme = store.state.theme;
@@ -1558,6 +1661,8 @@
         new Footer(document.getElementById('footerContainer'));
         new DocumentationModal(document.getElementById('docsModal'));
         new AddToHomeModal(document.getElementById('addToHomeModal'));
+        const surveyPopup = new SurveyFloatingPopupBootstrap(document.getElementById('surveyFloatingPopup'));
+        surveyPopup.init();
 
         // Initialize all 5 group pages
         for (let i = 1; i <= GROUPS.length; i++) {
@@ -1682,6 +1787,9 @@
             // Docs Opened
             if (e.target.closest('#docsBtn')) {
                 trackUmamiEvent('Docs Opened');
+            }
+            if (e.target.closest('#surveyListBtn')) {
+                trackUmamiEvent('Survey Opened', { source: 'home-list' });
             }
 
             // Link Tracking
