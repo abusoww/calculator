@@ -11,7 +11,7 @@
         {
             name: 'II Qrup',
             subjects: ['Riyaziyyat', 'Coğrafiya', 'Tarix'],
-            maxScores: [150, 100, 150]
+            maxScores: [150, 150, 100]
         },
         {
             name: 'III Qrup',

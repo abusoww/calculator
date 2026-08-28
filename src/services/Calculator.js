@@ -28,8 +28,8 @@ export class Calculator {
             const tarix = safeAnswers['Tarix'];
 
             results['Riyaziyyat'] = 1.5 * 100 / 33 * ((riyaziyyat.correct - riyaziyyat.incorrect / 4) + (2 * riyaziyyat.open + riyaziyyat.coding));
-            results['Coğrafiya'] = 100 / 33 * ((cografiya.correct - cografiya.incorrect / 4) + (2 * cografiya.open + cografiya.coding));
-            results['Tarix'] = 1.5 * 100 / 33 * ((tarix.correct - tarix.incorrect / 4) + (2 * tarix.open + tarix.coding));
+            results['Coğrafiya'] = 1.5 * 100 / 33 * ((cografiya.correct - cografiya.incorrect / 4) + (2 * cografiya.open + cografiya.coding));
+            results['Tarix'] = 100 / 33 * ((tarix.correct - tarix.incorrect / 4) + (2 * tarix.open + tarix.coding));
         } else if (groupName === 'III Qrup') {
             const azDili = safeAnswers['Azərbaycan dili'];
             const edebiyyat = safeAnswers['Ədəbiyyat'];
