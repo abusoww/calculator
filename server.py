@@ -25,14 +25,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return mimetype
 
 # Allow port reuse
-socketserver.TCPServer.allow_reuse_address = True
+socketserver.ThreadingTCPServer.allow_reuse_address = True
 
 try:
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving at http://localhost:{PORT}")
+    with socketserver.ThreadingTCPServer(("0.0.0.0", PORT), Handler) as httpd:
+        print(f"Serving at http://0.0.0.0:{PORT}")
         httpd.serve_forever()
 except OSError:
     print(f"Port {PORT} is busy, trying {PORT+1}")
-    with socketserver.TCPServer(("", PORT+1), Handler) as httpd:
-        print(f"Serving at http://localhost:{PORT+1}")
+    with socketserver.ThreadingTCPServer(("0.0.0.0", PORT+1), Handler) as httpd:
+        print(f"Serving at http://0.0.0.0:{PORT+1}")
         httpd.serve_forever()

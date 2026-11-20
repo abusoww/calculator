@@ -1,159 +1,39 @@
-/* --- Pinterest-Inspired Animations --- */
-
-/* Smooth Fade In with Gentle Effect */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Staggered Fade In for Lists */
-@keyframes fadeInStagger {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Smooth Scale In */
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Gentle Pulse Effect */
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.03);
-    }
-}
-
-/* Slide In from Bottom */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(24px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Page Entry Animations - Faster & Smoother */
 @keyframes appearBlurScale {
-    0% {
+    from {
         opacity: 0;
         transform: scale(0.98) translateY(8px);
     }
 
-    100% {
+    to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: none;
     }
 }
 
 .animate-appear {
     opacity: 0;
     animation: appearBlurScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity;
 }
 
-/* Stagger Delays (faster timing) */
-.delay-100 {
-    animation-delay: 50ms;
-}
-
-.delay-200 {
-    animation-delay: 100ms;
-}
-
-.delay-300 {
-    animation-delay: 150ms;
-}
-
-.delay-400 {
-    animation-delay: 200ms;
-}
-
-.delay-500 {
-    animation-delay: 250ms;
-}
-/* Additional Pinterest-style micro-animations */
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
+@keyframes slideInError {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
     }
-    50% {
-        transform: translateY(-10px);
+
+    to {
+        opacity: 1;
+        transform: none;
     }
 }
 
-@keyframes glow {
-    0%, 100% {
-        box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.2);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
-    }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
 }
 
-/* Success celebration animation */
-@keyframes celebrate {
-    0% {
-        transform: scale(1) rotate(0deg);
-    }
-    25% {
-        transform: scale(1.1) rotate(-5deg);
-    }
-    50% {
-        transform: scale(1.15) rotate(5deg);
-    }
-    75% {
-        transform: scale(1.1) rotate(-3deg);
-    }
-    100% {
-        transform: scale(1) rotate(0deg);
-    }
-}
-
-.celebrate {
-    animation: celebrate 0.6s ease-out;
+@keyframes heartBeat {
+    0%, 40%, 100% { transform: scale(1); }
+    10%, 30% { transform: scale(1.12); }
 }

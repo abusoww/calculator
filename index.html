@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="az" data-theme="light">
+<html lang="az">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#FAFAF9">
     <title>DIM Bal Hesablama Kalkulyatoru</title>
     <meta name="description"
         content="DIM bal hesablama kalkulyatoru ilə 1-ci, 2-ci, 3-cü və 4-cü qrupların ballarını hesablayın. Buraxılış imtahanı üçün 9-cu, 10-cu, 11-ci sinif imtahanlarının keçid balları və nəticələri haqqında məlumat əldə edin. Bloklar üzrə bal hesablanması ilə imtahan nəticələrinizi asanlıqla təhlil edin." />
@@ -31,11 +32,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Styles -->
     <link rel="stylesheet" href="src/styles/main.css">
@@ -78,18 +79,11 @@
             </div>
             <div class="container main-content-container">
                 <h1 class="title">İmtahan Ballarını Hesabla</h1>
-                <p class="description">Yeni nəsil kalkulyator: Daha sürətli, daha dəqiq.</p>
+                <p class="description">Qrupunu seç, cavablarını daxil et — bal dərhal hesablanır.</p>
 
-                <div class="countdown-container">
-                    <!-- Injected by Countdown component -->
-                </div>
-
-                <div id="groupButtons" class="button-group list-group">
-                    <!-- Injected by GroupSelector (now a List) -->
-                </div>
+                <div id="groupButtons"></div>
             </div>
 
-            <!-- Footer now sits at the bottom of the scrollable Home page -->
             <div id="footerContainer"></div>
         </div>
 
@@ -100,6 +94,7 @@
                 <div class="group-form"></div>
                 <div class="group-results"></div>
             </div>
+            <div class="score-dock"></div>
         </div>
 
         <div id="group2Page" class="page group-page" data-group="II Qrup">
@@ -108,6 +103,7 @@
                 <div class="group-form"></div>
                 <div class="group-results"></div>
             </div>
+            <div class="score-dock"></div>
         </div>
 
         <div id="group3Page" class="page group-page" data-group="III Qrup">
@@ -116,6 +112,7 @@
                 <div class="group-form"></div>
                 <div class="group-results"></div>
             </div>
+            <div class="score-dock"></div>
         </div>
 
         <div id="group4Page" class="page group-page" data-group="IV Qrup">
@@ -124,6 +121,7 @@
                 <div class="group-form"></div>
                 <div class="group-results"></div>
             </div>
+            <div class="score-dock"></div>
         </div>
 
         <div id="group5Page" class="page group-page" data-group="Buraxılış İmtahanı">
@@ -132,12 +130,14 @@
                 <div class="group-form"></div>
                 <div class="group-results"></div>
             </div>
+            <div class="score-dock"></div>
         </div>
     </div>
 
     <!-- Modals -->
     <div id="docsModal"></div>
     <div id="addToHomeModal"></div>
+    <div id="sponsorModal"></div>
     <div id="surveyFloatingPopup"></div>
 
     <!-- Application Script -->

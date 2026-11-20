@@ -1,102 +1,160 @@
 (function () {
     'use strict';
 
-    // --- DATA: Constants ---
+    // =====================================================================
+    // DATA — exam model (verified against DİM rules, 2025/2026 cycle)
+    // =====================================================================
+    //
+    // Block exam (II stage, max 400): every subject has 30 tasks
+    //   22 closed  (every 4 wrong answers cancel 1 correct)
+    //    5 open, coded answer   (1 point)
+    //    3 open, written answer (2 points)
+    //   raw max = 22 + 5 + 3*2 = 33  ->  score = coef * 100/33 * raw
+    //
+    // Graduation exam, 11th grade (I stage, max 300): wrong answers don't subtract
+    //   Riyaziyyat:      13 closed + 5 coded + 7 written*2  -> /32
+    //   Azərbaycan dili: 20 closed + 10 written*2           -> /40
+    //   Xarici dil:      23 closed + 7 written*2            -> /37
+
+    const BLOCK_FIELDS = [
+        { key: 'correct', max: 22, weight: 1, pool: 'closed', poolMax: 22 },
+        { key: 'incorrect', max: 22, weight: -0.25, pool: 'closed', poolMax: 22 },
+        { key: 'coding', max: 5, weight: 1 },
+        { key: 'open', max: 3, weight: 2 }
+    ];
+
+    const block = (key, coef) => ({ key, coef, type: 'block', max: 100 * coef, fields: BLOCK_FIELDS });
+
+    const FINAL_11_SUBJECTS = [
+        {
+            key: 'Riyaziyyat', type: 'final', max: 100, divisor: 32,
+            fields: [
+                { key: 'closed', max: 13, weight: 1 },
+                { key: 'coding', max: 5, weight: 1 },
+                { key: 'open', max: 7, weight: 2 }
+            ]
+        },
+        {
+            key: 'Azərbaycan dili', type: 'final', max: 100, divisor: 40,
+            fields: [
+                { key: 'closed', max: 20, weight: 1 },
+                { key: 'open', max: 10, weight: 2 }
+            ]
+        },
+        {
+            key: 'İngilis dili', type: 'final', max: 100, divisor: 37,
+            fields: [
+                { key: 'closed', max: 23, weight: 1 },
+                { key: 'open', max: 7, weight: 2 }
+            ]
+        }
+    ];
+
+    const FINAL_9_SUBJECTS = [
+        {
+            key: 'Riyaziyyat', type: 'final', max: 100, divisor: 29,
+            fields: [
+                { key: 'closed', max: 15, weight: 1 },
+                { key: 'coding', max: 6, weight: 1 },
+                { key: 'open', max: 4, weight: 2 }
+            ]
+        },
+        {
+            key: 'Azərbaycan dili', type: 'final', max: 100, divisor: 34,
+            fields: [
+                { key: 'closed', max: 26, weight: 1 },
+                { key: 'open', max: 4, weight: 2 }
+            ]
+        },
+        {
+            key: 'İngilis dili', type: 'final', max: 100, divisor: 30,
+            fields: [
+                { key: 'closed', max: 23, weight: 1 },
+                { key: 'coding', max: 2, weight: 1 },
+                { key: 'essay', max: 5, weight: 1 }
+            ]
+        }
+    ];
+
     const GROUPS = [
         {
-            name: 'I Qrup',
-            subjects: ['Riyaziyyat', 'Fizika', 'Kimya'],
-            maxScores: [150, 150, 100]
+            id: 'I Qrup', route: '/1qrup', badge: 'I', max: 400,
+            variants: [
+                { id: 'RK', label: 'Kimya', subjects: [block('Riyaziyyat', 1.5), block('Fizika', 1.5), block('Kimya', 1)] },
+                { id: 'Rİ', label: 'İnformatika', subjects: [block('Riyaziyyat', 1.5), block('Fizika', 1.5), block('İnformatika', 1)] }
+            ]
         },
         {
-            name: 'II Qrup',
-            subjects: ['Riyaziyyat', 'Coğrafiya', 'Tarix'],
-            maxScores: [150, 150, 100]
+            id: 'II Qrup', route: '/2qrup', badge: 'II', max: 400,
+            variants: [
+                { id: 'main', subjects: [block('Riyaziyyat', 1.5), block('Coğrafiya', 1.5), block('Tarix', 1)] }
+            ]
         },
         {
-            name: 'III Qrup',
-            subjects: ['Azərbaycan dili', 'Ədəbiyyat', 'Tarix'],
-            maxScores: [150, 100, 150]
+            id: 'III Qrup', route: '/3qrup', badge: 'III', max: 400,
+            variants: [
+                { id: 'DT', label: 'Ədəbiyyat', subjects: [block('Azərbaycan dili', 1.5), block('Tarix', 1.5), block('Ədəbiyyat', 1)] },
+                { id: 'TC', label: 'Coğrafiya', subjects: [block('Azərbaycan dili', 1.5), block('Tarix', 1.5), block('Coğrafiya', 1)] }
+            ]
         },
         {
-            name: 'IV Qrup',
-            subjects: ['Biologiya', 'Kimya', 'Fizika'],
-            maxScores: [150, 150, 100]
+            id: 'IV Qrup', route: '/4qrup', badge: 'IV', max: 400,
+            variants: [
+                { id: 'main', subjects: [block('Biologiya', 1.5), block('Kimya', 1.5), block('Fizika', 1)] }
+            ]
         },
         {
-            name: 'Buraxılış İmtahanı',
-            subjects: ['Riyaziyyat', 'Azərbaycan dili', 'İngilis dili'],
-            maxScores: [100, 100, 100]
-        },
+            id: 'Buraxılış İmtahanı', route: '/buraxilis', badge: '<i class="fas fa-graduation-cap"></i>', max: 300,
+            variants: [
+                { id: '11', label: 'grade11', subjects: FINAL_11_SUBJECTS },
+                { id: '9', label: 'grade9', subjects: FINAL_9_SUBJECTS }
+            ]
+        }
     ];
 
-    const APP_CONFIG = {
-        examDate: '2026-03-01T10:00:00',
-        docsBaseUrl: '/src/assets/'
-    };
+    const DOCS_BASE_URL = '/src/assets/';
+    const SURVEY_FORM_URL = 'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=0SUxpIkPpE-Zq1R0yJ_dQl5nIapgYjhFnWkiMPAuvWxUNUlIUDJHN1JZVUkzNUZUTEZGMEFSWlJYNC4u';
 
-    const GROUP_ROUTE_PAIRS = [
-        ['I Qrup', '/1qrup'],
-        ['II Qrup', '/2qrup'],
-        ['III Qrup', '/3qrup'],
-        ['IV Qrup', '/4qrup'],
-        ['Buraxılış İmtahanı', '/buraxilis']
-    ];
-    const GROUP_TO_ROUTE = new Map(GROUP_ROUTE_PAIRS);
-    const ROUTE_TO_GROUP = new Map(GROUP_ROUTE_PAIRS.map(([group, route]) => [route, group]));
+    const getGroup = (id) => GROUPS.find((g) => g.id === id) || null;
+    const getGroupIndex = (id) => GROUPS.findIndex((g) => g.id === id) + 1;
 
     const normalizePath = (path) => {
         if (!path) return '/';
         const clean = path.split('?')[0].split('#')[0];
-        if (clean.length > 1 && clean.endsWith('/')) return clean.slice(0, -1);
-        return clean;
+        return clean.length > 1 && clean.endsWith('/') ? clean.slice(0, -1) : clean;
+    };
+    const getGroupFromPath = (path) => {
+        const p = normalizePath(path);
+        const g = GROUPS.find((x) => x.route === p);
+        return g ? g.id : null;
     };
 
-    const getGroupFromPath = (path) => ROUTE_TO_GROUP.get(normalizePath(path)) || null;
-    const getRouteForGroup = (groupName) => GROUP_TO_ROUTE.get(groupName) || '/';
-    const getGroupIndex = (groupName) => GROUPS.findIndex((g) => g.name === groupName) + 1;
-    const getPageIdForGroup = (groupName) => {
-        const index = getGroupIndex(groupName);
-        return index > 0 ? `group${index}Page` : null;
-    };
-    let applyRouteState = () => { };
-    const setScrollLock = (isLocked) => {
-        document.body.classList.toggle('scroll-locked', isLocked);
-        document.documentElement.classList.toggle('scroll-locked', isLocked);
-    };
-    const trackUmamiEvent = (event, data = {}) => {
-        if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
-            umami.track(event, data);
-        }
-    };
-    const SURVEY_FORM_URL = 'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=0SUxpIkPpE-Zq1R0yJ_dQl5nIapgYjhFnWkiMPAuvWxUNUlIUDJHN1JZVUkzNUZUTEZGMEFSWlJYNC4u';
-
-    // --- DATA: Locales ---
+    // =====================================================================
+    // DATA — translations
+    // =====================================================================
     const TRANSLATIONS = {
         az: {
-            title: 'İmtahan Ballarını Hesablama',
-            description: 'Doğru, yanlış, açıq və qapalı suallar haqqında məlumat daxil edərək ballarınızı hesablaya bilərsiniz.',
-            calculate: 'Hesabla!',
-            results: 'Nəticəm:',
-            subject: 'Fənn',
-            score: 'Ümumi Bal',
-            saveResults: 'Nəticələri Saxla',
-            recalculate: 'Yenidən hesabla',
-            correct: 'Doğru Qapalı',
-            incorrect: 'Yanlış Qapalı',
-            open: 'Açıq',
-            closed: 'Qapalı',
-            coding: 'Kodlaşdırma',
-            days: 'Gün',
-            hours: 'Saat',
-            minutes: 'Dəqiqə',
-            seconds: 'Saniyə',
-            examStarted: 'İmtahan başladı!',
-            daysLeft: 'Gün qaldı',
-            hoursLeft: 'Saat qaldı',
-            minutesLeft: 'Dəqiqə qaldı',
-            secondsLeft: 'Saniyə qaldı',
-            downloadText: 'Nəticələri yüklə',
+            title: 'İmtahan Ballarını Hesabla',
+            description: 'Qrupunu seç, cavablarını daxil et — bal dərhal hesablanır.',
+            back: 'Qruplar',
+            points: 'bal',
+            total: 'Ümumi bal',
+            details: 'Ətraflı',
+            breakdown: 'Nəticə',
+            saveResults: 'Nəticəni yüklə',
+            reset: 'Sıfırla',
+            fields: {
+                correct: 'Doğru qapalı',
+                incorrect: 'Yanlış qapalı',
+                closed: 'Qapalı',
+                coding: 'Kodlaşdırılan açıq',
+                open: 'Yazılı açıq',
+                essay: 'Yazı işi (hekayə, bal)'
+            },
+            hintMax: 'maks. {n}',
+            hintDouble: '2 bal',
+            hintPenalty: '−0.25 bal',
+            errorMax: 'Maksimum {max}',
             groups: {
                 'I Qrup': 'I Qrup',
                 'II Qrup': 'II Qrup',
@@ -108,30 +166,23 @@
                 'Riyaziyyat': 'Riyaziyyat',
                 'Fizika': 'Fizika',
                 'Kimya': 'Kimya',
+                'İnformatika': 'İnformatika',
                 'Biologiya': 'Biologiya',
                 'Coğrafiya': 'Coğrafiya',
                 'Tarix': 'Tarix',
                 'Azərbaycan dili': 'Azərbaycan dili',
                 'Ədəbiyyat': 'Ədəbiyyat',
-                'İngilis dili': 'İngilis dili',
-                'Ümumi bal': 'Ümumi bal'
-            },
-            messages: {
-                excellent: 'Halal olsun! partlayışsan! Səninlə fəxr edirəm! 😎🔥',
-                good: 'Pis deyil! Amma bir az da sıxsan, nəticən bomba kimi olacaq! ',
-                average: 'Normaldır, amma mən bilirəm ki, sən bundan daha artığını bacararsan. Qaz ver! ',
-                low: 'Həvəsdən düşmək yoxdur! Bu sadəcə rəqəmlərdir. Əsas odur ki, təslim olmayasan! '
-            },
-            errors: {
-                range: 'Dəyər {min} və {max} arasında olmalıdır.'
+                'İngilis dili': 'Xarici dil',
+                'grade11': 'Sinif',
+                'grade9': 'Sinif'
             },
             howCalculated: 'Ballar necə hesablanır?',
-            docsTitle: 'Sənədlər',
-            addToHome: 'Ana ekrana əlavə et',
-            addToHomeIOS: 'Safari alt menyusunda <i class="fa-solid fa-arrow-up-from-bracket" style="margin: 0 4px;"></i> "Paylaş" ikonuna toxunun, sonra aşağı düşüb "Ana Ekrana Əlavə Et" seçin.',
+            docsTitle: 'Rəsmi qaydalar',
+            read: 'Oxu',
+            docs9: '9-cu sinif buraxılış',
+            docs11: '11-ci sinif buraxılış',
             addToHomeIOS_Step1: '1. Safari menyusunda "Paylaş" ikonuna toxunun',
             addToHomeIOS_Step2: '2. Aşağı sürüşdürüb "Ana Ekrana Əlavə Et" seçin',
-            addToHomeAndroid: 'Chrome üst menyusunda (⋮) toxunun, sonra "Ana Ekrana Əlavə Et" seçin.',
             addToHomeAndroid_Step1: '1. Brauzer menyusunu açın (⋮)',
             addToHomeAndroid_Step2: '2. "Ana Ekrana Əlavə Et" seçin',
             addToHomeModalTitle: 'Tətbiqi Yüklə',
@@ -139,32 +190,38 @@
             addToHomeBtnTitle: 'Ana Ekrana Əlavə Et',
             surveyTitle: 'Abituriyent Sorğusu',
             surveyText: 'Bu sorğu abituriyentlərin hazırlıq prosesində qarşılaşdıqları çətinlikləri və repetitor sisteminin səmərəliliyini öyrənmək üçün hazırlanmışdır. Cəmi 30 saniyə vaxtınızı alacaq.',
-            surveyButton: 'Sorğuya Keç'
+            surveyButton: 'Sorğuya Keç',
+            sponsorship: 'Reklam və əməkdaşlıq',
+            sponsorDesc: 'Kurslar, repetitorlar və təhsil layihələri üçün saytda reklam və sponsorluq yerləşdirmək mümkündür. Əlaqə üçün Telegram-da yazın:',
+            sponsorButton: 'Telegram-da yaz (@abusoww)',
+            copied: 'Kopyalandı',
+            copy: 'Kopyala',
+            fileHeader: 'İMTAHAN NƏTİCƏSİ',
+            fileDate: 'Tarix',
+            fileGroup: 'Qrup'
         },
         ru: {
-            title: 'Калькулятор подсчета баллов',
-            description: 'Вы можете рассчитать свои баллы, введя информацию о правильных, неправильных, открытых и закрытых вопросах.',
-            calculate: 'Рассчитать',
-            results: 'Результаты',
-            subject: 'Предмет',
-            score: 'Балл',
-            saveResults: 'Сохранить результаты',
-            recalculate: 'Пересчитать',
-            correct: 'Правильно',
-            incorrect: 'Неправильно',
-            open: 'Открытые',
-            closed: 'Закрытые',
-            coding: 'Кодирование',
-            days: 'Дней',
-            hours: 'Часов',
-            minutes: 'Минут',
-            seconds: 'Секунд',
-            examStarted: 'Экзамен начался!',
-            daysLeft: 'Дней осталось',
-            hoursLeft: 'Часов осталось',
-            minutesLeft: 'Минут осталось',
-            secondsLeft: 'Секунд осталось',
-            downloadText: 'Скачать результаты',
+            title: 'Калькулятор баллов',
+            description: 'Выбери группу, введи ответы — балл считается мгновенно.',
+            back: 'Группы',
+            points: 'балл',
+            total: 'Общий балл',
+            details: 'Подробно',
+            breakdown: 'Результат',
+            saveResults: 'Скачать результат',
+            reset: 'Сбросить',
+            fields: {
+                correct: 'Верные закрытые',
+                incorrect: 'Неверные закрытые',
+                closed: 'Закрытые',
+                coding: 'Открытые (код)',
+                open: 'Открытые (письм.)',
+                essay: 'Эссе (рассказ, балл)'
+            },
+            hintMax: 'макс. {n}',
+            hintDouble: '2 балла',
+            hintPenalty: '−0,25 балла',
+            errorMax: 'Максимум {max}',
             groups: {
                 'I Qrup': 'I Группа',
                 'II Qrup': 'II Группа',
@@ -176,438 +233,266 @@
                 'Riyaziyyat': 'Математика',
                 'Fizika': 'Физика',
                 'Kimya': 'Химия',
+                'İnformatika': 'Информатика',
                 'Biologiya': 'Биология',
                 'Coğrafiya': 'География',
                 'Tarix': 'История',
                 'Azərbaycan dili': 'Русский язык',
                 'Ədəbiyyat': 'Литература',
-                'İngilis dili': 'Английский язык',
-                'Ümumi bal': 'Общий балл'
+                'İngilis dili': 'Иностранный язык',
+                'grade11': 'Класс',
+                'grade9': 'Класс'
             },
-            messages: {
-                excellent: 'Браво! Отличный результат! Я горжусь тобой! 😎🔥',
-                good: 'Неплохо! Но если ты немного постараешься, результат будет как бомба! ',
-                average: 'Нормально, но я знаю, что ты можешь добиться большего. Жми на газ! ',
-                low: 'Не сдавайся! Это всего лишь цифры. Главное – не опускать руки! '
-            },
-            errors: {
-                range: 'Значение должно быть между {min} и {max}.'
-            },
-            howCalculated: 'Как подсчитываются баллы?',
-            docsTitle: 'Документы',
-            addToHome: 'Добавить на главный экран',
-            addToHomeIOS: 'Нажмите <i class="fa-solid fa-arrow-up-from-bracket" style="margin: 0 4px;"></i> «Поделиться» в Safari, затем прокрутите вниз и выберите «На Экран «Домой»».',
+            howCalculated: 'Как считаются баллы?',
+            docsTitle: 'Официальные правила',
+            read: 'Открыть',
+            docs9: 'Выпускной 9 класс',
+            docs11: 'Выпускной 11 класс',
             addToHomeIOS_Step1: '1. Нажмите «Поделиться» в нижнем меню Safari',
             addToHomeIOS_Step2: '2. Прокрутите вниз и выберите «На Экран «Домой»»',
-            addToHomeAndroid: 'Нажмите (⋮) в Chrome, затем «Добавить на гл. экран».',
             addToHomeAndroid_Step1: '1. Нажмите (⋮) в верхнем меню',
             addToHomeAndroid_Step2: '2. Выберите «Добавить на гл. экран»',
             addToHomeModalTitle: 'Установить приложение',
-            addToHomeModalDesc: 'Скачайте приложение для более прямого доступа:',
+            addToHomeModalDesc: 'Установите приложение для быстрого доступа:',
             addToHomeBtnTitle: 'Добавить на главный экран',
             surveyTitle: 'Опрос абитуриентов',
             surveyText: 'Этот опрос создан, чтобы изучить трудности, с которыми абитуриенты сталкиваются в процессе подготовки, и эффективность системы репетиторов. Это займет всего 30 секунд.',
-            surveyButton: 'Перейти к опросу'
+            surveyButton: 'Перейти к опросу',
+            sponsorship: 'Реклама и сотрудничество',
+            sponsorDesc: 'Для курсов, репетиторов и образовательных проектов доступно размещение рекламы и спонсорства на сайте. Свяжитесь через Telegram:',
+            sponsorButton: 'Написать в Telegram (@abusoww)',
+            copied: 'Скопировано',
+            copy: 'Копировать',
+            fileHeader: 'РЕЗУЛЬТАТ ЭКЗАМЕНА',
+            fileDate: 'Дата',
+            fileGroup: 'Группа'
         }
     };
 
-    // --- CORE: Store ---
+    // =====================================================================
+    // CORE — store, persistence, utils
+    // =====================================================================
     class Store {
         constructor(initialState = {}) {
             this.listeners = new Set();
             this.state = new Proxy(initialState, {
                 set: (target, property, value) => {
                     target[property] = value;
-                    this.notify(property, value);
+                    this.listeners.forEach((fn) => fn(this.state, property, value));
                     return true;
                 }
             });
         }
-
         subscribe(callback) {
             this.listeners.add(callback);
             return () => this.listeners.delete(callback);
         }
-
-        notify(property, value) {
-            this.listeners.forEach(listener => listener(this.state, property, value));
-        }
     }
 
-    const getInitialLanguage = () => {
-        const saved = localStorage.getItem('lang');
-        return saved || 'az';
+    const readJSON = (key, fallback) => {
+        try {
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+            return fallback;
+        }
+    };
+    const writeJSON = (key, value) => {
+        try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage full / private mode */ }
     };
 
+    const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang');
+
     const store = new Store({
-        language: localStorage.getItem('language') || 'az',
+        language: savedLanguage === 'ru' ? 'ru' : 'az',
         theme: localStorage.getItem('theme') || 'light',
         activeGroup: null,
-        activeSubjectIndex: 0,
-        results: null
+        activePage: 'home'
     });
+
+    // answers[groupId][subjectKey][fieldKey] = number
+    const answers = readJSON('answers_v2', {});
+    // variants[groupId] = variantId
+    const variants = readJSON('variants_v1', {});
+
+    const getAnswer = (groupId, subject, field) => Number(answers[groupId]?.[subject]?.[field]) || 0;
+    const setAnswer = (groupId, subject, field, value) => {
+        answers[groupId] = answers[groupId] || {};
+        answers[groupId][subject] = answers[groupId][subject] || {};
+        answers[groupId][subject][field] = value;
+        writeJSON('answers_v2', answers);
+    };
+    const clearAnswers = (groupId) => {
+        delete answers[groupId];
+        writeJSON('answers_v2', answers);
+    };
+
+    const getVariant = (group) => group.variants.find((v) => v.id === variants[group.id]) || group.variants[0];
+
+    const t = () => TRANSLATIONS[store.state.language];
+    const fmt = (n) => (Math.round(n * 10) / 10).toFixed(1);
+
+    const setScrollLock = (isLocked) => {
+        document.body.classList.toggle('scroll-locked', isLocked);
+        document.documentElement.classList.toggle('scroll-locked', isLocked);
+    };
+
+    const trackUmamiEvent = (event, data = {}) => {
+        if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
+            umami.track(event, data);
+        }
+    };
+
+    const vibrate = (duration = 10) => {
+        if ('vibrate' in navigator) navigator.vibrate(duration);
+    };
+
+    const applyTheme = () => {
+        const isLight = store.state.theme === 'light';
+        document.body.classList.toggle('light-mode', isLight);
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', isLight ? '#FAFAF9' : '#0F0F11');
+    };
+
+    const applyLanguage = () => {
+        const tr = t();
+        document.documentElement.lang = store.state.language;
+        const titleEl = document.querySelector('.title');
+        const descEl = document.querySelector('.description');
+        if (titleEl) titleEl.textContent = tr.title;
+        if (descEl) descEl.textContent = tr.description;
+    };
 
     store.subscribe((state, prop, value) => {
         if (prop === 'language') {
-            localStorage.setItem('lang', value);
-            // Update static content
-            const t = TRANSLATIONS[value];
-            const titleEl = document.querySelector('.title');
-            const descEl = document.querySelector('.description');
-            if (titleEl) titleEl.textContent = t.title;
-            if (descEl) descEl.textContent = t.description;
+            localStorage.setItem('language', value);
+            localStorage.removeItem('lang');
+            applyLanguage();
         }
         if (prop === 'theme') {
             localStorage.setItem('theme', value);
-            document.body.className = value === 'light' ? 'light-mode' : '';
+            applyTheme();
         }
     });
 
-    // Initialize static content on load
-    document.addEventListener('DOMContentLoaded', () => {
-        const t = TRANSLATIONS[store.state.language];
-        const titleEl = document.querySelector('.title');
-        const descEl = document.querySelector('.description');
-        if (titleEl) titleEl.textContent = t.title;
-        if (descEl) descEl.textContent = t.description;
+    // =====================================================================
+    // SERVICE — scoring
+    // =====================================================================
+    const Calculator = {
+        subjectScore(subject, groupId) {
+            const v = (k, max) => Math.min(max, Math.max(0, getAnswer(groupId, subject.key, k)));
+            if (subject.type === 'block') {
+                // Closed part can't go below zero.
+                const closed = Math.max(0, v('correct', 22) - v('incorrect', 22) / 4);
+                const raw = closed + v('coding', 5) + 2 * v('open', 3);
+                const score = subject.coef * (100 / 33) * raw;
+                return Math.round(score * 10) / 10;
+            }
+            const raw = subject.fields.reduce((sum, f) => sum + f.weight * v(f.key, f.max), 0);
+            const score = (100 / subject.divisor) * raw;
+            return Math.round(score * 10) / 10;
+        },
 
-        // Apply theme
-        if (store.state.theme === 'light') document.body.className = 'light-mode';
+        groupScores(group) {
+            const variant = getVariant(group);
+            const rows = variant.subjects.map((s) => ({ subject: s, score: this.subjectScore(s, group.id) }));
+            const total = rows.reduce((sum, r) => sum + r.score, 0);
+            return { variant, rows, total };
+        },
+
+        // Linked limits: correct + incorrect closed answers can't exceed 22.
+        effectiveMax(field, subject, groupId) {
+            if (!field.pool) return field.max;
+            const used = subject.fields
+                .filter((f) => f.pool === field.pool && f.key !== field.key)
+                .reduce((sum, f) => sum + getAnswer(groupId, subject.key, f.key), 0);
+            return Math.max(0, Math.min(field.max, field.poolMax - used));
+        }
+    };
+
+    // =====================================================================
+    // UTILITY — sounds (soft, synthesized)
+    // =====================================================================
+    class SoundManager {
+        constructor() {
+            this.ctx = null;
+        }
+        _ctx() {
+            if (!this.ctx) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return null;
+                this.ctx = new AC();
+            }
+            if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => { });
+            return this.ctx;
+        }
+        _tone({ type = 'sine', from, to, gain, duration, attack = 0, lowpass }) {
+            const ctx = this._ctx();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(from, now);
+            if (to) osc.frequency.exponentialRampToValueAtTime(to, now + duration);
+            if (attack) {
+                g.gain.setValueAtTime(0, now);
+                g.gain.linearRampToValueAtTime(gain, now + attack);
+            } else {
+                g.gain.setValueAtTime(gain, now);
+            }
+            g.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            let node = osc;
+            if (lowpass) {
+                const f = ctx.createBiquadFilter();
+                f.type = 'lowpass';
+                f.frequency.setValueAtTime(lowpass, now);
+                osc.connect(f);
+                node = f;
+            }
+            node.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + duration);
+        }
+        tap() { this._tone({ from: 300, to: 150, gain: 0.08, duration: 0.1, lowpass: 800 }); }
+        pop() { this._tone({ from: 400, to: 800, gain: 0.06, duration: 0.1 }); }
+        blip() { this._tone({ from: 600, gain: 0.03, duration: 0.15, attack: 0.02 }); }
+        tick() { this._tone({ from: 800, gain: 0.015, duration: 0.03 }); }
+    }
+
+    const sound = new SoundManager();
+
+    document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.closest('#footerContainer')) return;
+        if (target.closest('.stepper-btn') || target.tagName === 'INPUT') return sound.tick();
+        if (target.closest('.navbar-btn')) return sound.pop();
+        if (target.closest('#groupButtons [data-group], .segment')) return sound.blip();
+        if (target.closest('button, a[href]')) sound.tap();
     });
 
-    // --- CORE: Component ---
+    // =====================================================================
+    // COMPONENT base
+    // =====================================================================
     class Component {
-        constructor(hostElement, props = {}) {
-            this.host = hostElement;
+        constructor(host, props = {}) {
+            this.host = host;
             this.props = props;
-            this.init();
-        }
-        init() { this.render(); }
-        update(newProps = {}) {
-            this.props = { ...this.props, ...newProps };
             this.render();
         }
         render() {
-            if (this.host) {
-                this.host.innerHTML = this.template();
-                this.afterRender();
-            }
+            if (!this.host) return;
+            this.host.innerHTML = this.template();
+            this.afterRender();
         }
         template() { return ''; }
         afterRender() { }
     }
 
-    // --- UTILITY: Haptic Feedback ---
-    const vibrate = (duration = 10) => {
-        if ('vibrate' in navigator) {
-            navigator.vibrate(duration);
-        }
-    };
-
-    // --- UTILITY: Sound Manager ---
-    class SoundManager {
-        constructor() {
-            this.audioCtx = null;
-            this.initialized = false;
-        }
-
-        init() {
-            if (this.initialized) return;
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) {
-                this.audioCtx = new AudioContext();
-                this.initialized = true;
-            }
-        }
-
-        _ensureContext() {
-            if (!this.initialized || !this.audioCtx) {
-                this.init();
-            }
-            if (this.audioCtx && this.audioCtx.state === 'suspended') {
-                this.audioCtx.resume().catch(() => { });
-            }
-            return this.audioCtx;
-        }
-
-        // 1. General Tap (Buttons, Tabs) - Soft, muted, "premium" feel
-        playTap() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            const filter = ctx.createBiquadFilter();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(300, t);
-            osc.frequency.exponentialRampToValueAtTime(150, t + 0.1);
-
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, t); // Cut off high frequencies for softness
-
-            gain.gain.setValueAtTime(0.08, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(t);
-            osc.stop(t + 0.1);
-        }
-
-        // 2. Switch/Toggle (Theme) - Crisp, snappy
-        playSwitch() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'triangle'; // Brighter than sine
-            osc.frequency.setValueAtTime(600, t);
-            osc.frequency.linearRampToValueAtTime(800, t + 0.05); // Slight pitch up
-
-            gain.gain.setValueAtTime(0.04, t); // Reduced noticeably
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(t);
-            osc.stop(t + 0.05);
-        }
-
-        // 2.5 Pop (Language Toggle) - Cheerful, bubble-like
-        playPop() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(400, t);
-            osc.frequency.exponentialRampToValueAtTime(800, t + 0.1);
-
-            gain.gain.setValueAtTime(0.06, t); // Drastic reduction
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(t);
-            osc.stop(t + 0.1);
-        }
-
-        // 2.6 Blip (Group Selection) - Clean, techy selection
-        playBlip() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, t);
-
-            gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(0.03, t + 0.02); // Just barely audible edge
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15); // Longer tail than tap
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(t);
-            osc.stop(t + 0.15);
-        }
-
-        // 3. Tick (Steppers, Inputs) - Very subtle, barely audible
-        playTick() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, t);
-
-            gain.gain.setValueAtTime(0.015, t); // Near silent whisper
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(t);
-            osc.stop(t + 0.03);
-        }
-
-        // 4. Success (Calculate) - Major chord chime
-        playSuccess() {
-            const ctx = this._ensureContext();
-            if (!ctx) return;
-
-            const t = ctx.currentTime;
-            // C Major Triad: C5 (523.25), E5 (659.25), G5 (783.99)
-            const freqs = [523.25, 659.25, 783.99];
-
-            freqs.forEach((f, i) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.value = f;
-
-                // Stagger start slightly for "strum" effect
-                const start = t + (i * 0.05);
-
-                gain.gain.setValueAtTime(0, start);
-                gain.gain.linearRampToValueAtTime(0.04, start + 0.05); // Majestic but quiet chime
-                gain.gain.exponentialRampToValueAtTime(0.01, start + 0.8);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(start);
-                osc.stop(start + 0.8);
-            });
-        }
-    }
-
-    const soundManager = new SoundManager();
-
-    // Global Click Listener for Sounds
-    document.addEventListener('click', (e) => {
-        // Resume context on first interaction if needed
-        soundManager.init();
-
-        const target = e.target;
-
-        // 0. Silence Footer
-        if (target.closest('#footerContainer') || target.closest('footer')) {
-            return;
-        }
-
-        // 1. Success / Calculate Button
-        if (target.closest('#calculateButton')) {
-            soundManager.playBlip();
-            return;
-        }
-
-        // 2. Steppers / Inputs (Tick)
-        if (target.closest('.stepper-btn') || target.tagName === 'INPUT') {
-            soundManager.playTick();
-            return;
-        }
-
-        // 3. Language Toggle (Pop)
-        if (target.closest('#languageToggle, .navbar-btn')) {
-            soundManager.playPop();
-            return;
-        }
-
-        // 3.5 Group Selection (Blip)
-        if (target.closest('.group-selector button, .button-group button')) { // Assuming class structure
-            soundManager.playBlip();
-            return;
-        }
-
-        // Fallback for Group Selector if classes above don't match exactly (checking previous code)
-        // GroupSelector uses: <button data-group="..." class="btn ..." ...> inside #groupButtons
-        if (target.closest('#groupButtons button')) {
-            soundManager.playBlip();
-            return;
-        }
-
-        // 4. Theme Switch (Switch)
-        if (target.closest('.theme-switch')) {
-            soundManager.playSwitch();
-            return;
-        }
-
-        // 5. General Buttons (Tap)
-        if (target.closest('button, .btn, .clickable') || (target.tagName === 'A' && target.href)) {
-            soundManager.playTap();
-        }
-    });
-
-    // --- SERVICE: Calculator ---
-    class Calculator {
-        static calculateScore(groupName, answers) {
-            const safeAnswers = {};
-            for (const [subject, data] of Object.entries(answers)) {
-                safeAnswers[subject] = {
-                    correct: Number(data.correct) || 0,
-                    incorrect: Number(data.incorrect) || 0,
-                    open: Number(data.open) || 0,
-                    closed: Number(data.closed) || 0,
-                    coding: Number(data.coding) || 0
-                };
-            }
-
-            const results = {};
-
-            if (groupName === 'I Qrup') {
-                const riyaziyyat = safeAnswers['Riyaziyyat'];
-                const fizika = safeAnswers['Fizika'];
-                const kimya = safeAnswers['Kimya'];
-
-                results['Riyaziyyat'] = 1.5 * 100 / 33 * ((riyaziyyat.correct - riyaziyyat.incorrect / 4) + (2 * riyaziyyat.open + riyaziyyat.coding));
-                results['Fizika'] = 1.5 * 100 / 33 * ((fizika.correct - fizika.incorrect / 4) + (2 * fizika.open + fizika.coding));
-                results['Kimya'] = 100 / 33 * ((kimya.correct - kimya.incorrect / 4) + (2 * kimya.open + kimya.coding));
-            } else if (groupName === 'II Qrup') {
-                const riyaziyyat = safeAnswers['Riyaziyyat'];
-                const cografiya = safeAnswers['Coğrafiya'];
-                const tarix = safeAnswers['Tarix'];
-
-                results['Riyaziyyat'] = 1.5 * 100 / 33 * ((riyaziyyat.correct - riyaziyyat.incorrect / 4) + (2 * riyaziyyat.open + riyaziyyat.coding));
-                results['Coğrafiya'] = 100 / 33 * ((cografiya.correct - cografiya.incorrect / 4) + (2 * cografiya.open + cografiya.coding));
-                results['Tarix'] = 1.5 * 100 / 33 * ((tarix.correct - tarix.incorrect / 4) + (2 * tarix.open + tarix.coding));
-            } else if (groupName === 'III Qrup') {
-                const azDili = safeAnswers['Azərbaycan dili'];
-                const edebiyyat = safeAnswers['Ədəbiyyat'];
-                const tarix = safeAnswers['Tarix'];
-
-                results['Azərbaycan dili'] = 1.5 * 100 / 33 * ((azDili.correct - azDili.incorrect / 4) + (2 * azDili.open + azDili.coding));
-                results['Ədəbiyyat'] = 100 / 33 * ((edebiyyat.correct - edebiyyat.incorrect / 4) + (2 * edebiyyat.open + edebiyyat.coding));
-                results['Tarix'] = 1.5 * 100 / 33 * ((tarix.correct - tarix.incorrect / 4) + (2 * tarix.open + tarix.coding));
-            } else if (groupName === 'IV Qrup') {
-                const biologiya = safeAnswers['Biologiya'];
-                const kimya = safeAnswers['Kimya'];
-                const fizika = safeAnswers['Fizika'];
-
-                results['Biologiya'] = 1.5 * 100 / 33 * ((biologiya.correct - biologiya.incorrect / 4) + (2 * biologiya.open + biologiya.coding));
-                results['Kimya'] = 1.5 * 100 / 33 * ((kimya.correct - kimya.incorrect / 4) + (2 * kimya.open + kimya.coding));
-                results['Fizika'] = 100 / 33 * ((fizika.correct - fizika.incorrect / 4) + (2 * fizika.open + fizika.coding));
-            } else if (groupName === 'Buraxılış İmtahanı') {
-                const riyaziyyat = safeAnswers['Riyaziyyat'];
-                const azDili = safeAnswers['Azərbaycan dili'];
-                const ingilisDili = safeAnswers['İngilis dili'];
-
-                results['Riyaziyyat'] = 25 / 8 * (2 * riyaziyyat.open + riyaziyyat.closed + riyaziyyat.coding);
-                results['Azərbaycan dili'] = 2.5 * (2 * azDili.open + azDili.closed);
-                results['İngilis dili'] = 100 / 37 * (2 * ingilisDili.open + ingilisDili.closed);
-            }
-
-            let total = 0;
-            for (const score of Object.values(results)) {
-                total += score;
-            }
-            results['Ümumi bal'] = total;
-            return results;
-        }
-    }
-
-
-
-    // --- COMPONENT: HomeHeader ---
+    // =====================================================================
+    // COMPONENT — Home header (theme + language)
+    // =====================================================================
     class HomeHeader extends Component {
         constructor(host) {
             super(host);
@@ -616,158 +501,66 @@
             });
         }
         template() {
-            const lang = store.state.language;
             const isLight = store.state.theme === 'light';
-
             return `
-                <div class="header-controls-left">
-                    <!-- Placeholder to keep spacing -->
-                </div>
-                <div class="header-controls-right" style="display:flex; gap:10px;">
-                    <button id="themeToggle" class="navbar-btn" data-umami-event="Theme Toggled">
-                        ${isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
+                <div class="header-side"></div>
+                <div class="header-side header-side-right">
+                    <button id="themeToggle" class="navbar-btn" type="button" aria-label="Theme">
+                        <i class="fas ${isLight ? 'fa-sun' : 'fa-moon'}"></i>
                     </button>
-                    <button id="languageToggle" class="navbar-btn header-badge-btn" data-umami-event="Language Toggled">
-                        ${lang === 'az' ? 'AZ' : 'RU'}
+                    <button id="languageToggle" class="navbar-btn header-badge-btn" type="button" aria-label="Language">
+                        ${store.state.language.toUpperCase()}
                     </button>
                 </div>
             `;
         }
         afterRender() {
-            const themeBtn = this.host.querySelector('#themeToggle');
-            if (themeBtn) {
-                themeBtn.addEventListener('click', () => {
-                    vibrate(10);
-                    store.state.theme = store.state.theme === 'light' ? 'dark' : 'light';
-                });
-            }
-
-            const langBtn = this.host.querySelector('#languageToggle');
-            if (langBtn) {
-                langBtn.addEventListener('click', () => {
-                    vibrate(10);
-                    store.state.language = store.state.language === 'az' ? 'ru' : 'az';
-                });
-            }
-        }
-    }
-
-    // --- COMPONENT: FormHeader ---
-    class FormHeader extends Component {
-        constructor(host) {
-            super(host);
-            store.subscribe((state, prop) => {
-                if (prop === 'activeGroup' || prop === 'language') this.render();
+            this.host.querySelector('#themeToggle').addEventListener('click', () => {
+                vibrate(10);
+                store.state.theme = store.state.theme === 'light' ? 'dark' : 'light';
+                trackUmamiEvent('Theme Changed', { theme: store.state.theme });
+            });
+            this.host.querySelector('#languageToggle').addEventListener('click', () => {
+                vibrate(10);
+                store.state.language = store.state.language === 'az' ? 'ru' : 'az';
+                trackUmamiEvent('Language Changed', { language: store.state.language });
             });
         }
-        template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
-            const groupName = store.state.activeGroup ? t.groups[store.state.activeGroup] : '';
-
-            return `
-                <div class="header-controls-left" style="flex:1;">
-                    <button id="backButton" class="nav-back-btn">
-                        <i class="fas fa-chevron-left" style="font-size:0.82rem;"></i> Qruplar
-                    </button>
-                </div>
-                <div class="header-controls-center" style="flex:2; text-align:center; font-weight:600; font-size:1rem; color:var(--text-color);">
-                    ${groupName}
-                </div>
-                <div class="header-controls-right" style="flex:1;"></div>
-            `;
-        }
-        afterRender() {
-            const backBtn = this.host.querySelector('#backButton');
-            if (backBtn) {
-                backBtn.addEventListener('click', () => {
-                    vibrate(10);
-
-                    const activePage = document.querySelector('.group-page.active');
-                    const homePage = document.getElementById('homePage');
-                    if (!activePage || !homePage) return;
-
-                    // Trigger smooth exit animation horizontally to the right
-                    activePage.classList.remove('active');
-                    activePage.classList.add('sliding-out');
-                    homePage.classList.remove('slid-out');
-
-                    // Complete the state removal after the transition completes
-                    setTimeout(() => {
-                        activePage.classList.remove('sliding-out');
-                        store.state.activePage = 'home';
-                        store.state.activeGroup = null;
-                        store.state.results = null;
-                        window.scrollTo(0, 0);
-                        if (normalizePath(window.location.pathname) !== '/') {
-                            window.history.pushState({ page: 'home' }, '', '/');
-                        }
-                    }, 280);
-                });
-            }
-        }
     }
 
-    // --- COMPONENT: Countdown ---
-    class Countdown extends Component {
-        constructor(host) {
-            super(host);
-            this.targetDate = new Date(APP_CONFIG.examDate).getTime();
-            this.timer = null;
-            store.subscribe((state, prop) => {
-                if (prop === 'language') this.render();
-            });
+    // =====================================================================
+    // COMPONENT — Group list (home)
+    // =====================================================================
+    const subjectsLine = (group, tr) => {
+        // Merge variants per position: "Riyaziyyat · Fizika · Kimya/İnformatika"
+        const len = group.variants[0].subjects.length;
+        const parts = [];
+        for (let i = 0; i < len; i++) {
+            const keys = [...new Set(group.variants.map((v) => v.subjects[i].key))];
+            parts.push(keys.map((k) => tr.subjects[k]).join('/'));
         }
-        init() {
-            this.render();
-            this.startTimer();
-        }
-        startTimer() {
-            if (this.timer) clearInterval(this.timer);
-            this.timer = setInterval(() => this.updateTime(), 1000);
-            this.updateTime();
-        }
-        updateTime() {
-            const now = new Date().getTime();
-            const distance = this.targetDate - now;
-            if (distance < 0) {
-                clearInterval(this.timer);
-                const t = TRANSLATIONS[store.state.language];
-                if (this.host) this.host.innerHTML = `<div class="exam-started">${t.examStarted}</div>`;
-                return;
-            }
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        return parts.join(' · ');
+    };
 
-            const elDays = this.host.querySelector('#days');
-            if (elDays) {
-                elDays.innerText = String(days).padStart(2, '0');
-                this.host.querySelector('#hours').innerText = String(hours).padStart(2, '0');
-                this.host.querySelector('#minutes').innerText = String(minutes).padStart(2, '0');
-                this.host.querySelector('#seconds').innerText = String(seconds).padStart(2, '0');
-            }
+    const openGroup = (groupId) => {
+        const targetPage = document.getElementById(`group${getGroupIndex(groupId)}Page`);
+        if (!targetPage) return;
+        vibrate(10);
+
+        store.state.activeGroup = groupId;
+        store.state.activePage = `group${getGroupIndex(groupId)}`;
+
+        document.getElementById('homePage').classList.add('slid-out');
+        document.querySelectorAll('.group-page').forEach((p) => p.classList.remove('active', 'sliding-out'));
+        targetPage.classList.add('active');
+        targetPage.scrollTop = 0;
+
+        const nextPath = getGroup(groupId).route;
+        if (normalizePath(window.location.pathname) !== nextPath) {
+            window.history.pushState({ group: groupId }, '', nextPath);
         }
-        template() {
-            const t = TRANSLATIONS[store.state.language];
-            return `
-                <div class="countdown-numbers">
-                    <span id="days">00</span>
-                    <span id="hours">00</span>
-                    <span id="minutes">00</span>
-                    <span id="seconds">00</span>
-                </div>
-                <div class="countdown-labels">
-                    <span>${t.days.toUpperCase()}</span>
-                    <span>${t.hours.toUpperCase()}</span>
-                    <span>${t.minutes.toUpperCase()}</span>
-                    <span>${t.seconds.toUpperCase()}</span>
-                </div>
-            `;
-        }
-    }
-    // --- COMPONENT: GroupSelector (List Style) ---
+    };
+
     class GroupSelector extends Component {
         constructor(host) {
             super(host);
@@ -776,113 +569,93 @@
             });
         }
         template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
-
+            const tr = t();
             return `
-                <div class="list-container">
-                    ${GROUPS.map(group => `
-                        <button 
-                            data-group="${group.name}"
-                            class="list-item-btn"
-                            type="button"
-                        >
-                            <span>${t.groups[group.name]}</span>
-                            <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                <div class="list-container group-list">
+                    ${GROUPS.map((g, i) => `
+                        <button data-group="${g.id}" class="list-item-btn group-item" type="button" style="--group-color: var(--g${i + 1}); --group-rgb: var(--g${i + 1}-rgb);">
+                            <span class="group-badge">${g.badge}</span>
+                            <span class="group-text">
+                                <span class="group-name">${tr.groups[g.id]}</span>
+                                <span class="group-subjects">${subjectsLine(g, tr)}</span>
+                            </span>
+                            <span class="group-max">${g.max}</span>
+                            <i class="fas fa-chevron-right list-chevron"></i>
                         </button>
                     `).join('')}
                 </div>
-                
-                <div class="list-container" style="margin-top:2rem;">
-                    <button type="button" id="docsBtn" class="list-item-btn" style="color:var(--text-color);">
-                        <span><i class="fas fa-info-circle" style="color:var(--primary-color); margin-right:8px;"></i> ${t.howCalculated}</span>
-                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+
+                <div class="list-container secondary-list">
+                    <button type="button" id="docsBtn" class="list-item-btn">
+                        <span class="list-item-label"><i class="fas fa-book-open"></i>${tr.howCalculated}</span>
+                        <i class="fas fa-chevron-right list-chevron"></i>
                     </button>
-                    <button type="button" id="addToHomeBtn" class="list-item-btn" data-umami-event="Add to Home Screen Opened" style="color:var(--text-color);">
-                        <span><i class="fas fa-plus-square" style="color:var(--primary-color); margin-right:8px;"></i> ${t.addToHomeBtnTitle}</span>
-                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                    <button type="button" id="addToHomeBtn" class="list-item-btn">
+                        <span class="list-item-label"><i class="fas fa-mobile-screen-button"></i>${tr.addToHomeBtnTitle}</span>
+                        <i class="fas fa-chevron-right list-chevron"></i>
                     </button>
-                    <button type="button" id="surveyListBtn" class="list-item-btn" style="color:var(--text-color);">
-                        <span><i class="fas fa-clipboard-list" style="color:var(--primary-color); margin-right:8px;"></i> ${t.surveyTitle}</span>
-                        <i class="fas fa-chevron-right text-muted" style="opacity:0.4;"></i>
+                    <button type="button" id="surveyListBtn" class="list-item-btn">
+                        <span class="list-item-label"><i class="fas fa-clipboard-list"></i>${tr.surveyTitle}</span>
+                        <i class="fas fa-chevron-right list-chevron"></i>
+                    </button>
+                    <button type="button" id="sponsorListBtn" class="list-item-btn">
+                        <span class="list-item-label"><i class="fa-brands fa-telegram"></i>${tr.sponsorship}</span>
+                        <i class="fas fa-chevron-right list-chevron"></i>
                     </button>
                 </div>
             `;
         }
         afterRender() {
-            const openGroup = (newGroup) => {
-                vibrate(10);
-                const groupIndex = GROUPS.findIndex((g) => g.name === newGroup) + 1;
-                const targetPage = document.getElementById(`group${groupIndex}Page`);
-                if (!targetPage) return;
-
-                store.state.activeGroup = newGroup;
-                store.state.results = null;
-                store.state.activePage = `group${groupIndex}`;
-
-                document.getElementById('homePage').classList.add('slid-out');
-                document.querySelectorAll('.group-page').forEach((p) => p.classList.remove('active', 'sliding-out'));
-                targetPage.classList.add('active');
-
-                    const nextPath = getRouteForGroup(newGroup);
-                    if (normalizePath(window.location.pathname) !== nextPath) {
-                        window.history.pushState({ group: newGroup }, '', nextPath);
-                    }
-
-                setTimeout(() => {
-                    targetPage.scrollTop = 0;
-                    window.scrollTo(0, 0);
-                }, 0);
-            };
-
-            const groupButtons = Array.from(this.host.querySelectorAll('.list-item-btn[data-group]'));
+            const groupButtons = Array.from(this.host.querySelectorAll('[data-group]'));
             let suppressClick = false;
 
             groupButtons.forEach((btn) => {
                 btn.addEventListener('click', () => {
                     if (suppressClick) return;
+                    trackUmamiEvent('Group Selected', { group: btn.dataset.group });
                     openGroup(btn.dataset.group);
                 });
             });
 
-            // Mobile: long-press then slide finger across items, release to choose.
-            const groupList = this.host.querySelector('.list-container');
+            // Mobile: long-press, slide across items, release to choose.
+            const groupList = this.host.querySelector('.group-list');
             if (groupList && window.matchMedia('(hover: none)').matches) {
                 let holdTimer = null;
                 let longPressActive = false;
-                let pointerTracking = false;
+                let tracking = false;
                 let startX = 0;
                 let startY = 0;
                 let activeBtn = null;
-                let blockClickUntil = 0;
 
-                const setActiveButton = (btn) => {
-                    groupButtons.forEach((item) => item.classList.remove('touch-hover'));
+                const setActive = (btn) => {
+                    groupButtons.forEach((b) => b.classList.remove('touch-hover'));
                     activeBtn = btn;
-                    if (activeBtn) activeBtn.classList.add('touch-hover');
+                    if (btn) btn.classList.add('touch-hover');
                 };
-
-                const resetPicker = () => {
-                    if (holdTimer) clearTimeout(holdTimer);
+                const reset = () => {
+                    clearTimeout(holdTimer);
                     holdTimer = null;
                     longPressActive = false;
-                    pointerTracking = false;
-                    setActiveButton(null);
+                    tracking = false;
+                    setActive(null);
                     groupList.classList.remove('touch-picker-active');
+                };
+                const cancelHold = () => {
+                    clearTimeout(holdTimer);
+                    holdTimer = null;
+                    tracking = false;
+                    setActive(null);
                 };
 
                 groupList.addEventListener('touchstart', (e) => {
-                    const targetBtn = e.target.closest('.list-item-btn[data-group]');
-                    if (!targetBtn) return;
-                    if (Date.now() < blockClickUntil) return;
-
-                    pointerTracking = true;
+                    const btn = e.target.closest('[data-group]');
+                    if (!btn) return;
+                    tracking = true;
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
-                    setActiveButton(targetBtn);
-
+                    setActive(btn);
                     holdTimer = setTimeout(() => {
-                        if (!pointerTracking) return;
+                        if (!tracking) return;
                         longPressActive = true;
                         groupList.classList.add('touch-picker-active');
                         vibrate(6);
@@ -890,929 +663,747 @@
                 }, { passive: true });
 
                 groupList.addEventListener('touchmove', (e) => {
-                    if (!pointerTracking || (!holdTimer && !longPressActive)) return;
+                    if (!tracking) return;
                     const touch = e.touches[0];
                     const dx = Math.abs(touch.clientX - startX);
                     const dy = Math.abs(touch.clientY - startY);
 
-                    // Preserve native vertical scroll before long-press engages.
-                    if (!longPressActive && dy > 10 && dy > dx) {
-                        clearTimeout(holdTimer);
-                        holdTimer = null;
-                        pointerTracking = false;
-                        setActiveButton(null);
+                    if (!longPressActive) {
+                        // Let native scrolling win before the long-press engages.
+                        if (dx > 10 || dy > 10) cancelHold();
                         return;
                     }
 
-                    // Finger moved too much before long press => treat as regular gesture.
-                    if (!longPressActive && (dx > 18 || dy > 18)) {
-                        clearTimeout(holdTimer);
-                        holdTimer = null;
-                        pointerTracking = false;
-                        setActiveButton(null);
-                        return;
-                    }
-
-                    if (longPressActive) {
-                        e.preventDefault();
-                        const hovered = document.elementFromPoint(touch.clientX, touch.clientY)
-                            ?.closest('.list-item-btn[data-group]');
-                        if (hovered && groupList.contains(hovered) && hovered !== activeBtn) {
-                            setActiveButton(hovered);
-                            vibrate(3);
-                        }
+                    e.preventDefault();
+                    const hovered = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('[data-group]');
+                    if (hovered && groupList.contains(hovered) && hovered !== activeBtn) {
+                        setActive(hovered);
+                        vibrate(3);
                     }
                 }, { passive: false });
 
                 groupList.addEventListener('touchend', () => {
-                    if (!longPressActive || !activeBtn) {
-                        resetPicker();
-                        return;
-                    }
+                    if (!longPressActive || !activeBtn) return reset();
                     const chosen = activeBtn.dataset.group;
-                    resetPicker();
+                    reset();
                     suppressClick = true;
                     setTimeout(() => { suppressClick = false; }, 350);
-                    blockClickUntil = Date.now() + 350;
-                    trackUmamiEvent('Group Selected', { group: chosen });
+                    trackUmamiEvent('Group Selected', { group: chosen, via: 'long-press' });
                     openGroup(chosen);
                 }, { passive: true });
 
-                groupList.addEventListener('touchcancel', resetPicker, { passive: true });
+                groupList.addEventListener('touchcancel', reset, { passive: true });
             }
 
-            const docsBtn = this.host.querySelector('#docsBtn');
-            if (docsBtn) {
-                docsBtn.addEventListener('click', () => {
-                    vibrate(10);
-                    const docsModal = document.getElementById('docsModal');
-                    if (docsModal) {
-                        docsModal.classList.add('active');
-                        setScrollLock(true);
-                    }
-                });
-            }
-
-            const addToHomeBtn = this.host.querySelector('#addToHomeBtn');
-            if (addToHomeBtn) {
-                addToHomeBtn.addEventListener('click', () => {
-                    vibrate(10);
-                    const addToHomeModal = document.getElementById('addToHomeModal');
-                    if (addToHomeModal) {
-                        addToHomeModal.classList.add('active');
-                        setScrollLock(true);
-                    }
-                });
-            }
-
-            const surveyListBtn = this.host.querySelector('#surveyListBtn');
-            if (surveyListBtn) {
-                surveyListBtn.addEventListener('click', () => {
-                    vibrate(10);
-                    showSurveyFloatingPopup();
-                });
-            }
-        }
-    }
-
-    // --- COMPONENT: ExamForm ---
-    class ExamForm extends Component {
-        constructor(host) {
-            super(host);
-            store.subscribe((state, prop) => {
-                if (prop === 'activeGroup' || prop === 'language' || prop === 'activeSubjectIndex') {
-                    this.render();
-                }
-            });
-        }
-        render() {
-            const groupName = store.state.activeGroup;
-            const container = this.host;
-
-            if (!groupName) {
-                if (container) container.classList.remove('visible');
-                return;
-            }
-
-            if (container) {
-                container.innerHTML = this.template();
-                container.classList.add('visible');
-                this.afterRender();
-            }
-        }
-
-        template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
-            const groupName = store.state.activeGroup;
-
-            if (!groupName) return '';
-
-            const group = GROUPS.find(g => g.name === groupName);
-
-            // Render all subjects one after another
-            const subjectsHtml = group.subjects.map((subject, index) => {
-                return this.renderSubject(subject, index, group, t);
-            }).join('');
-
-            return `
-                <div class="exam-form-wrapper">
-                    <form id="scoreForm" class="scrollable-form">
-                        <div class="subjects-grid">
-                            ${subjectsHtml}
-                        </div>
-                        
-                        <div class="button-wrapper">
-                            <button id="calculateButton" type="button" class="action-btn">${t.calculate}</button>
-                        </div>
-                    </form>
-                </div>
-            `;
-        }
-
-        renderSubject(subject, index, group, t) {
-            const isBuraxilish = group.name === 'Buraxılış İmtahanı';
-            let inputs = '';
-
-            // We use 'store.state.answers' to pre-fill if navigating back and forth, 
-            // but for simplicity we rely on local form state managed in afterRender during transitions.
-            // Let's implement a global answer cache in store if it doesn't exist.
-            if (!store.state.answers) store.state.answers = {};
-
-            const getValue = (name) => {
-                const [subj, type] = name.split('-');
-                return store.state.answers[subj]?.[type] || '';
+            const openModal = (id) => {
+                vibrate(10);
+                const modal = document.getElementById(id);
+                if (!modal) return;
+                modal.classList.add('active');
+                setScrollLock(true);
             };
 
-            const createInput = (label, name, max) => `
-                <label>
-                    ${label}
-                    <div class="stepper-wrapper">
-                        <button type="button" class="stepper-btn minus" tabindex="-1"><i class="fas fa-minus" style="font-size: 0.85rem;"></i></button>
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="${name}" min="0" max="${max}" data-max="${max}" class="input-field" placeholder="0" value="${getValue(name)}">
-                        <button type="button" class="stepper-btn plus" tabindex="-1"><i class="fas fa-plus" style="font-size: 0.85rem;"></i></button>
-                    </div>
-                    <div class="validation-message" data-for="${name}"></div>
-                </label>
-            `;
-
-            if (isBuraxilish) {
-                const maxClosed = subject === 'İngilis dili' ? 23 : (subject === 'Azərbaycan dili' ? 20 : 13);
-                const maxOpen = subject === 'İngilis dili' ? 7 : (subject === 'Azərbaycan dili' ? 10 : 7);
-
-                inputs = `<div class="input-group">
-                    ${createInput(t.closed, `${subject}-closed`, maxClosed)}
-                    ${createInput(t.open, `${subject}-open`, maxOpen)}
-                `;
-
-                if (subject === 'Riyaziyyat') {
-                    inputs += createInput(t.coding, `${subject}-coding`, 5);
-                }
-                inputs += '</div>';
-            } else {
-                inputs = `<div class="input-group">
-                    ${createInput(t.correct, `${subject}-correct`, 22)}
-                    ${createInput(t.incorrect, `${subject}-incorrect`, 22)}
-                    ${createInput(t.coding, `${subject}-coding`, 5)}
-                    ${createInput(t.open, `${subject}-open`, 3)}
-                </div>`;
-            }
-            return `
-                <div class="subject wizard-subject-card">
-                    <h3>${t.subjects[subject]} (${group.maxScores[index]} ${t.score})</h3>
-                    ${inputs}
-                </div>
-            `;
-        }
-
-        saveCurrentState() {
-            if (!store.state.answers) store.state.answers = {};
-            const formData = new FormData(this.host.querySelector('form'));
-            for (const [key, value] of formData.entries()) {
-                const [subject, type] = key.split('-');
-                if (!store.state.answers[subject]) store.state.answers[subject] = {};
-                store.state.answers[subject][type] = value;
-            }
-        }
-
-        afterRender() {
-            if (!store.state.activeGroup) return;
-
-            // Calculation Logic
-            const calcBtn = this.host.querySelector('#calculateButton');
-            if (calcBtn) {
-                calcBtn.type = 'button';
-                calcBtn.addEventListener('click', () => {
-                    vibrate(15);
-                    this.saveCurrentState(); // Save before calc
-
-                    const answers = store.state.answers;
-                    const results = Calculator.calculateScore(store.state.activeGroup, answers);
-                    store.state.results = results;
-
-                    // Track score with Umami properties
-                    const totalScore = Math.round(results['Ümumi bal']);
-                    const isBuraxilish = store.state.activeGroup === 'Buraxılış İmtahanı';
-                    const maxScore = isBuraxilish ? 300 : 400;
-
-                    const bracketSize = 50;
-                    const lowerBound = Math.floor(totalScore / bracketSize) * bracketSize;
-                    const upperBound = Math.min(lowerBound + bracketSize, maxScore);
-                    const scoreRange = `${lowerBound}-${upperBound}`;
-
-                    if (typeof umami !== 'undefined' && typeof umami.track === 'function') {
-                        umami.track('Score Calculated', {
-                            group: store.state.activeGroup,
-                            score: totalScore,
-                            range: scoreRange
-                        });
-                    }
-                    setTimeout(() => {
-                        const resDiv = this.host.closest('.group-page')?.querySelector('.group-results');
-                        if (resDiv) resDiv.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                });
-            }
-
-            // Validation
-            this.host.querySelectorAll('.input-field').forEach(input => {
-                input.addEventListener('input', (e) => this.validate(e.target));
-                input.addEventListener('focus', () => {
-                    this.host.querySelectorAll('.input-field').forEach((field) => field.classList.remove('is-focused'));
-                    input.classList.add('is-focused');
-                });
-                input.addEventListener('blur', () => {
-                    input.classList.remove('is-focused');
-                });
+            this.host.querySelector('#docsBtn').addEventListener('click', () => {
+                openModal('docsModal');
+                trackUmamiEvent('Docs Opened');
             });
-
-            // Stepper Logic with Hold-to-Increment
-            this.host.querySelectorAll('.stepper-btn').forEach(btn => {
-                let holdInterval = null;
-                let holdTimeout = null;
-                let incrementSpeed = 150;
-
-                const updateValue = () => {
-                    const input = btn.parentElement.querySelector('input');
-                    const isPlus = btn.classList.contains('plus');
-                    const min = parseInt(input.min) || 0;
-                    const max = parseInt(input.max) || 100;
-                    let val = parseInt(input.value) || 0;
-
-                    if (isPlus) {
-                        if (val < max) {
-                            val++;
-                            vibrate(5);
-                        }
-                    } else {
-                        if (val > min) {
-                            val--;
-                            vibrate(5);
-                        }
-                    }
-
-                    input.value = val;
-                    this.validate(input);
-                };
-
-                const startHold = () => {
-                    updateValue();
-                    incrementSpeed = 150;
-
-                    holdTimeout = setTimeout(() => {
-                        holdInterval = setInterval(() => {
-                            updateValue();
-                            if (incrementSpeed > 50) {
-                                incrementSpeed -= 10;
-                                clearInterval(holdInterval);
-                                holdInterval = setInterval(updateValue, incrementSpeed);
-                            }
-                        }, incrementSpeed);
-                    }, 300);
-                };
-
-                const stopHold = () => {
-                    if (holdTimeout) clearTimeout(holdTimeout);
-                    if (holdInterval) clearInterval(holdInterval);
-                    holdTimeout = null;
-                    holdInterval = null;
-                    incrementSpeed = 150;
-                };
-
-                btn.addEventListener('pointerdown', (e) => {
-                    e.preventDefault();
-                    startHold();
-                });
-
-                btn.addEventListener('pointerup', stopHold);
-                btn.addEventListener('pointerleave', stopHold);
-                btn.addEventListener('pointercancel', stopHold);
+            this.host.querySelector('#addToHomeBtn').addEventListener('click', () => {
+                openModal('addToHomeModal');
+                trackUmamiEvent('Add to Home Screen Opened');
             });
-
-            const form = this.host.querySelector('form');
-            if (form) form.addEventListener('submit', e => e.preventDefault());
-        }
-
-        validate(input) {
-            const min = parseInt(input.min) || 0;
-            const max = parseInt(input.getAttribute('data-max')) || parseInt(input.max);
-            const value = parseInt(input.value);
-            const label = input.closest('label');
-            const validationMsg = label?.querySelector('.validation-message');
-            const t = TRANSLATIONS[store.state.language];
-
-            if (!label) return;
-
-            // Check if value is out of range
-            if (!isNaN(value) && (value < min || value > max)) {
-                input.classList.add('has-error');
-                if (validationMsg) {
-                    validationMsg.textContent = t.errors.range.replace('{min}', min).replace('{max}', max);
-                    validationMsg.classList.add('show');
-                }
-            } else {
-                input.classList.remove('has-error');
-                if (validationMsg) {
-                    validationMsg.classList.remove('show');
-                    validationMsg.textContent = '';
-                }
-            }
-        }
-    }
-
-    // --- COMPONENT: Results ---
-    class Results extends Component {
-        constructor(host) {
-            super(host);
-            store.subscribe((state, prop) => {
-                if (prop === 'results' || prop === 'activeGroup' || prop === 'language') this.render();
-            });
-        }
-        template() {
-            if (!store.state.results) return '';
-            const t = TRANSLATIONS[store.state.language];
-            const results = store.state.results;
-
-            const totalScore = results['Ümumi bal'].toFixed(1);
-
-            let rows = '';
-            for (const [subject, score] of Object.entries(results)) {
-                if (subject === 'Ümumi bal') continue;
-                rows += `
-                    <div class="results-list-item">
-                        <span class="results-subject-name">${t.subjects[subject] || subject}</span>
-                        <span class="results-subject-score">${score.toFixed(1)}</span>
-                    </div>
-                `;
-            }
-
-            return `
-                <div class="results-container">
-                    <div class="results-total-card">
-                        <div class="results-total-label">${t.score}</div>
-                        <div class="results-total-value">${totalScore}</div>
-                    </div>
-                    
-                    <div class="results-breakdown-list">
-                        ${rows}
-                    </div>
-
-                    <div class="survey-inline-card">
-                        <h4 class="survey-inline-title">${t.surveyTitle}</h4>
-                        <p class="survey-inline-text">${t.surveyText}</p>
-                        <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" id="resultsSurveyButton" class="action-btn survey-link-btn">${t.surveyButton}</a>
-                    </div>
-
-                    <div class="button-wrapper" style="margin-top:2rem;">
-                        <button id="downloadButton" type="button" class="action-btn" style="margin-bottom: 12px;">
-                            <i class="fas fa-download" style="margin-right:8px;"></i> ${t.saveResults}
-                        </button>
-                        <button id="recalculateButton" type="button" class="action-btn secondary">
-                            <i class="fas fa-redo" style="margin-right:8px;"></i> ${t.recalculate}
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        afterRender() {
-            if (!store.state.results) return;
-            this.host.querySelector('#recalculateButton').addEventListener('click', () => {
+            this.host.querySelector('#surveyListBtn').addEventListener('click', () => {
                 vibrate(10);
-                store.state.results = null;
-                store.state.answers = null;
-                const formEl = this.host.closest('.group-page')?.querySelector('.group-form');
-                if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                showSurveyPopup();
+                trackUmamiEvent('Survey Opened', { source: 'home-list' });
             });
-            this.host.querySelector('#downloadButton').addEventListener('click', () => {
-                vibrate(15);
-                this.download();
+            this.host.querySelector('#sponsorListBtn').addEventListener('click', () => {
+                openModal('sponsorModal');
+                trackUmamiEvent('Sponsorship Opened', { source: 'home-list' });
             });
-            const resultsSurveyBtn = this.host.querySelector('#resultsSurveyButton');
-            if (resultsSurveyBtn) {
-                resultsSurveyBtn.addEventListener('click', () => {
-                    trackUmamiEvent('Survey Opened', { group: store.state.activeGroup, language: store.state.language, source: 'after-calculate-inline' });
-                });
-            }
-        }
-        download() {
-            const results = store.state.results;
-            const answers = store.state.answers;
-            const group = store.state.activeGroup;
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
-            const date = new Date().toLocaleString(lang === 'az' ? 'az-AZ' : 'ru-RU');
-
-            const groupName = t.groups[group];
-            const totalScore = results['Ümumi bal'].toFixed(1);
-
-            let text = `=== İMTAHAN NƏTİCƏLƏRİ ===\n`;
-            text += `Tarix: ${date}\n`;
-            text += `Qrup: ${groupName}\n`;
-            text += `Ümumi Bal: ${totalScore}\n`;
-            text += `--------------------------------\n`;
-
-            for (const [subject, score] of Object.entries(results)) {
-                if (subject === 'Ümumi bal') continue;
-                const subjName = t.subjects[subject] || subject;
-                text += `\n[${subjName.toUpperCase()}]\n`;
-                text += `Bal: ${score.toFixed(1)}\n`;
-
-                if (answers && answers[subject]) {
-                    const ans = answers[subject];
-                    if (ans.correct) text += `- Doğru: ${ans.correct}\n`;
-                    if (ans.incorrect) text += `- Yanlış: ${ans.incorrect}\n`;
-                    if (ans.closed) text += `- Qapalı: ${ans.closed}\n`;
-                    if (ans.open) text += `- Açıq: ${ans.open}\n`;
-                    if (ans.coding) text += `- Kodlaşdırma: ${ans.coding}\n`;
-                }
-            }
-
-            text += `\n--------------------------------\n`;
-            text += `calculator.abusov.com`;
-
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            // Format date for filename: YYYY-MM-DD
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('az-AZ').split('/').reverse().join('-');
-            a.download = `nəticəm-${dateStr}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
         }
     }
 
-    // --- COMPONENT: Footer ---
-    class Footer extends Component {
-        template() {
-            return `
-                <div class="footer-content" style="padding-bottom:1rem;">
-                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener">abusoww</a> with <i class="fa-solid fa-heart theme-heart" style="margin-left:2px; font-size:0.9rem;"></i></span>
+    // =====================================================================
+    // COMPONENT — Group page (header + live form + dock + results)
+    // =====================================================================
+    class GroupPage {
+        constructor(pageEl, group) {
+            this.page = pageEl;
+            this.group = group;
+            this.headerHost = pageEl.querySelector('.page-header');
+            this.formHost = pageEl.querySelector('.group-form');
+            this.resultsHost = pageEl.querySelector('.group-results');
+            this.dockHost = pageEl.querySelector('.score-dock');
+            this.displayedTotal = 0;
+            this.trackTimer = null;
+
+            this.page.addEventListener('click', (e) => this.onAction(e));
+            store.subscribe((state, prop) => {
+                if (prop === 'language') this.render();
+            });
+            this.render();
+        }
+
+        // ---------- rendering ----------
+        render() {
+            const tr = t();
+            this.headerHost.innerHTML = `
+                <div class="header-side">
+                    <button type="button" class="nav-back-btn" data-action="back">
+                        <i class="fas fa-chevron-left"></i>${tr.back}
+                    </button>
+                </div>
+                <div class="header-title">${tr.groups[this.group.id]}</div>
+                <div class="header-side"></div>
+            `;
+            this.renderForm();
+            this.dockHost.innerHTML = `
+                <div class="score-dock-inner">
+                    <div class="dock-total">
+                        <span class="dock-label">${tr.total}</span>
+                        <span class="dock-value"><b data-total>${fmt(this.displayedTotal)}</b><span class="dock-max">/${this.group.max}</span></span>
+                    </div>
+                    <button type="button" class="dock-btn" data-action="details">
+                        ${tr.details}<i class="fas fa-arrow-down"></i>
+                    </button>
+                    <div class="dock-progress"><span data-total-bar></span></div>
                 </div>
             `;
-        }
-        afterRender() { }
-    }
-
-
-    // --- COMPONENT: DocumentationModal ---
-    class DocumentationModal extends Component {
-        get documents() {
-            return [
-                { name: 'I Qrup', file: 'dim-1-qrup-ballari-hesablama.pdf' },
-                { name: 'II Qrup', file: 'dim-2-qrup-ballari-hesablama.pdf' },
-                { name: 'III Qrup', file: 'dim-3-qrup-ballari-hesablama.pdf' },
-                { name: 'IV Qrup', file: 'dim-4-qrup-ballari-hesablama.pdf' },
-                { name: '9-cu Sinif Buraxılış', file: 'dim-9-buraxilis-imtahani-ballari-hesablama.pdf' },
-                { name: '11-ci Sinif Buraxılış', file: 'dim-11-buraxilis-imtahani-ballari-hesablama.pdf' }
-            ];
+            this.update({ animate: false });
         }
 
-        template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
+        renderForm() {
+            const tr = t();
+            const variant = getVariant(this.group);
+            const variantsHtml = this.group.variants.length > 1 ? `
+                <div class="segmented" role="tablist">
+                    ${this.group.variants.map((v) => `
+                        <button type="button" role="tab" class="segment ${v.id === variant.id ? 'active' : ''}" data-action="variant" data-variant="${v.id}" aria-selected="${v.id === variant.id}">
+                            <span class="segment-code">${v.id}</span>${tr.subjects[v.label]}
+                        </button>
+                    `).join('')}
+                </div>
+            ` : '';
 
-            const docItems = this.documents.map((doc, index) => `
-                <div class="doc-item">
-                    <div class="doc-info">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>${doc.name}</span>
+            this.formHost.innerHTML = `
+                ${variantsHtml}
+                <form class="subjects-grid" autocomplete="off" novalidate>
+                    ${variant.subjects.map((s) => this.subjectTemplate(s, tr)).join('')}
+                </form>
+            `;
+            this.bindForm();
+        }
+
+        subjectTemplate(subject, tr) {
+            const gid = this.group.id;
+            return `
+                <section class="subject" data-subject="${subject.key}">
+                    <header class="subject-head">
+                        <h3>${tr.subjects[subject.key]}</h3>
+                        <span class="subject-score"><b data-score>0.0</b><span>/${subject.max}</span></span>
+                    </header>
+                    <div class="subject-progress"><span data-bar></span></div>
+                    <div class="input-group">
+                        ${subject.fields.map((f) => {
+                            const val = getAnswer(gid, subject.key, f.key);
+                            return `
+                                <div class="field-row">
+                                    <span class="field-text">
+                                        <span class="field-label">${tr.fields[f.key]}</span>
+                                        <span class="field-hint" data-hint="${f.key}"></span>
+                                    </span>
+                                    <span class="stepper-wrapper">
+                                        <button type="button" class="stepper-btn minus" tabindex="-1" aria-label="−1"><i class="fas fa-minus"></i></button>
+                                        <input type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next" autocomplete="off"
+                                            class="input-field" data-field="${f.key}" placeholder="0" value="${val || ''}"
+                                            aria-label="${tr.subjects[subject.key]} — ${tr.fields[f.key]}">
+                                        <button type="button" class="stepper-btn plus" tabindex="-1" aria-label="+1"><i class="fas fa-plus"></i></button>
+                                    </span>
+                                    <span class="validation-message" role="alert"></span>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
-                    <a href="${APP_CONFIG.docsBaseUrl}${doc.file}" target="_blank" class="doc-link">Oxu</a>
+                </section>
+            `;
+        }
+
+        resultsTemplate(scores) {
+            const tr = t();
+            if (scores.total <= 0) return '';
+            const rows = scores.rows.map(({ subject, score }) => `
+                <div class="results-list-item">
+                    <span class="results-subject-name">${tr.subjects[subject.key]}</span>
+                    <span class="results-bar"><span style="width:${Math.min(100, (score / subject.max) * 100)}%"></span></span>
+                    <span class="results-subject-score">${fmt(score)}<small>/${subject.max}</small></span>
                 </div>
             `).join('');
 
             return `
-                <div class="modal-overlay">
-                    <div class="modal-scale-content">
-                        <div class="modal-header">
-                            <h3>${t.docsTitle}</h3>
-                            <button type="button" class="modal-close" data-umami-event="Close Docs Modal Clicked" aria-label="Close">&times;</button>
+                <div class="results-container">
+                    <h2 class="section-title">${tr.breakdown}</h2>
+                    <div class="results-breakdown-list">
+                        ${rows}
+                        <div class="results-list-item results-total-row">
+                            <span class="results-subject-name">${tr.total}</span>
+                            <span class="results-total-value">${fmt(scores.total)}<small>/${this.group.max}</small></span>
                         </div>
-                        <div class="modal-body">
-                            <div class="timeline-feed">
-                                ${docItems}
-                            </div>
-                        </div>
+                    </div>
+
+                    <div class="results-actions">
+                        <button type="button" class="action-btn secondary" data-action="download">
+                            <i class="fas fa-download"></i>${tr.saveResults}
+                        </button>
+                        <button type="button" class="action-btn ghost" data-action="reset">
+                            <i class="fas fa-rotate-left"></i>${tr.reset}
+                        </button>
+                    </div>
+
+                    <div class="survey-inline-card">
+                        <h4 class="survey-inline-title">${tr.surveyTitle}</h4>
+                        <p class="survey-inline-text">${tr.surveyText}</p>
+                        <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" class="action-btn survey-link-btn" data-survey-source="after-calculate-inline">${tr.surveyButton}</a>
                     </div>
                 </div>
             `;
         }
 
-        afterRender() {
-            const overlay = this.host.querySelector('.modal-overlay');
-            const closeBtn = this.host.querySelector('.modal-close');
+        // ---------- live update ----------
+        update({ animate = true } = {}) {
+            const tr = t();
+            const gid = this.group.id;
+            const scores = Calculator.groupScores(this.group);
 
-            const closeModal = () => {
-                vibrate(10);
-                this.host.classList.remove('active');
-                setScrollLock(false);
+            scores.rows.forEach(({ subject, score }) => {
+                const section = this.formHost.querySelector(`.subject[data-subject="${subject.key}"]`);
+                if (!section) return;
+                section.querySelector('[data-score]').textContent = fmt(score);
+                section.querySelector('[data-bar]').style.width = `${Math.min(100, (score / subject.max) * 100)}%`;
+                section.classList.toggle('has-score', score > 0);
+
+                subject.fields.forEach((f) => {
+                    const max = Calculator.effectiveMax(f, subject, gid);
+                    const value = getAnswer(gid, subject.key, f.key);
+                    const input = section.querySelector(`.input-field[data-field="${f.key}"]`);
+                    const row = input.closest('.field-row');
+
+                    let hint = tr.hintMax.replace('{n}', max);
+                    if (f.weight === 2) hint += ` · ${tr.hintDouble}`;
+                    if (f.weight < 0) hint += ` · ${tr.hintPenalty}`;
+                    row.querySelector('[data-hint]').textContent = hint;
+
+                    input.dataset.max = max;
+                    row.querySelector('.minus').classList.toggle('is-disabled', value <= 0);
+                    row.querySelector('.plus').classList.toggle('is-disabled', value >= max);
+                });
+            });
+
+            // Dock
+            const totalEl = this.dockHost.querySelector('[data-total]');
+            this.dockHost.querySelector('[data-total-bar]').style.width = `${Math.min(100, (scores.total / this.group.max) * 100)}%`;
+            this.dockHost.classList.toggle('is-empty', scores.total <= 0);
+            this.animateTotal(totalEl, scores.total, animate);
+
+            // Results
+            this.resultsHost.innerHTML = this.resultsTemplate(scores);
+
+            if (animate) this.scheduleTracking(scores);
+        }
+
+        animateTotal(el, to, animate) {
+            cancelAnimationFrame(this.raf);
+            const from = this.displayedTotal;
+            if (!animate || Math.abs(to - from) < 0.05) {
+                this.displayedTotal = to;
+                el.textContent = fmt(to);
+                return;
+            }
+            const start = performance.now();
+            const duration = 260;
+            const step = (now) => {
+                const p = Math.min(1, (now - start) / duration);
+                const eased = 1 - Math.pow(1 - p, 3);
+                this.displayedTotal = from + (to - from) * eased;
+                el.textContent = fmt(this.displayedTotal);
+                if (p < 1) this.raf = requestAnimationFrame(step);
+            };
+            this.raf = requestAnimationFrame(step);
+        }
+
+        scheduleTracking(scores) {
+            clearTimeout(this.trackTimer);
+            if (scores.total <= 0) return;
+            this.trackTimer = setTimeout(() => {
+                const score = Math.round(scores.total);
+                const lower = Math.floor(score / 50) * 50;
+                trackUmamiEvent('Score Calculated', {
+                    group: this.group.id,
+                    variant: scores.variant.id,
+                    score,
+                    range: `${lower}-${Math.min(lower + 50, this.group.max)}`
+                });
+            }, 2500);
+        }
+
+        // ---------- form interactions ----------
+        bindForm() {
+            const gid = this.group.id;
+            const form = this.formHost.querySelector('form');
+            form.addEventListener('submit', (e) => e.preventDefault());
+
+            const inputs = Array.from(form.querySelectorAll('.input-field'));
+
+            const commit = (input, rawValue) => {
+                const subjectKey = input.closest('.subject').dataset.subject;
+                const max = Number(input.dataset.max);
+                let value = parseInt(String(rawValue).replace(/\D/g, ''), 10);
+                if (isNaN(value)) value = 0;
+
+                const msg = input.closest('.field-row').querySelector('.validation-message');
+                if (value > max) {
+                    value = max;
+                    msg.textContent = t().errorMax.replace('{max}', max);
+                    msg.classList.add('show');
+                    input.classList.add('has-error');
+                    vibrate(20);
+                    clearTimeout(input._errTimer);
+                    input._errTimer = setTimeout(() => {
+                        msg.classList.remove('show');
+                        input.classList.remove('has-error');
+                    }, 1800);
+                }
+
+                // Zero is shown as the placeholder, keeping the field clean.
+                const display = value ? String(value) : '';
+                if (input.value !== display) input.value = display;
+
+                setAnswer(gid, subjectKey, input.dataset.field, value);
+                this.update();
+                return value;
             };
 
-            if (closeBtn) closeBtn.addEventListener('click', closeModal);
-            if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.host.classList.contains('active')) closeModal();
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', () => commit(input, input.value));
+                input.addEventListener('focus', () => {
+                    // Select so typing replaces the current value — no backspacing on mobile.
+                    requestAnimationFrame(() => input.select());
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key !== 'Enter') return;
+                    e.preventDefault();
+                    const next = inputs[index + 1];
+                    if (next) next.focus();
+                    else input.blur();
+                });
+            });
+
+            // Steppers with hold-to-repeat (accelerating)
+            form.querySelectorAll('.stepper-btn').forEach((btn) => {
+                let holdTimeout = null;
+                let holdInterval = null;
+
+                const step = () => {
+                    const input = btn.parentElement.querySelector('input');
+                    const current = parseInt(input.value, 10) || 0;
+                    const max = Number(input.dataset.max);
+                    const next = btn.classList.contains('plus') ? current + 1 : current - 1;
+                    if (next < 0 || next > max) {
+                        stop();
+                        return;
+                    }
+                    vibrate(5);
+                    commit(input, next);
+                };
+
+                const stop = () => {
+                    clearTimeout(holdTimeout);
+                    clearTimeout(holdInterval);
+                    holdTimeout = null;
+                    holdInterval = null;
+                };
+
+                const start = () => {
+                    step();
+                    let speed = 150;
+                    const loop = () => {
+                        step();
+                        speed = Math.max(50, speed - 10);
+                        if (holdTimeout || holdInterval) holdInterval = setTimeout(loop, speed);
+                    };
+                    holdTimeout = setTimeout(loop, 320);
+                };
+
+                btn.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    start();
+                });
+                ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => btn.addEventListener(ev, stop));
             });
         }
-    }
 
-    // --- COMPONENT: AddToHomeModal ---
-    class AddToHomeModal extends Component {
-        template() {
-            const lang = store.state.language;
-            const t = TRANSLATIONS[lang];
-            const isIOS = [
-                'iPad Simulator',
-                'iPhone Simulator',
-                'iPod Simulator',
-                'iPad',
-                'iPhone',
-                'iPod'
-            ].includes(navigator.platform) ||
-                (navigator.userAgent.includes("Mac") && "ontouchend" in document && !navigator.userAgent.includes("Android") && !navigator.userAgent.includes("Windows")) ||
-                (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
-
-            let visualSteps = '';
-
-            if (isIOS) {
-                // iOS Safari Mockups - Using actual user screenshots
-                visualSteps = `
-                    <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
-                        <div style="text-align: center;">
-                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeIOS_Step1}</span>
-                            <img src="src/assets/ios-share-1.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="iOS Share Step 1" />
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: 10px;">
-                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeIOS_Step2}</span>
-                            <img src="src/assets/ios-share-2.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="iOS Share Step 2" />
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Android Chrome Mockups - Styled exactly like iOS
-                visualSteps = `
-                    <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
-                        <div style="text-align: center;">
-                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeAndroid_Step1}</span>
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: 10px;">
-                            <span style="display:block; font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 8px;">${t.addToHomeAndroid_Step2}</span>
-                            <img src="src/assets/android-install.png" style="width: 100%; border-radius: 14px; border: 1px solid var(--input-border); box-shadow: var(--shadow-sm);" alt="Android Chrome Install Steps" />
-                        </div>
-                    </div>
-                `;
+        // ---------- delegated actions ----------
+        onAction(e) {
+            const surveyLink = e.target.closest('[data-survey-source]');
+            if (surveyLink) {
+                trackUmamiEvent('Survey Opened', { group: this.group.id, source: surveyLink.dataset.surveySource });
+                return;
             }
 
+            const el = e.target.closest('[data-action]');
+            if (!el) return;
+            const action = el.dataset.action;
+
+            if (action === 'back') return this.goBack();
+
+            if (action === 'variant') {
+                if (variants[this.group.id] === el.dataset.variant) return;
+                vibrate(8);
+                variants[this.group.id] = el.dataset.variant;
+                writeJSON('variants_v1', variants);
+                this.renderForm();
+                this.update();
+                trackUmamiEvent('Variant Selected', { group: this.group.id, variant: el.dataset.variant });
+                return;
+            }
+
+            if (action === 'details') {
+                vibrate(8);
+                const target = this.resultsHost.firstElementChild || this.formHost;
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+
+            if (action === 'download') {
+                vibrate(15);
+                this.download();
+                trackUmamiEvent('Results Downloaded', { group: this.group.id });
+                return;
+            }
+
+            if (action === 'reset') {
+                vibrate(15);
+                clearAnswers(this.group.id);
+                this.renderForm();
+                this.update();
+                this.page.scrollTo({ top: 0, behavior: 'smooth' });
+                trackUmamiEvent('Form Reset', { group: this.group.id });
+            }
+        }
+
+        goBack() {
+            vibrate(10);
+            const homePage = document.getElementById('homePage');
+            const hadScore = Calculator.groupScores(this.group).total > 0;
+
+            if (document.activeElement) document.activeElement.blur();
+            this.page.classList.remove('active');
+            this.page.classList.add('sliding-out');
+            homePage.classList.remove('slid-out');
+
+            setTimeout(() => {
+                this.page.classList.remove('sliding-out');
+                store.state.activePage = 'home';
+                store.state.activeGroup = null;
+                if (normalizePath(window.location.pathname) !== '/') {
+                    window.history.pushState({ page: 'home' }, '', '/');
+                }
+                // Ask for the survey once per device, after the user has finished a calculation.
+                if (hadScore && !localStorage.getItem('surveySeen')) {
+                    localStorage.setItem('surveySeen', '1');
+                    setTimeout(showSurveyPopup, 350);
+                }
+            }, 280);
+        }
+
+        download() {
+            const tr = t();
+            const lang = store.state.language;
+            const scores = Calculator.groupScores(this.group);
+            const date = new Date().toLocaleString(lang === 'az' ? 'az-AZ' : 'ru-RU');
+
+            let text = `=== ${tr.fileHeader} ===\n`;
+            text += `${tr.fileDate}: ${date}\n`;
+            text += `${tr.fileGroup}: ${tr.groups[this.group.id]}${this.group.variants.length > 1 ? ` (${scores.variant.id})` : ''}\n`;
+            text += `${tr.total}: ${fmt(scores.total)} / ${this.group.max}\n`;
+            text += `--------------------------------\n`;
+
+            scores.rows.forEach(({ subject, score }) => {
+                text += `\n[${tr.subjects[subject.key].toUpperCase()}] ${fmt(score)} / ${subject.max}\n`;
+                subject.fields.forEach((f) => {
+                    const v = getAnswer(this.group.id, subject.key, f.key);
+                    if (v) text += `- ${tr.fields[f.key]}: ${v}\n`;
+                });
+            });
+
+            text += `\n--------------------------------\ncalculator.abusov.com`;
+
+            const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `netice-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+    }
+
+    // =====================================================================
+    // COMPONENT — Footer
+    // =====================================================================
+    class Footer extends Component {
+        template() {
+            return `
+                <div class="footer-content">
+                    <span class="footer-text">made by <a href="https://abusov.com" target="_blank" rel="noopener">abusoww</a> with <i class="fa-solid fa-heart theme-heart"></i></span>
+                </div>
+            `;
+        }
+    }
+
+    // =====================================================================
+    // COMPONENT — Modals
+    // =====================================================================
+    class Modal extends Component {
+        constructor(host) {
+            super(host);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.host.classList.contains('active')) this.close();
+            });
+            store.subscribe((state, prop) => {
+                if (prop === 'language') this.render();
+            });
+        }
+        close() {
+            vibrate(10);
+            this.host.classList.remove('active');
+            setScrollLock(false);
+        }
+        shell(title, body) {
             return `
                 <div class="modal-overlay">
-                    <div class="modal-scale-content">
+                    <div class="modal-scale-content" role="dialog" aria-modal="true">
+                        <div class="modal-grabber"></div>
                         <div class="modal-header">
-                            <h3>${t.addToHomeModalTitle}</h3>
-                            <button type="button" class="modal-close" data-umami-event="Close AddToHome Modal Clicked" aria-label="Close">&times;</button>
+                            <h3>${title}</h3>
+                            <button type="button" class="modal-close" aria-label="Close">&times;</button>
                         </div>
-                        <div class="modal-body">
-                            <div style="text-align: center; margin-bottom: 1.5rem;">
-                                <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 16px; display: inline-flex; justify-content: center; align-items: center; color: white; margin-bottom: 1rem; box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.25);">
-                                    <i class="fas fa-calculator" style="font-size: 1.75rem;"></i>
-                                </div>
-                                <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">${t.addToHomeModalDesc}</p>
-                            </div>
-                            ${visualSteps}
-                        </div>
+                        <div class="modal-body">${body}</div>
                     </div>
                 </div>
             `;
         }
-
         afterRender() {
             const overlay = this.host.querySelector('.modal-overlay');
-            const closeBtn = this.host.querySelector('.modal-close');
-
-            const closeModal = () => {
-                vibrate(10);
-                this.host.classList.remove('active');
-                setScrollLock(false);
-            };
-
-            if (closeBtn) closeBtn.addEventListener('click', closeModal);
-            if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.host.classList.contains('active')) closeModal();
-            });
+            this.host.querySelector('.modal-close').addEventListener('click', () => this.close());
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) this.close(); });
         }
     }
 
-    // --- COMPONENT: SurveyFloatingPopup ---
-    class SurveyFloatingPopup extends Component {
+    class DocumentationModal extends Modal {
         template() {
-            const t = TRANSLATIONS[store.state.language];
-            return `
-                <div class="survey-floating-popup">
-                    <button type="button" class="survey-floating-close" aria-label="Close">&times;</button>
-                    <h4 class="survey-floating-title">${t.surveyTitle}</h4>
-                    <p class="survey-floating-text">${t.surveyText}</p>
-                    <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" class="action-btn survey-link-btn">${t.surveyButton}</a>
-                </div>
-            `;
+            const tr = t();
+            const docs = [
+                { name: tr.groups['I Qrup'], file: 'dim-1-qrup-ballari-hesablama.pdf' },
+                { name: tr.groups['II Qrup'], file: 'dim-2-qrup-ballari-hesablama.pdf' },
+                { name: tr.groups['III Qrup'], file: 'dim-3-qrup-ballari-hesablama.pdf' },
+                { name: tr.groups['IV Qrup'], file: 'dim-4-qrup-ballari-hesablama.pdf' },
+                { name: tr.docs9, file: 'dim-9-buraxilis-imtahani-ballari-hesablama.pdf' },
+                { name: tr.docs11, file: 'dim-11-buraxilis-imtahani-ballari-hesablama.pdf' }
+            ];
+            return this.shell(tr.docsTitle, docs.map((doc) => `
+                <a class="doc-item" href="${DOCS_BASE_URL}${doc.file}" target="_blank" rel="noopener">
+                    <span class="doc-info"><i class="fas fa-file-pdf"></i><span>${doc.name}</span></span>
+                    <span class="doc-link">${tr.read}</span>
+                </a>
+            `).join(''));
         }
+    }
 
+    class AddToHomeModal extends Modal {
+        template() {
+            const tr = t();
+            const ua = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+
+            const steps = isIOS
+                ? `
+                    <div class="install-step"><span>${tr.addToHomeIOS_Step1}</span><img src="src/assets/ios-share-1.png" alt="" loading="lazy"></div>
+                    <div class="install-step"><span>${tr.addToHomeIOS_Step2}</span><img src="src/assets/ios-share-2.png" alt="" loading="lazy"></div>
+                `
+                : `
+                    <div class="install-step"><span>${tr.addToHomeAndroid_Step1}</span></div>
+                    <div class="install-step"><span>${tr.addToHomeAndroid_Step2}</span><img src="src/assets/android-install.png" alt="" loading="lazy"></div>
+                `;
+
+            return this.shell(tr.addToHomeModalTitle, `
+                <div class="install-intro">
+                    <div class="install-icon"><i class="fas fa-calculator"></i></div>
+                    <p>${tr.addToHomeModalDesc}</p>
+                </div>
+                <div class="install-steps">${steps}</div>
+            `);
+        }
+    }
+
+    class SponsorModal extends Modal {
+        template() {
+            const tr = t();
+            return this.shell(tr.sponsorship, `
+                <div class="install-intro">
+                    <div class="install-icon"><i class="fa-brands fa-telegram"></i></div>
+                    <p>${tr.sponsorDesc}</p>
+                </div>
+                <div class="sponsor-contact-row">
+                    <span class="sponsor-handle"><i class="fa-brands fa-telegram"></i>@abusoww</span>
+                    <button type="button" class="sponsor-copy-btn" data-copy="@abusoww">${tr.copy}</button>
+                </div>
+                <a href="https://t.me/abusoww" target="_blank" rel="noopener noreferrer" class="action-btn sponsor-cta-btn">
+                    <i class="fa-brands fa-telegram"></i>${tr.sponsorButton}
+                </a>
+            `);
+        }
         afterRender() {
-            const popup = this.host.querySelector('.survey-floating-popup');
-            const closeBtn = this.host.querySelector('.survey-floating-close');
-            const surveyBtn = this.host.querySelector('.survey-link-btn');
-
-            if (!popup) return;
-
-            const closePopup = () => {
-                this.host.classList.remove('active');
-            };
-
-            if (closeBtn) closeBtn.addEventListener('click', closePopup);
-            if (surveyBtn) {
-                surveyBtn.addEventListener('click', () => {
-                    trackUmamiEvent('Survey Opened', { page: store.state.activePage || 'home', language: store.state.language, source: 'floating-popup' });
+            super.afterRender();
+            const copyBtn = this.host.querySelector('.sponsor-copy-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    vibrate(10);
+                    navigator.clipboard?.writeText('@abusoww').catch(() => { });
+                    copyBtn.textContent = t().copied;
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.textContent = t().copy;
+                        copyBtn.classList.remove('copied');
+                    }, 1800);
+                });
+            }
+            const cta = this.host.querySelector('.sponsor-cta-btn');
+            if (cta) {
+                cta.addEventListener('click', () => {
+                    trackUmamiEvent('Sponsorship Telegram Clicked', { handle: '@abusoww' });
                 });
             }
         }
     }
 
-    const showSurveyFloatingPopup = () => {
-        const popupHost = document.getElementById('surveyFloatingPopup');
-        if (!popupHost) return;
-        popupHost.classList.add('active');
-    };
-
-    const hideSurveyFloatingPopup = () => {
-        const popupHost = document.getElementById('surveyFloatingPopup');
-        if (!popupHost) return;
-        popupHost.classList.remove('active');
-    };
-
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.survey-floating-close')) {
-            hideSurveyFloatingPopup();
-            return;
-        }
-        if (e.target.closest('#surveyFloatingPopup .survey-link-btn')) {
-            hideSurveyFloatingPopup();
-            return;
-        }
-    });
-
-    class SurveyFloatingPopupBootstrap {
+    // =====================================================================
+    // COMPONENT — Survey popup (shown on demand, or once after a finished calculation)
+    // =====================================================================
+    class SurveyPopup extends Component {
         constructor(host) {
-            this.host = host;
-            this.component = null;
+            super(host);
+            store.subscribe((state, prop) => {
+                if (prop === 'language') this.render();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') hideSurveyPopup();
+            });
         }
-
-        init() {
-            if (!this.host) return;
-            this.component = new SurveyFloatingPopup(this.host);
-            setTimeout(() => {
-                showSurveyFloatingPopup();
-            }, 700);
+        template() {
+            const tr = t();
+            return `
+                <div class="survey-floating-popup" role="dialog" aria-modal="true">
+                    <button type="button" class="survey-floating-close" aria-label="Close">&times;</button>
+                    <h4 class="survey-floating-title">${tr.surveyTitle}</h4>
+                    <p class="survey-floating-text">${tr.surveyText}</p>
+                    <a href="${SURVEY_FORM_URL}" target="_blank" rel="noopener noreferrer" class="action-btn survey-link-btn">${tr.surveyButton}</a>
+                </div>
+            `;
+        }
+        afterRender() {
+            this.host.querySelector('.survey-floating-close').addEventListener('click', hideSurveyPopup);
+            this.host.querySelector('.survey-link-btn').addEventListener('click', () => {
+                trackUmamiEvent('Survey Opened', { source: 'floating-popup', page: store.state.activePage });
+                hideSurveyPopup();
+            });
         }
     }
 
-    // --- INITIALIZATION ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const theme = store.state.theme;
-        if (theme === 'light') document.body.classList.add('light-mode');
-        const homePageEl = document.getElementById('homePage');
-        if (homePageEl) homePageEl.classList.add('hide-countdown');
+    const showSurveyPopup = () => document.getElementById('surveyFloatingPopup')?.classList.add('active');
+    const hideSurveyPopup = () => document.getElementById('surveyFloatingPopup')?.classList.remove('active');
 
-        applyRouteState = (pathname, clearResults = false) => {
+    // =====================================================================
+    // INIT
+    // =====================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTheme();
+        applyLanguage();
+
+        const applyRouteState = (pathname) => {
             const routeGroup = getGroupFromPath(pathname);
             const homePage = document.getElementById('homePage');
-            const allGroupPages = document.querySelectorAll('.group-page');
-
-            allGroupPages.forEach((page) => page.classList.remove('active', 'sliding-out'));
+            document.querySelectorAll('.group-page').forEach((p) => p.classList.remove('active', 'sliding-out'));
 
             if (!routeGroup) {
-                if (homePage) {
-                    homePage.classList.add('active');
-                    homePage.classList.remove('slid-out');
-                }
+                homePage.classList.remove('slid-out');
                 store.state.activePage = 'home';
                 store.state.activeGroup = null;
-                if (clearResults) store.state.results = null;
                 return;
             }
 
-            const targetPageId = getPageIdForGroup(routeGroup);
-            const targetPage = targetPageId ? document.getElementById(targetPageId) : null;
-
-            if (homePage) {
-                homePage.classList.add('active');
-                homePage.classList.add('slid-out');
-            }
-            if (targetPage) targetPage.classList.add('active');
-
-            if (store.state.activeGroup && store.state.activeGroup !== routeGroup && clearResults) {
-                store.state.results = null;
-            }
-
+            homePage.classList.add('slid-out');
+            document.getElementById(`group${getGroupIndex(routeGroup)}Page`)?.classList.add('active');
             store.state.activeGroup = routeGroup;
             store.state.activePage = `group${getGroupIndex(routeGroup)}`;
         };
 
-        const updateKeyboardState = () => {
-            const activePage = document.querySelector('.group-page.active');
-            if (!activePage) return;
-            const focused = document.activeElement;
-            const isInputFocused = focused && (
-                focused.matches('input, textarea, select') ||
-                focused.closest('.stepper-wrapper')
-            );
-            activePage.classList.toggle('keyboard-open', !!isInputFocused);
-        };
-
-        // Execute initial render
         applyRouteState(window.location.pathname);
 
-        // Initialize Components
         new HomeHeader(document.getElementById('homeHeader'));
-        new Countdown(document.querySelector('.countdown-container'));
         new GroupSelector(document.getElementById('groupButtons'));
         new Footer(document.getElementById('footerContainer'));
         new DocumentationModal(document.getElementById('docsModal'));
         new AddToHomeModal(document.getElementById('addToHomeModal'));
-        const surveyPopup = new SurveyFloatingPopupBootstrap(document.getElementById('surveyFloatingPopup'));
-        surveyPopup.init();
+        new SponsorModal(document.getElementById('sponsorModal'));
 
-        // Initialize all 5 group pages
-        for (let i = 1; i <= GROUPS.length; i++) {
-            const page = document.getElementById(`group${i}Page`);
-            if (!page) continue;
-            const headerHost = page.querySelector('.page-header');
-            const formHost = page.querySelector('.group-form');
-            const resultsHost = page.querySelector('.group-results');
-            if (headerHost) new FormHeader(headerHost);
-            if (formHost) new ExamForm(formHost);
-            if (resultsHost) new Results(resultsHost);
-        }
+        const surveyHost = document.getElementById('surveyFloatingPopup');
+        new SurveyPopup(surveyHost);
+        surveyHost.addEventListener('click', (e) => { if (e.target === surveyHost) hideSurveyPopup(); });
 
-        window.addEventListener('popstate', () => {
-            applyRouteState(window.location.pathname, true);
+        GROUPS.forEach((group, i) => {
+            const page = document.getElementById(`group${i + 1}Page`);
+            if (page) new GroupPage(page, group);
         });
 
+        window.addEventListener('popstate', () => applyRouteState(window.location.pathname));
+
+        // Extra scroll room while the on-screen keyboard is open
+        const updateKeyboardState = () => {
+            const activePage = document.querySelector('.group-page.active');
+            if (!activePage) return;
+            const focused = document.activeElement;
+            activePage.classList.toggle('keyboard-open', !!(focused && focused.matches('input')));
+        };
         document.addEventListener('focusin', updateKeyboardState);
         document.addEventListener('focusout', () => setTimeout(updateKeyboardState, 0));
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', updateKeyboardState);
-        }
 
-        // Entry Animations
-        const elementsToAnimate = [
-            document.querySelector('.header-controls'),
+        // Entry animations
+        [
+            document.getElementById('homeHeader'),
             document.querySelector('.title'),
             document.querySelector('.description'),
-            document.querySelector('.countdown-container'),
             document.getElementById('groupButtons'),
-            document.getElementById('footerContainer') // Also animate footer
-        ];
-
-        elementsToAnimate.forEach((el, index) => {
-            if (el) {
-                el.classList.add('animate-appear');
-                el.style.animationDelay = `${index * 75}ms`; // Faster animations
-            }
+            document.getElementById('footerContainer')
+        ].forEach((el, index) => {
+            if (!el) return;
+            el.classList.add('animate-appear');
+            el.style.animationDelay = `${index * 70}ms`;
         });
 
-        // Global Handler for Changelog (Robust Fix)
-        // Global Handler for Changelog (Robust Fix)
-        // Global Handler for Changelog (Robust Fix)
-        document.addEventListener('click', (e) => {
-            // Changelog
-            const changeBtn = e.target.closest('#changelogBtn');
-            if (changeBtn) {
-                e.preventDefault(); e.stopPropagation();
-                try { if (typeof vibrate === 'function') vibrate(10); } catch (err) { }
-                const modal = document.getElementById('changelogModal');
-                if (modal) {
-                    modal.classList.add('active');
-                    setScrollLock(true);
-                }
-            }
-
-            // Docs
-            const docsBtn = e.target.closest('#docsBtn');
-            if (docsBtn) {
-                e.preventDefault(); e.stopPropagation();
-                try { if (typeof vibrate === 'function') vibrate(10); } catch (err) { }
-                const modal = document.getElementById('docsModal');
-                if (modal) {
-                    modal.classList.add('active');
-                    setScrollLock(true);
-                }
-            }
-        });
-
-        // --- ANALYTICS: Umami ---
-        // trackUmamiEvent('Page Load'); // Automatically tracked by Umami
-
-        // Track Theme Change
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                trackUmamiEvent('Theme Changed', { theme: store.state.theme });
-            });
-        }
-
-        // Track Language Change
-        const langBtn = document.getElementById('languageToggle');
-        if (langBtn) {
-            langBtn.addEventListener('click', () => {
-                // Determine new language (it toggles, so if current is az, new is ru)
-                const newLang = store.state.language === 'az' ? 'ru' : 'az';
-                document.documentElement.lang = newLang; // Update DOM for CSS targeting
-                // Note: state updates after click, but we want to track the *action* of changing
-                trackUmamiEvent('Language Changed', { language: newLang });
-            });
-        }
-
-        // Track Form Abandonment
+        // Analytics
         window.addEventListener('beforeunload', () => {
-            if (store.state.activeGroup && !store.state.results) {
-                trackUmamiEvent('User Abandoned Form', { group: store.state.activeGroup });
+            const group = getGroup(store.state.activeGroup);
+            if (group && Calculator.groupScores(group).total <= 0) {
+                trackUmamiEvent('User Abandoned Form', { group: group.id });
             }
         });
 
         document.addEventListener('click', (e) => {
-            // Group Selected - check if clicked button is inside #groupButtons
-            const clickedBtn = e.target.closest('.list-item-btn[data-group]');
-            const groupBtn = clickedBtn && clickedBtn.closest('#groupButtons') ? clickedBtn : null;
-            if (groupBtn) {
-                const groupName = groupBtn.dataset.group || groupBtn.textContent.trim();
-                trackUmamiEvent('Group Selected', { group: groupName });
-            }
-
-            // Note: Score tracking is now done inside ExamForm with properties
-
-            // Results Downloaded
-            if (e.target.closest('#downloadButton')) {
-                trackUmamiEvent('Results Downloaded');
-            }
-
-            // Form Reset (renamed from Recalculate)
-            if (e.target.closest('#recalculateButton')) {
-                trackUmamiEvent('Form Reset');
-            }
-
-
-            // Docs Opened
-            if (e.target.closest('#docsBtn')) {
-                trackUmamiEvent('Docs Opened');
-            }
-            if (e.target.closest('#surveyListBtn')) {
-                trackUmamiEvent('Survey Opened', { source: 'home-list' });
-            }
-
-            // Link Tracking
-            const link = e.target.closest('a');
-            if (link) {
-                const href = link.href;
-
-                // Author Website
-                if (href.includes('abusov.com')) {
-                    trackUmamiEvent('Author Link Clicked');
-                }
-                // Documentation PDFs
-                else if (href.includes('.pdf')) {
-                    const fileName = href.split('/').pop();
-                    trackUmamiEvent('Document Clicked', { file: fileName });
-                }
-                // Other Links
-                else {
-                    trackUmamiEvent('Link Clicked', { url: href });
-                }
-            }
+            const link = e.target.closest('a[href]');
+            if (!link) return;
+            const href = link.href;
+            if (href.includes('.pdf')) trackUmamiEvent('Document Clicked', { file: href.split('/').pop() });
+            else if (href.includes('://abusov.com')) trackUmamiEvent('Author Link Clicked');
+            else trackUmamiEvent('Link Clicked', { url: href });
         });
-
     });
-
 })();
